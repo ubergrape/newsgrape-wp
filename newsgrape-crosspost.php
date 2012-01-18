@@ -98,7 +98,16 @@ function ngcp_inner_meta_box( $post ) {
 			</label></li>
 			</ul>
 	</div>
-	<div style="clear:both" />
+	<div style="clear:both"></div>
+	<div> <?php //TODO remove dev only ?>
+		<?php
+		$ngcp_id = get_post_meta($post->ID, 'ngcp_id', true); 
+		$ngcp_display_url = get_post_meta($post->ID, 'ngcp_display_url', true);
+		?>
+		<p>Newsgrape ID: <?php echo $ngcp_id?></p>
+		<p>Newsgrape URL: <a href="<?php echo $ngcp_display_url?>"><?php echo $ngcp_display_url?></a></p>
+	</div>
+		
 
 	<?php
 }
