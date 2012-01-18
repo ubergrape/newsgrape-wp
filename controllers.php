@@ -25,7 +25,7 @@ class NGCP_Core_Controller {
 	static function edit($post_ID) {
 		$post = new NGCP_Post($post_ID);
 		
-		if (!$post->was_crossposted()) {//TODO crosspublish if old article edited?
+		if (!$post->was_crossposted()) {
 			return $post_ID;
 		}
 		
@@ -34,7 +34,7 @@ class NGCP_Core_Controller {
 		}
 		
 		$api = new NGCP_API();
-		$api->delete($post);
+		$api->update($post);
 	}
 	
 	static function delete($post_ID) {

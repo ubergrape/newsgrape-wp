@@ -8,19 +8,19 @@ function base64_encode_image ($filename=string,$filetype=string) {
 }
 
 class NGCP_Post {
-	private $wp_post;
-	private $wp_id;
-	private $id = 0;
-	private $type;
-	private $slug = "";
-	private $url = "";
-	private $status ="";
-	private $title = "";
-	private $title_plain = "";
-	private $content = "";
-	private $description = "";
-	private $language = "en";
-	private $tags = array();
+	public $wp_post;
+	public $wp_id;
+	public $id = 0;
+	public $type;
+	public $slug = "";
+	public $url = "";
+	public $status ="";
+	public $title = "";
+	public $title_plain = "";
+	public $content = "";
+	public $description = "";
+	public $language = "en";
+	public $tags = array();
 	
 	function __construct($wp_post_id = NULL) {
 		if (NULL != $wp_post_id) {
@@ -41,12 +41,12 @@ class NGCP_Post {
 		
 		$this->wp_post		= $wp_post;
 		$this->wp_id		= (int) $wp_post_id;
-		$this->id			= get_post_meta($this->wp_id, 'ngcp_id', true);
+		$this->id			= get_post_meta($wp_post_id, 'ngcp_id', true);
 		$this->type			= $wp_post->post_type;
 		$this->slug			= $wp_post->post_name;
-		$this->url			= get_permalink($this->wp_id);
+		$this->url			= get_permalink($wp_post_id);
 		$this->status		= $wp_post->post_status;
-		$this->title		= get_the_title($this->wp_id);
+		$this->title		= get_the_title($wp_post_id);
 		$this->title_plain	= strip_tags(@$this->title);
 		$this->content		= $the_content;
 		$this->description	= $wp_post->post_excerpt;

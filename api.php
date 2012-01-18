@@ -67,14 +67,14 @@ class NGCP_API {
 		}
 		
 		$response_decoded = json_decode($response['body'],true);
-		if ($response_decoded == NULL || !in_array("id",$response_decoded) || !in_array("display_url",$response_decoded)) {
+		if ($response_decoded == NULL || !array_key_exists("id",$response_decoded) || !array_key_exists("display_url",$response_decoded)) {
 			$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.$response['body']);
 			return False;
 		}
 		
-		update_post_meta($wp_post_id, 'ngcp_id', $response_decoded['id']);
-		update_post_meta($wp_post_id, 'ngcp_display_url', $response_decoded['display_url']);
-		update_post_meta($wp_post_id, 'ngcp_sync', time());
+		update_post_meta($post->wp_id, 'ngcp_id', $response_decoded['id']);
+		update_post_meta($post->wp_id, 'ngcp_display_url', $response_decoded['display_url']);
+		update_post_meta($post->wp_id, 'ngcp_sync', time());
 		
 		$this->report(__FUNCTION__,'done');
 	}
@@ -93,7 +93,7 @@ class NGCP_API {
 	function update($post) {
 		$this->report(__FUNCTION__,$post);
 		
-		$ngcp_id = get_post_meta($wp_post_id, 'ngcp_id', true);
+		$ngcp_id = get_post_meta($post->wp_id, 'ngcp_id', true);
 		$url = $this->api_path.'articles/'.$ngcp_id.'/';
 		
 		$args = array(
@@ -110,12 +110,12 @@ class NGCP_API {
 		}
 		
 		$response_decoded = json_decode($response['body'],true);
-		if ($response_decoded == NULL || !in_array("id",$response_decoded) || !in_array("display_url",$response_decoded)) {
-			$this->error(__FUNCTION__,'Something went wrong while decoding json');
+		if ($response_decoded == NULL || !array_key_exists("id",$response_decoded) || !array_key_exists("display_url",$response_decoded)) {
+			$this->error(__FUNCTION__,'Something went wrong while decoding json: '.$response['body']);
 			return False;
 		}
 		
-		update_post_meta($wp_post_id, 'ngcp_sync', time());
+		update_post_meta($post->wp_id, 'ngcp_sync', time());
 		
 		$this->report(__FUNCTION__,'done');
 	}
