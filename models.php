@@ -21,11 +21,13 @@ class NGCP_Post {
 	public $description = "";
 	public $language = "en";
 	public $tags = array();
+	private $options = array();
 	
 	function __construct($wp_post_id = NULL) {
 		if (NULL != $wp_post_id) {
 			$this->import_wp_object($wp_post_id);
 		}
+		$this->options = ngcp_get_options();
 	}
 	
 	function __toString() {
@@ -59,7 +61,7 @@ class NGCP_Post {
 		
 		$options = ngcp_get_options();
 		
-		$tag = $options['tag'];
+		$tag = $this->options['tag'];
 		
 		if (1 == $tag || 3 == $tag) {
 			$post_categories = wp_get_post_categories($wp_post_id);
@@ -104,9 +106,9 @@ class NGCP_Post {
 		$options = ngcp_get_options();
 		
 		if (
-			0 == $options['crosspost'] ||
+			0 == $this->options['crosspost'] ||
 			get_post_meta($this->wp_id, 'ngcp_no', true) ||
-			('private' == $this->post_status && $options['privacy_private'] == 'ngcp_no')
+			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no')
 		) {
 			return False;
 		}
@@ -123,7 +125,7 @@ class NGCP_Post {
 		$options = ngcp_get_options();
 		
 		if (
-			('private' == $this->post_status && $options['privacy_private'] == 'ngcp_no') || 
+			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no') || 
 			('publish' != $this->post_status && 'private' != $this->post_status) || 
 			1 == get_post_meta($this->wp_id, 'ngcp_no', true)
 		) {
@@ -144,7 +146,7 @@ class NGCP_Post {
 
 		$postcats = wp_get_post_categories($this->wp_id);
 		foreach($postcats as $cat) {
-			if(in_array($cat, $options['categories'])) {
+			if(in_array($cat, $this->options['categories'])) {
 				$should_be_deleted = False;
 				break; // decision made and cannot be altered, fly on
 			}
@@ -154,7 +156,11 @@ class NGCP_Post {
 	}
 	
 	function was_crossposted() {
-		return (0 != $this->id);
+		return (!$this->was_never_crossposted);
+	}
+	
+	function was_never_crossposted() {
+	    return (0 == $this->id);
 	}
 }
 
