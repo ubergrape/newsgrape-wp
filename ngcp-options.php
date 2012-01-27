@@ -3,18 +3,13 @@
 function ngcp_get_options() {
 	$defaults = array(
 			'username'			=> '',
-			'password'			=> '',
-			'custom_name_on'	=> 0,
-			'custom_name'		=> '',
+			'api_key'			=> '',
 			'crosspost'			=> 1,
-			'content'			=> 'full',
 			'privacy'			=> 'public',
 			'privacy_private'	=> 'ngcp_no',
-			'allowmask'			=> array(),
 			'comments'			=> 0,
-			'tag'				=> '1',
+			'tag'				=> '2',
 			'more'				=> 'link',
-			'community'			=> '',
 			'skip_cats'			=> array(),
 			'header_loc'		=> 0,		// 0 means top, 1 means bottom
 			'custom_header'		=> '',
@@ -128,20 +123,39 @@ function ngcp_display_options() {
 		$options = ngcp_get_options();
 		?>
 		<h2><?php _e('Newsgrape Crossposter Options', 'ngcp'); ?></h2>
-		<!--	<pre><?php //print_r($options); ?></pre>   -->
+		<pre><?php print_r($options); ?></pre>
 		<table class="form-table ui-tabs-panel">
 			<tr valign="top">
 				<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
-				<td><input name="ngcp[username]" type="text" id="username" value="<?php esc_attr_e($options['username']); ?>" size="40" /></td>
+				<td><input name="ngcp[username]" type="text" id="username" value="<?php esc_attr_e($options['username']); ?>" size="40" <?php if ('' != $options['api_key']) echo 'readonly="readyonly"'; ?> /></td>
 			</tr>
-			<tr valign="top">
-				<th scope="row"><?php _e('Newsgrape Password', 'ngcp'); ?></th>
-				<td><input name="ngcp[password]" type="password" id="password" size="40" /><br />
-				<span  class="description"><?php
-				_e('Only enter a value if you wish to change the stored password. Leaving this field blank will not erase any passwords already stored.', 'ngcp');
-				?></span>
-				</td>
-			</tr>
+			<?php if ('' == $options['api_key']): ?>
+				<tr valign="top">
+					<th scope="row"><?php _e('Newsgrape Password', 'ngcp'); ?></th>
+					<td><input name="ngcp[password]" type="password" id="password" size="40" /><br />
+					<span  class="description"><?php
+					_e('Your password will not be saved. It is needed only once to connect your wordpress with newsgrape', 'ngcp');
+					?></span>
+					</td>
+				<tr valign="top">
+					<td>
+						<input type="submit" name="ngcp[login]" id="login" value="<?php esc_attr_e('Connect with Newsgrape', 'ngcp'); ?>" class="button-secondary" />
+					</td>
+				</tr>
+			<?php else: ?>
+				<tr valign="top">
+					<th scope="row"><?php _e('Newsgrape Key', 'ngcp'); ?></th>
+					<td><input name="ngcp[api_key]" type="text" id="api_key" size="40" readonly="readonly" /><br />
+					<span  class="description"><?php
+					_e('Your Wordpress connected to Newsgrape', 'ngcp');
+					?></span>
+					</td>
+				<tr valign="top">
+					<td>
+						<input type="submit" name="ngcp[logout]" id="logout" value="<?php esc_attr_e('Disconnect from Newsgrape', 'ngcp'); ?>" class="button-secondary" />
+					</td>
+				</tr>
+			<?php endif; ?>
 		</table>
 		<fieldset class="options">
 			<legend><h3><?php _e('Crosspost Default', 'ngcp'); ?></h3></legend>
@@ -158,11 +172,12 @@ function ngcp_display_options() {
 						<input name="ngcp[crosspost]" type="radio" value="0" <?php checked($options['crosspost'], 0); ?>/>
 						<?php _e('Do not crosspost', 'ngcp'); ?>
 					</label>
+					<br />
 					<span class="description">
-						<?php
-						_e('You can change this setting for individual wordpress posts when editing a post', 'ngcp');
-						?>
-						</span>
+					<?php
+					_e('You can change this setting for individual wordpress posts when editing a post', 'ngcp');
+					?>
+					</span>
 				</tr>
 			</table>
 		</fieldset>
@@ -230,12 +245,12 @@ function ngcp_display_options() {
 					<th scope="row"><?php _e('Tag entries on Newsgrape?', 'ngcp'); ?></th>
 					<td>
 						<label>
-							<input name="ngcp[tag]" type="radio" value="2" <?php checked($options['tag'], 2); ?>/>
+							<input name="ngcp[tag]" type="radio" value="1" <?php checked($options['tag'], 2); ?>/>
 							<?php _e('Tag Newsgrape entries with WordPress tags only', 'ngcp'); ?>
 						</label>
 						<br />
 						<label>
-							<input name="ngcp[tag]" type="radio" value="1" <?php checked($options['tag'], 1); ?>/>
+							<input name="ngcp[tag]" type="radio" value="2" <?php checked($options['tag'], 2); ?>/>
 							<?php _e('Tag Newsgrape entries with WordPress categories only', 'ngcp'); ?>
 						</label>
 						<br />

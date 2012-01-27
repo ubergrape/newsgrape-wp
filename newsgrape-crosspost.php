@@ -36,77 +36,80 @@ register_uninstall_hook( __FILE__, 'ngcp_remove_options' );
 
 
 function ngcp_add_meta_box() {
-    add_meta_box( 
-        'newsgrape_crosspost',
-        __( 'Newsgrape Crossposter', 'ngcp' ),
-        'ngcp_inner_meta_box',
-        'post' 
-    );
+    $label = __( 'Newsgrape Settings', 'ngcp' );
+    add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', null, 'side', 'core');
 }
 
 function ngcp_inner_meta_box( $post ) {
 	global $post;
 	$options = ngcp_get_options();
+	$languages = array(
+	    'en' => 'English',
+	    'de' => 'Deutsch',
+	    'nl' => 'Neederlanski',
+	    'ru' => 'Everybody\'s Rushin\''
+	);
+	$licenses = array(
+	    'res' => translate('Restricted', 'ngcp'),
+	    'ccuc' => 'CC-UC',
+	    'cc' => 'CC'
+	);
+	$ngcp_crosspost = get_post_meta($post->ID, 'ngcp_crosspost', true);
+	$ngcp_language = get_post_meta($post->ID, 'ngcp_language', true);
+	$ngcp_type = get_post_meta($post->ID, 'ngcp_type', true);
+	$ngcp_category = get_post_meta($post->ID, 'ngcp_category', true);
+	$ngcp_license = get_post_meta($post->ID, 'ngcp_license', true);
+	$ngcp_id = get_post_meta($post->ID, 'ngcp_id', true); 
+	$ngcp_display_url = get_post_meta($post->ID, 'ngcp_display_url', true);
 ?>
-	<div class="ngcp-radio-column">
-		<h4><?php _e("Crosspost?", 'ngcp'); ?></h4>
-		<ul>
-			<?php $ngcp_crosspost = get_post_meta($post->ID, 'ngcp_no', true);  ?>
-				<li><label class="selectit" for="ngcp_crosspost_go">
-					<input type="radio" <?php checked($ngcp_crosspost, 1); ?> value="1" name="ngcp_crosspost" id="ngcp_crosspost_go"/>
-					<?php _e('Crosspost', 'ngcp'); if ($options['crosspost'] == 1) _e(' <em>(default)</em>', 'ngcp'); ?>
-				</label></li>
+    <div class="misc-pub-section  ngcp-info">
+    	
+		<?php if($ngcp_display_url): ?>
+		    <p>Newsgrape URL: <a href="<?php echo $ngcp_display_url?>"><?php echo $ngcp_display_url?></a></p>
+		    <p>Newsgrape ID: <?php echo $ngcp_id?></p> <?php //TODO remove dev only ?>
+		<?php else: ?>
+		    <em><?php _e('Not crossposted yet.', 'ngcp');?></em>
+		<?php endif; ?>
+	</div>
+    
+    
+    <div class="misc-pub-section  misc-pub-section -last">
+        <div class="ngcp-setting">
+            <label><input type="checkbox" name="ngcp_crosspost" id="ngcp_crosspost" <?php checked($ngcp_crosspost, '1'); ?>/><?php _e('Crosspost', 'ngcp'); ?></label>
+        </div>
+        <div class="ngcp-setting">
+            <h4><?php _e('Language', 'ngcp'); ?></h4>
+            <select name="ngcp_language" id="ngcp_language">
+                <?php foreach($languages as $short => $long): ?>
+                    <option value="<?php echo $short?>" <?php selected( $options['language'], $short ); ?>>
+                        <?php echo $long?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="ngcp-setting">
+            <h4><?php _e('license', 'ngcp'); ?></h4>
+            <select name="ngcp_language" id="ngcp_language">
+                <?php foreach($licenses as $short => $long): ?>
+                    <option value="<?php echo $short?>" <?php selected( $options['license'], $short ); ?>>
+                        <?php echo $long?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="ngcp-setting">
+            <h4><?php _e('Type', 'ngcp'); ?></h4>
+            <label><input type="radio" name="ngcp_type" id="ngcp_type_opinion" value="opinion" <?php checked($ngcp_type, 'opinion'); ?>>  <?php _e('Opinion', 'ngcp'); ?></label><br />
+            <label><input type="radio" name="ngcp_type" id="ngcp_type_creative" value="creative" <?php checked($ngcp_type, 'creative'); ?>>  <?php _e('Creative', 'ngcp'); ?></label><br />
+        </div>
+        
+        <div class="ngcp-setting">
+            <h4>More Settings</h4>
+            <label><input type="checkbox" name="ngcp_comments" id="ngcp_comments" <?php checked($ngcp_comments, '1'); ?>>  <?php _e('Allow Comments', 'ngcp'); ?></label><br />
+            <label><input type="checkbox" name="ngcp_promotional" id="ngcp_promotional" <?php checked($ngcp_promotional, '1'); ?>>  <?php _e('This is a Promotional Article', 'ngcp'); ?></label> <a href="#TB_inline?height=100&width=150&inlineId=ngcp-promotional-info&modal=true" class="thickbox">What is a promotional article?</a><div id="ngcp-promotional-info"><p><?php _e('Promotional articles have to be marked on Newsgrape, or users risk account suspendings.','ngcp'); ?><p><p style="text-align:center"><a href="#"onclick="tb_remove()" />close</a></p></div>
+        </div>
+    </div>
 
-				<li><label class="selectit" for="ngcp_crosspost_nogo">
-					<input type="radio" <?php checked($ngcp_crosspost, 0); ?> value="0" name="ngcp_crosspost" id="ngcp_crosspost_nogo"/>
-					<?php _e('Do not crosspost', 'ngcp'); if ($options['crosspost'] == 0) _e(' <em>(default)</em>', 'ngcp'); ?>
-				</label></li>
-
-		</ul>
-	</div>
-	<div class="ngcp-radio-column">
-		<h4><?php _e("Comments", 'ngcp'); ?></h4>
-		<ul>
-			<?php 
-			$ngcp_comments = get_post_meta($post->ID, 'ngcp_comments', true); ?>
-				<li><label class="selectit" for="ngcp_comments_on">
-					<input type="radio" <?php checked($ngcp_comments, 1); ?> value="1" name="ngcp_comments" id="ngcp_comments_on"/>
-					<?php _e('Comments on', 'ngcp'); if ($options['comments'] == 1) _e(' <em>(default)</em>', 'ngcp'); ?>
-				</label></li>
-				<li><label class="selectit" for="ngcp_comments_off">
-					<input type="radio" <?php checked($ngcp_comments, 0); ?> value="0" name="ngcp_comments" id="ngcp_comments_off"/>
-					<?php _e('Comments off', 'ngcp'); if ($options['comments'] == 0) _e(' <em>(default)</em>', 'ngcp'); ?>
-				</label></li>
-
-			</ul>
-	</div>
-	<div class="ngcp-radio-column">
-		<h4><?php _e("Privacy", 'ngcp'); ?></h4>
-		<ul>
-			<?php 
-			$ngcp_privacy = get_post_meta($post->ID, 'ngcp_privacy', true);
-			if (!isset($ngcp_privacy)) 
-				$ngcp_privacy = $options['privacy'];
-			?>
-			<li><label class="selectit" for="ngcp_privacy_public">
-				<input type="radio" <?php checked($ngcp_privacy, 'public'); ?> value="public" name="ngcp_privacy" id="ngcp_privacy_public"/>
-				<?php _e('Public post', 'ngcp'); if ($options['privacy'] == 'public') _e(' <em>(default)</em>', 'ngcp'); ?>
-			</label></li>
-			<li><label class="selectit" for="ngcp_privacy_private">
-				<input type="radio" <?php checked($ngcp_privacy, 'private'); ?> value="private" name="ngcp_privacy" id="ngcp_privacy_private"/>
-				<?php _e('Private post', 'ngcp'); if ($options['privacy'] == 'private') _e(' <em>(default)</em>', 'ngcp'); ?>
-			</label></li>
-			</ul>
-	</div>
-	<div style="clear:both"></div>
-	<div> <?php //TODO remove dev only ?>
-		<?php
-		$ngcp_id = get_post_meta($post->ID, 'ngcp_id', true); 
-		$ngcp_display_url = get_post_meta($post->ID, 'ngcp_display_url', true);
-		?>
-		<p>Newsgrape ID: <?php echo $ngcp_id?></p>
-		<p>Newsgrape URL: <a href="<?php echo $ngcp_display_url?>"><?php echo $ngcp_display_url?></a></p>
-	</div>
 		
 
 	<?php
@@ -115,6 +118,23 @@ function ngcp_inner_meta_box( $post ) {
 // ---- Style -----
 function ngcp_css() { ?>
 	<style type="text/css">
+	.ngcp-section:first-child {
+        border-top-width: 0;
+    }
+	.ngcp-section {
+        border-top-color: white;
+        border-bottom-color: #DFDFDF;
+    }
+    .ngcp-section-last {
+        border-bottom-width: 0;
+    }
+    #newsgrape .inside {
+        margin: 0;
+        padding: 0;
+    }
+    #ngcp-promotional-info {
+        display: none;
+    }
 	div.ngcp-radio-column ul li { list-style: none; padding: 0; text-indent: 0; margin-left: 0; }
 	div#post-body-content div.ngcp-radio-column, div#post-body-content p.ngcp-userpics { float: left; width: 22%; margin-right: 2%; }
 	div#side-info-column div.ngcp-radio-column ul { margin: 1em; }
@@ -126,6 +146,7 @@ function ngcp_css() { ?>
 
 function ngcp_settings_css() { ?>
 	<style type="text/css">
+
 	table.editform th { text-align: left; }
 	dl { margin-right: 2%; margin-top: 1em; color: #666; }
 	dt { font-weight: bold; }
