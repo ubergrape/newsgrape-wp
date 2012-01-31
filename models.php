@@ -52,7 +52,7 @@ class NGCP_Post {
 		$this->title_plain	= strip_tags(@$this->title);
 		$this->content		= $the_content;
 		$this->description	= $wp_post->post_excerpt;
-		$this->language		= 'de'; //get_bloginfo('language').substr(0,2); //TODO let user select in sidebar
+		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true) || $this->options['language'];
 		$this->tags			= $this->import_tags($wp_post_id);
 	}
 	
