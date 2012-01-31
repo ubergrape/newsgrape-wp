@@ -21,7 +21,14 @@ function ngcp_get_options() {
 				'nl' => 'Neederlanski',
 				'ru' => 'Russian'
 			),
-			'language'			=> substr(get_bloginfo('language'),0,2)
+			'language'			=> substr(get_bloginfo('language'),0,2),
+			'licenses'			=> array(
+				'res' => __('Restricted', 'ngcp'),
+				'ccuc' => __('CC-UC','ngcp'),
+				'cc' => __('CC','ngcp')
+			),
+			'license'			=> 'cc'
+			
 	);
 	
 	$options = get_option('ngcp');
@@ -385,8 +392,9 @@ class ngcp_Walker_Category_Checklist extends Walker {
  	function end_el(&$output, $category, $depth, $args) {
 		$options = ngcp_get_options();
 		$output .= '<select name="ngcp[type][category-'.$category->term_id.']">';
-		$output .= '<option value="news" '.selected($options['type']['category-'.$category->term_id], 'news', false).' >'.__('News','ngcp').'</option>';
-		$output .= '<option value="creative" '.selected($options['type']['category-'.$category->term_id], 'creative', false).' >'.__('Creative','ngcp').'</option></select>';
+		$output .= '<option value="opinion" '.selected($options['type']['category-'.$category->term_id], 'opinion', false).' >'.__('Opinion','ngcp').'</option>';
+		$output .= '<option value="creative" '.selected($options['type']['category-'.$category->term_id], 'creative', false).' >'.__('Creative','ngcp').'</option>';
+		$output .= '</select>';
 		$output .= "</li>\n";
      }
 }
