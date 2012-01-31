@@ -35,32 +35,34 @@ register_uninstall_hook( __FILE__, 'ngcp_remove_options' );
 
 
 function ngcp_add_meta_box() {
-    $label = __( 'Newsgrape Settings', 'ngcp' );
+    $label = __( 'Newsgrape', 'ngcp' );
     add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', null, 'side', 'high');
 }
 
 function ngcp_inner_meta_box( $post ) {
 	global $post;
 	$options = ngcp_get_options();
+	
 	$languages = $options['languages'];
-	$licenses = array(
-	    'res' => __('Restricted', 'ngcp'),
-	    'ccuc' => __('CC-UC','ngcp'),
-	    'cc' => __('CC','ngcp')
-	);
-	$ngcp_crosspost = get_post_meta($post->ID, 'ngcp_crosspost', true);
-	$ngcp_language = get_post_meta($post->ID, 'ngcp_language', true);
-	$ngcp_type = get_post_meta($post->ID, 'ngcp_type', true);
-	$ngcp_category = get_post_meta($post->ID, 'ngcp_category', true);
-	$ngcp_license = get_post_meta($post->ID, 'ngcp_license', true);
-	$ngcp_id = get_post_meta($post->ID, 'ngcp_id', true); 
-	$ngcp_display_url = get_post_meta($post->ID, 'ngcp_display_url', true);
+	$licenses = $options['licenses'];
+	
+	$cats = wp_get_post_categories($post->ID);
+	$post_meta = get_post_custom($post->ID);
+	
+	$ngcp_crosspost = (isset($post_meta['ngcp_crosspost']) ? $post_meta['ngcp_crosspost'][0] : $options['crosspost']);
+	$ngcp_language = (isset($post_meta['language']) ? $post_meta['language'][0] : $options['language']);
+	$ngcp_license = (isset($post_meta['license']) ? $post_meta['license'][0] : $options['license']);
+	$ngcp_comments = (isset($post_meta['comments']) ? $post_meta['comments'][0] : $options['comments']);
+	$ngcp_type = (isset($post_meta['type']) ? $post_meta['type'][0] : $options['type']["category-".$cats[0]]);
+	$ngcp_id = (isset($post_meta['ngcp_id']) ? $post_meta['ngcp_id'][0] : false);
+	$ngcp_display_url = (isset($post_meta['ngcp_display_url']) ? $post_meta['ngcp_display_url'][0] : false);
 ?>
     <div class="misc-pub-section  ngcp-info">
+		<!--<pre><?php print_r( $post_meta )?></pre> <?php //TODO remove dev only ?>-->
     	
 		<?php if($ngcp_display_url): ?>
-		    <p>Newsgrape URL: <a href="<?php echo $ngcp_display_url?>"><?php echo $ngcp_display_url?></a></p>
-		    <p>Newsgrape ID: <?php echo $ngcp_id?></p> <?php //TODO remove dev only ?>
+		    <p><a href="<?php echo $ngcp_display_url?>"><?php echo $ngcp_display_url?></a></p>
+		    <!--<p>Newsgrape ID: <?php echo $ngcp_id?></p> <?php //TODO remove dev only ?>-->
 		<?php else: ?>
 		    <em><?php _e('Not crossposted yet.', 'ngcp');?></em>
 		<?php endif; ?>
