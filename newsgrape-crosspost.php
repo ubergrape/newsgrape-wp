@@ -30,29 +30,23 @@ function register_ngcp_settings() {
 function ngcp_remove_options() {
 	delete_option('ngcp');
 	delete_option('ngcp_error_notice');
-	delete_option('ngcp_error_notice');
 }
 register_uninstall_hook( __FILE__, 'ngcp_remove_options' );
 
 
 function ngcp_add_meta_box() {
     $label = __( 'Newsgrape Settings', 'ngcp' );
-    add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', null, 'side', 'core');
+    add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', null, 'side', 'high');
 }
 
 function ngcp_inner_meta_box( $post ) {
 	global $post;
 	$options = ngcp_get_options();
-	$languages = array(
-	    'en' => 'English',
-	    'de' => 'Deutsch',
-	    'nl' => 'Neederlanski',
-	    'ru' => 'Everybody\'s Rushin\''
-	);
+	$languages = $options['languages'];
 	$licenses = array(
-	    'res' => translate('Restricted', 'ngcp'),
-	    'ccuc' => 'CC-UC',
-	    'cc' => 'CC'
+	    'res' => __('Restricted', 'ngcp'),
+	    'ccuc' => __('CC-UC','ngcp'),
+	    'cc' => __('CC','ngcp')
 	);
 	$ngcp_crosspost = get_post_meta($post->ID, 'ngcp_crosspost', true);
 	$ngcp_language = get_post_meta($post->ID, 'ngcp_language', true);
@@ -118,43 +112,45 @@ function ngcp_inner_meta_box( $post ) {
 // ---- Style -----
 function ngcp_css() { ?>
 	<style type="text/css">
-	.ngcp-section:first-child {
-        border-top-width: 0;
-    }
-	.ngcp-section {
-        border-top-color: white;
-        border-bottom-color: #DFDFDF;
-    }
-    .ngcp-section-last {
-        border-bottom-width: 0;
-    }
-    #newsgrape .inside {
-        margin: 0;
-        padding: 0;
-    }
-    #ngcp-promotional-info {
-        display: none;
-    }
-	div.ngcp-radio-column ul li { list-style: none; padding: 0; text-indent: 0; margin-left: 0; }
-	div#post-body-content div.ngcp-radio-column, div#post-body-content p.ngcp-userpics { float: left; width: 22%; margin-right: 2%; }
-	div#side-info-column div.ngcp-radio-column ul { margin: 1em; }
-	p.ngcp-cut-text { clear: both; }
-	input#ngcp_cut_text { width: 90%; }
+		.ngcp-section:first-child {
+			border-top-width: 0;
+		}
+		.ngcp-section {
+			border-top-color: white;
+			border-bottom-color: #DFDFDF;
+		}
+		.ngcp-section-last {
+			border-bottom-width: 0;
+		}
+		#newsgrape .inside {
+			margin: 0;
+			padding: 0;
+		}
+		#ngcp-promotional-info {
+			display: none;
+		}
+		div.ngcp-radio-column ul li { list-style: none; padding: 0; text-indent: 0; margin-left: 0; }
+		div#post-body-content div.ngcp-radio-column, div#post-body-content p.ngcp-userpics { float: left; width: 22%; margin-right: 2%; }
+		div#side-info-column div.ngcp-radio-column ul { margin: 1em; }
+		p.ngcp-cut-text { clear: both; }
+		input#ngcp_cut_text { width: 90%; }
 	</style>
 <?php 
 }
 
 function ngcp_settings_css() { ?>
 	<style type="text/css">
-
-	table.editform th { text-align: left; }
-	dl { margin-right: 2%; margin-top: 1em; color: #666; }
-	dt { font-weight: bold; }
-	#ngcp dd { font-style: italic; }
-	ul#category-children { list-style: none; height: 15em; width: 20em; overflow-y: scroll; border: 1px solid #dfdfdf; padding: 0 1em; background: #fff; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
- 	ul.children { margin-left: 1.5em; }
-	tr#scary-buttons { display: none; }
-	#delete_all { font-weight: bold; color: #c00; }
+		table.editform th { text-align: left; }
+		dl { margin-right: 2%; margin-top: 1em; color: #666; }
+		dt { font-weight: bold; }
+		#ngcp dd { font-style: italic; }
+		ul#category-children { list-style: none; height: 15em; width: 20em; overflow-y: scroll; border: 1px solid #dfdfdf; padding: 0 1em; background: #fff; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+		ul.children { margin-left: 1.5em; }
+		tr#scary-buttons { display: none; }
+		#delete_all { font-weight: bold; color: #c00; }
+		#ngcp-logout { margin-bottom: 30px; }
+		#ngcp-advanced-options { display: none; }
+		#category-children select { float: right; }
 	</style>
 <?php
 }

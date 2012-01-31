@@ -11,9 +11,17 @@ function ngcp_get_options() {
 			'tag'				=> '2',
 			'more'				=> 'link',
 			'skip_cats'			=> array(),
+			'type'				=> array(),
 			'header_loc'		=> 0,		// 0 means top, 1 means bottom
 			'custom_header'		=> '',
 			'cut_text'			=> __('Read the rest of this entry &raquo;', 'ngcp'),
+			'languages'			=> array(
+				'en' => 'English',
+				'de' => 'Deutsch',
+				'nl' => 'Neederlanski',
+				'ru' => 'Russian'
+			),
+			'language'			=> substr(get_bloginfo('language'),0,2)
 	);
 	
 	$options = get_option('ngcp');
@@ -31,11 +39,10 @@ function ngcp_validate_options($input) {
 	$msgtype = 'error';
 	$options = ngcp_get_options();
 	
-	// save password no matter what
-	if (!isset($input['password']) || empty($input['password']))
-		$input['password'] = $options['password']; // preserve!
-	else
-		$input['password'] = md5($input['password']);
+	// API key
+	if (isset($input['password']) && !empty($input['password'])) {
+		//TODO call API getkey
+	}
 		
 	// If we're handling a submission, save the data
 	if(isset($input['update_ngcp_options']) || isset($input['crosspost_all']) || isset($input['delete_all'])) {
@@ -124,199 +131,206 @@ function ngcp_display_options() {
 		?>
 		<h2><?php _e('Newsgrape Crossposter Options', 'ngcp'); ?></h2>
 		<pre><?php print_r($options); ?></pre>
-		<table class="form-table ui-tabs-panel">
-			<tr valign="top">
-				<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
-				<td><input name="ngcp[username]" type="text" id="username" value="<?php esc_attr_e($options['username']); ?>" size="40" <?php if ('' != $options['api_key']) echo 'readonly="readyonly"'; ?> /></td>
-			</tr>
-			<?php if ('' == $options['api_key']): ?>
+		
+		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
+		
+			<h3>Login to Newsgrape</h3>
+			<table class="form-table ui-tabs-panel">
+				<tr valign="top">
+					<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
+					<td>
+						<input name="ngcp[username]" type="text" id="username" value="<?php esc_attr_e($options['username']); ?>" size="40" <?php if ('' != $options['api_key']) echo 'readonly="readyonly"'; ?> />
+						<a href="http://www.newsgrape.com/register/" style="margin-left: 20px">Create Newsgrape Account</a>
+						</td>
+				</tr>
+				
 				<tr valign="top">
 					<th scope="row"><?php _e('Newsgrape Password', 'ngcp'); ?></th>
-					<td><input name="ngcp[password]" type="password" id="password" size="40" /><br />
+					<td><input name="ngcp[password]" type="password" id="password" size="40" />
+					<a href="http://www.newsgrape.com/accounts/password/reset/" style="margin-left: 20px">Forgot Password</a>
+					<br />
 					<span  class="description"><?php
 					_e('Your password will not be saved. It is needed only once to connect your wordpress with newsgrape', 'ngcp');
 					?></span>
 					</td>
 				<tr valign="top">
 					<td>
-						<input type="submit" name="ngcp[login]" id="login" value="<?php esc_attr_e('Connect with Newsgrape', 'ngcp'); ?>" class="button-secondary" />
+						<input type="submit" name="ngcp[login]" id="ngcp-login" value="<?php esc_attr_e('Connect with Newsgrape', 'ngcp'); ?>" class="button-primary" /> 
 					</td>
 				</tr>
-			<?php else: ?>
+			</table>
+			
+		<?php else: ?>
+		
+			<table class="form-table ui-tabs-panel">
 				<tr valign="top">
-					<th scope="row"><?php _e('Newsgrape Key', 'ngcp'); ?></th>
-					<td><input name="ngcp[api_key]" type="text" id="api_key" size="40" readonly="readonly" /><br />
-					<span  class="description"><?php
-					_e('Your Wordpress connected to Newsgrape', 'ngcp');
+					<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
+					<td>
+						<input name="ngcp[username]" type="text" id="username" value="<?php esc_attr_e($options['username']); ?>" size="40" readonly="readyonly" />
+						<br />
+						<span  class="description"><?php
+					_e('Your WordPress is connected to Newsgrape', 'ngcp');
 					?></span>
 					</td>
-				<tr valign="top">
-					<td>
-						<input type="submit" name="ngcp[logout]" id="logout" value="<?php esc_attr_e('Disconnect from Newsgrape', 'ngcp'); ?>" class="button-secondary" />
-					</td>
-				</tr>
-			<?php endif; ?>
-		</table>
-		<fieldset class="options">
-			<legend><h3><?php _e('Crosspost Default', 'ngcp'); ?></h3></legend>
-			<table class="form-table ui-tabs-panel">
-				<tr valign="top">
-					<th scope="row"><?php _e('If no crosspost setting is specified for an individual post:', 'ngcp'); ?></th>
-					<td>
-					<label>
-						<input name="ngcp[crosspost]" type="radio" value="1" <?php checked($options['crosspost'], 1); ?>/>
-						<?php _e('Crosspost', 'ngcp'); ?>
-					</label>
-					<br />
-					<label>
-						<input name="ngcp[crosspost]" type="radio" value="0" <?php checked($options['crosspost'], 0); ?>/>
-						<?php _e('Do not crosspost', 'ngcp'); ?>
-					</label>
-					<br />
-					<span class="description">
-					<?php
-					_e('You can change this setting for individual wordpress posts when editing a post', 'ngcp');
-					?>
-					</span>
-				</tr>
-			</table>
-		</fieldset>
-		<fieldset class="options">
-			<legend><h3><?php _e('Post Privacy', 'ngcp'); ?></h3></legend>
-			<table class="form-table ui-tabs-panel">
-				<tr valign="top">
-					<th scope="row"><?php _e('Newsgrape privacy level for all published WordPress posts', 'ngcp'); ?></th>
-					<td>
-						<label>
-							<input name="ngcp[privacy]" type="radio" value="public" <?php checked($options['privacy'], 'public'); ?>/>
-							<?php _e('Public', 'ngcp'); ?>
-						</label>
-						<br />
-						<label>
-							<input name="ngcp[privacy]" type="radio" value="private" <?php checked($options['privacy'], 'private'); ?> />
-							<?php _e('Private', 'ngcp'); ?>
-						</label>
-					</td>
 				</tr>
 				<tr valign="top">
-					<th scope="row"><?php _e('Newsgrape privacy level for all private WordPress posts', 'ngcp'); ?></th>
 					<td>
-						<label>
-							<input name="ngcp[privacy_private]" type="radio" value="public" <?php checked($options['privacy_private'], 'public'); ?>/>
-							<?php _e('Public', 'ngcp'); ?>
-						</label>
-						<br />
-						<label>
-							<input name="ngcp[privacy_private]" type="radio" value="private" <?php checked($options['privacy_private'], 'private'); ?> />
-							<?php _e('Private', 'ngcp'); ?>
-						</label>
-						<br />
-						<label>
-							<input name="ngcp[privacy_private]" type="radio" value="ngcp_no" <?php checked($options['privacy_private'], 'ngcp_no'); ?>/>
-							<?php _e('Do not crosspost at all', 'ngcp'); ?>
-						</label>
+						
+						<input type="submit" name="ngcp[logout]" id="ngcp-logout" value="<?php esc_attr_e('Disconnect from Newsgrape', 'ngcp'); ?>" class="button-secondary" />
 					</td>
 				</tr>
 			</table>
-		</fieldset>
-		<fieldset class="options">
-			<legend><h3><?php _e('Newsgrape Comments', 'ngcp'); ?></h3></legend>
-			<table class="form-table ui-tabs-panel">
-				<tr valign="top">
-					<th scope="row"><?php _e('Should comments be allowed on Newsgrape?', 'ngcp'); ?></th>
-					<td>
+			<fieldset class="options">
+				<legend><h3><?php _e('Main Options', 'ngcp'); ?></h3></legend>
+				<table class="form-table ui-tabs-panel">
+					<tr valign="top">
+						<th scope="row"><?php _e('Crosspost', 'ngcp'); ?></th>
+						<td>
 						<label>
-							<input name="ngcp[comments]" type="radio" value="1" <?php checked($options['comments'], 1); ?>/>
-							<?php _e('Allow comments on Newsgrape', 'ngcp'); ?>
-						</label>
-						<br />
-						<label>
-							<input name="ngcp[comments]" type="radio" value="0" <?php checked($options['comments'], 0); ?>/>
-							<?php _e('Require users to comment on WordPress', 'ngcp'); ?>
-						</label>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-		<fieldset class="options">
-			<legend><h3><?php _e('Newsgrape Tags', 'ngcp'); ?></h3></legend>
-			<table class="form-table ui-tabs-panel">
-				<tr valign="top">
-					<th scope="row"><?php _e('Tag entries on Newsgrape?', 'ngcp'); ?></th>
-					<td>
-						<label>
-							<input name="ngcp[tag]" type="radio" value="1" <?php checked($options['tag'], 2); ?>/>
-							<?php _e('Tag Newsgrape entries with WordPress tags only', 'ngcp'); ?>
-						</label>
-						<br />
-						<label>
-							<input name="ngcp[tag]" type="radio" value="2" <?php checked($options['tag'], 2); ?>/>
-							<?php _e('Tag Newsgrape entries with WordPress categories only', 'ngcp'); ?>
-						</label>
-						<br />
-						<label>
-							<input name="ngcp[tag]" type="radio" value="3" <?php checked($options['tag'], 3); ?>/>
-							<?php _e('Tag Newsgrape entries with WordPress categories and tags', 'ngcp'); ?>
-						</label>
-						<br />
-						<label>
-							<input name="ngcp[tag]" type="radio" value="0" <?php checked($options['tag'], 0); ?>/>
-							<?php _e('Do not tag Newsgrape entries', 'ngcp'); ?>
+							<input name="ngcp[crosspost]" type="checkbox" value="1" <?php checked($options['crosspost'], 1); ?>/>
+							<?php _e('Crosspost to Newsgrape', 'ngcp'); ?>
 						</label>
 						<br />
 						<span class="description">
 						<?php
-						_e('Newsgrape allows only 12 tags. If your post has more than 12 tags, some will not be displayed on Newsgrape', 'ngcp');
+						_e('You can enable/disable crossposting for individual posts.', 'ngcp');
 						?>
 						</span>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-		
-		<fieldset class="options">
-			<legend><h3><?php _e('Category Selection', 'ngcp'); ?></h3></legend>
-			<table class="form-table ui-tabs-panel">
-				<tr valign="top">
-					<th scope="row"><?php _e('Select which categories should be crossposted', 'ngcp'); ?></th>
-					<td>
-						<ul id="category-children">
-							<li><label class="selectit"><input type="checkbox" class="checkall"> 
-								<em><?php _e("Check all", 'ngcp'); ?></em></label></li>
-							<?php
-							if (!is_array($options['skip_cats'])) $options['skip_cats'] = (array)$options['skip_cats'];
-							$selected = array_diff(get_all_category_ids(), $options['skip_cats']);
-							wp_category_checklist(0, 0, $selected, false, $walker = new ngcp_Walker_Category_Checklist, false);
-							?>
-						</ul>
-					<span class="description">
-					<?php _e('Any post that has <em>at least one</em> of the above categories selected will be crossposted.'); ?>
-					</span>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-		<fieldset class="options">
-			<legend><h3><?php _e('Crosspost or delete all entries', 'ngcp'); ?></h3></legend>
-			<table class="form-table ui-tabs-panel">
-				<tr valign="top">
-					<th scope="row"> </th>
-					<td>
-					<?php printf(__('If you have changed your username, you might want to crosspost all your entries, or delete all the old ones from your journal. These buttons are hidden so you don\'t press them by accident. <a href="%s" %s>Show the buttons.</a>', 'ngcp'), '#scary-buttons', 'onclick="javascript: jQuery(\'#scary-buttons\').show(\'fast\');"'); ?>
-					</td>
-				</tr>
-				<tr valign="top" id="scary-buttons">
-					<th scope="row"> </th>
-					<td>
-					<input type="submit" name="ngcp[crosspost_all]" id="crosspost_all" value="<?php esc_attr_e('Update options and crosspost all WordPress entries', 'ngcp'); ?>" class="button-secondary" />
-					<input type="submit" name="ngcp[delete_all]" id="delete_all" value="<?php esc_attr_e('Update options and delete all journal entries', 'ngcp'); ?>" class="button-secondary" />
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-		<p class="submit">
-			<input type="submit" name="ngcp[update_ngcp_options]" value="<?php esc_attr_e('Update Options'); ?>" class="button-primary" />
-		</p>
+						</ td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><?php _e('Comments', 'ngcp'); ?></th>
+						<td>
+						<label>
+							<input name="ngcp[comments]" type="checkbox" value="1" <?php checked($options['crosspost'], 1); ?>/>
+							<?php _e('Newsgrape Comments', 'ngcp'); ?>
+						</label>
+						<br />
+						<span class="description">
+						<?php
+						_e('Show Newsgrape comment system instead of WordPress comments', 'ngcp');
+						?>
+						</span>
+						</ td>
+					</tr>
+				</table>
+			</fieldset>
+			<a href="#" onclick="javascript: jQuery('#ngcp-advanced-options').show('fast');"><?php _e('Show advanced options', 'ngcp'); ?></a>
+			<br />
+			<div id="ngcp-advanced-options">
+				<fieldset class="options">
+					<legend><h3><?php _e('Post Privacy', 'ngcp'); ?></h3></legend>
+					<table class="form-table ui-tabs-panel">
+						<tr valign="top">
+							<th scope="row"><?php _e('Newsgrape privacy level for all published WordPress posts', 'ngcp'); ?></th>
+							<td>
+								<label>
+									<input name="ngcp[privacy]" type="radio" value="public" <?php checked($options['privacy'], 'public'); ?>/>
+									<?php _e('Public', 'ngcp'); ?>
+								</label>
+								<br />
+								<label>
+									<input name="ngcp[privacy]" type="radio" value="private" <?php checked($options['privacy'], 'private'); ?> />
+									<?php _e('Private', 'ngcp'); ?>
+								</label>
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Newsgrape privacy level for all private WordPress posts', 'ngcp'); ?></th>
+							<td>
+								<label>
+									<input name="ngcp[privacy_private]" type="radio" value="public" <?php checked($options['privacy_private'], 'public'); ?>/>
+									<?php _e('Public', 'ngcp'); ?>
+								</label>
+								<br />
+								<label>
+									<input name="ngcp[privacy_private]" type="radio" value="private" <?php checked($options['privacy_private'], 'private'); ?> />
+									<?php _e('Private', 'ngcp'); ?>
+								</label>
+								<br />
+								<label>
+									<input name="ngcp[privacy_private]" type="radio" value="ngcp_no" <?php checked($options['privacy_private'], 'ngcp_no'); ?>/>
+									<?php _e('Do not crosspost at all', 'ngcp'); ?>
+								</label>
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				<fieldset class="options">
+					<legend><h3><?php _e('Newsgrape Tags', 'ngcp'); ?></h3></legend>
+					<table class="form-table ui-tabs-panel">
+						<tr valign="top">
+							<th scope="row"><?php _e('Tag entries on Newsgrape?', 'ngcp'); ?></th>
+							<td>
+								<label>
+									<input name="ngcp[tag]" type="radio" value="1" <?php checked($options['tag'], 2); ?>/>
+									<?php _e('Tag Newsgrape entries with WordPress tags only', 'ngcp'); ?>
+								</label>
+								<br />
+								<label>
+									<input name="ngcp[tag]" type="radio" value="2" <?php checked($options['tag'], 2); ?>/>
+									<?php _e('Tag Newsgrape entries with WordPress categories only', 'ngcp'); ?>
+								</label>
+								<br />
+								<label>
+									<input name="ngcp[tag]" type="radio" value="3" <?php checked($options['tag'], 3); ?>/>
+									<?php _e('Tag Newsgrape entries with WordPress categories and tags', 'ngcp'); ?>
+								</label>
+								<br />
+								<label>
+									<input name="ngcp[tag]" type="radio" value="0" <?php checked($options['tag'], 0); ?>/>
+									<?php _e('Do not tag Newsgrape entries', 'ngcp'); ?>
+								</label>
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				
+				<fieldset class="options">
+					<legend><h3><?php _e('Category Selection', 'ngcp'); ?></h3></legend>
+					<table class="form-table ui-tabs-panel">
+						<tr valign="top">
+							<th scope="row"><?php _e('Select which of your Categories should be posted to Newsgrape and which default type should be used', 'ngcp'); ?></th>
+							<td>
+								<ul id="category-children">
+									<li><label class="selectit"><input type="checkbox" class="checkall"> 
+										<em><?php _e("Check all", 'ngcp'); ?></em></label></li>
+									<?php
+									if (!is_array($options['skip_cats'])) $options['skip_cats'] = (array)$options['skip_cats'];
+									$selected = array_diff(get_all_category_ids(), $options['skip_cats']);
+									wp_category_checklist(0, 0, $selected, false, $walker = new ngcp_Walker_Category_Checklist, false, $options = $options);
+									?>
+								</ul>
+							<span class="description">
+							<?php _e('Any post that has <em>at least one</em> of the above categories selected will be crossposted.'); ?><br />
+							</span>
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+				<!--<fieldset class="options">
+					<legend><h3><?php _e('Crosspost or delete all entries', 'ngcp'); ?></h3></legend>
+					<table class="form-table ui-tabs-panel">
+						<tr valign="top">
+							<th scope="row"> </th>
+							<td>
+							<?php printf(__('If you have changed your username, you might want to crosspost all your entries, or delete all the old ones from your journal. These buttons are hidden so you don\'t press them by accident. <a href="%s" %s>Show the buttons.</a>', 'ngcp'), '#scary-buttons', 'onclick="javascript: jQuery(\'#scary-buttons\').show(\'fast\');"'); ?>
+							</td>
+						</tr>
+						<tr valign="top" id="scary-buttons">
+							<th scope="row"> </th>
+							<td>
+							<input type="submit" name="ngcp[crosspost_all]" id="crosspost_all" value="<?php esc_attr_e('Update options and crosspost all WordPress entries', 'ngcp'); ?>" class="button-secondary" />
+							<input type="submit" name="ngcp[delete_all]" id="delete_all" value="<?php esc_attr_e('Update options and delete all journal entries', 'ngcp'); ?>" class="button-secondary" />
+							</td>
+						</tr>
+					</table>
+				</fieldset>
+			</div>-->
+			<p class="submit">
+				<input type="submit" name="ngcp[update_ngcp_options]" value="<?php esc_attr_e('Update Options'); ?>" class="button-primary" />
+			</p>
+		<?php endif; ?>
 	</form>
 	<script type="text/javascript">
 	jQuery(document).ready(function($){
@@ -344,8 +358,8 @@ if (!function_exists('esc_textarea')) {
 // mostly a duplicate of Walker_Category_Checklist
 class ngcp_Walker_Category_Checklist extends Walker {
      var $tree_type = 'category';
-     var $db_fields = array ('parent' => 'parent', 'id' => 'term_id'); 
-
+     var $db_fields = array ('parent' => 'parent', 'id' => 'term_id');
+     
  	function start_lvl(&$output, $depth, $args) {
          $indent = str_repeat("\t", $depth);
          $output .= "$indent<ul class='children'>\n";
@@ -369,7 +383,11 @@ class ngcp_Walker_Category_Checklist extends Walker {
      }
  
  	function end_el(&$output, $category, $depth, $args) {
-         $output .= "</li>\n";
+		$options = ngcp_get_options();
+		$output .= '<select name="ngcp[type][category-'.$category->term_id.']">';
+		$output .= '<option value="news" '.selected($options['type']['category-'.$category->term_id], 'news', false).' >'.__('News','ngcp').'</option>';
+		$output .= '<option value="creative" '.selected($options['type']['category-'.$category->term_id], 'creative', false).' >'.__('Creative','ngcp').'</option></select>';
+		$output .= "</li>\n";
      }
 }
 ?>
