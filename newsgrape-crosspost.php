@@ -157,6 +157,47 @@ function ngcp_settings_css() { ?>
 <?php
 }
 
+function ngcp_can_replace() {
+	return true; //TODO remove
+	global $id, $post;
+	
+	$options = ngcp_get_options();
+	
+	if(is_feed()){
+		return false;
+	}
+	
+    if('draft' == $post->post_status){
+		return false;
+	}
+	
+	$allow_comments_global = $options['comments'];
+	$allow_comments_for_this_post = get_post_meta($id, 'ngcp_comments', true);
+	
+	if(0 == $allow_comments_global){
+		return false;
+	}
+	
+	if(0 == $allow_comments_for_this_post){
+		return false;
+	}
+	
+	return true;
+}
+
+function ngcp_comments($file) {
+	/*if ( !( is_singular() && ( have_comments() || 'open' == $post->comment_status ) ) ) {
+        return;
+    }*/
+
+    if ( !ngcp_can_replace() ) {
+        return $file;
+    }
+    
+	$file = dirname( __FILE__ ) . '/comments.php';
+    return $file;
+}
+
 $class = 'NGCP_Core_Controller';
 
 add_action('admin_menu', 'ngcp_add_pages'); // Add settings menu to admin
@@ -177,6 +218,7 @@ add_action('delete_post', array($class,'delete'));
 //add_action('save_post', 'ngcp_save', 1); //TODO
 //add_action('admin_head-post.php', 'ngcp_error_notice'); //TODO
 //add_action('admin_head-post-new.php', 'ngcp_error_notice'); //TODO
+add_filter('comments_template', 'ngcp_comments');
 
 
 // Make Plugin Multilingual
