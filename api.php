@@ -10,7 +10,12 @@ class NGCP_API {
 			 $this->api_url = 'http://staging.newsgrape.com/api/0.1/';
 		}
 		
+		/* Client info for newsgrape's statistics */
 		$this->client = 'Wordpress/'.get_bloginfo('version').' NGWPCrossposter/1.0'; //TODO discuss name
+		
+		/* Unique Blog ID. Should be the same after domain change or plugin uninstall:
+		 * Doesn't matter if collissions can be found, so we use md5*/
+		$this->external_id = 'WP'.md5(AUTH_KEY);
 		
 		if (null==$user) {
 			$options = ngcp_get_options();
@@ -137,8 +142,9 @@ class NGCP_API {
 	private function get_headers() {
 		$headers = array(
 			'X-NEWSGRAPE-USER' => $this->user,
-			'X-NEWSGRAPE-KEY' => $this->get_key(),
+			'X-NEWSGRAPE-KEY' => $this->api_key,
 			'X-CLIENT' => $this->client,
+			'X-EXTERNAL-ID' => $this->external_id,
 			'X-BASE-URL' => home_url()
 		);
 		
