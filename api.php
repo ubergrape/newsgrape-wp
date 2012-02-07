@@ -1,57 +1,57 @@
 <?php
 
 class NGCP_API {
-	private $api_path = 'http://www.newsgrape.com/api/0.1/';
-	private $dev = true; //TODO remove
-	private $client = '';
-	private $key = 'b2b269db0dedf4b89fcf8aafc9ea8a9820cf5a0d'; //TODO empty
-	private $user = 'wp_test'; //TODO empty
+	private $errors = array();
 	
-	function __construct() {
+	function __construct($user=null, $api_key=null, $api_url='http://www.newsgrape.com/api/0.1/') {
+		$this->api_url = $api_url;
+		
+		if (NGCP_DEBUG) {
+			 $this->api_url = 'http://staging.newsgrape.com/api/0.1/';
+		}
+		
 		$this->client = 'Wordpress/'.get_bloginfo('version').' NGWPCrossposter/1.0'; //TODO discuss name
-		if ($this->dev) {
-			 $this->api_path = 'http://staging.newsgrape.com/api/0.1/';
+		
+		if (null==$user) {
+			$options = ngcp_get_options();
+			$this->user = $options['user'];
+			$this->api_key = $options['api_key'];
+		} else {
+			$this->user = $user;
+			$this->api_key = $api_key;
 		}
 	}
 	
-	function get_key() {
-		$this->report(__FUNCTION__);
-		
-		if ($this->key != NULL) {
-			$this->report(__FUNCTION__, "key from db: " . $this->key);
-			return $this->key;
-		}
-		
-		// if no key, fetch
-		$url = $this->api_path . "key/";
+	function fetch_new_key($username, $password) {
+		$url = $this->api_url . "key/";
 		$args = array(
-			'body' => array( 'username' => 'wp_test', 'password' => 'password' )
+			'body' => array( 'username' => $username, 'password' => $password )
 		);
 		
 		$response = wp_remote_post($url,$args);
 		
 		if (is_wp_error($response)) {
-			$this->error(__FUNCTION__,'Something went wrong with the API key request');
+			$this->error(__FUNCTION__,__('API key request failed: '.$result->get_error_message()),'key_fetch_fail');
 			return False;
 		}
 		
 		$response_decoded = json_decode($response['body'],true);
-		if ($response_decoded == NULL || !in_array("key",$response_decoded)) {
-			$this->error(__FUNCTION__,'Something went wrong while decoding json');
+		if ($response_decoded == NULL || !array_key_exists("key",$response_decoded)) {
+			$this->error(__FUNCTION__,__($username.":".$password.'Something went wrong while decoding json answer: '.substr($response['body'],0,300)),'key_fetch_fail');
 			return False;
 		}
 		
-		$this->key = $response_decoded['key'];
+		$key = $response_decoded['key'];
 		
-		$this->report(__FUNCTION__,'fetched key: '.$this->key);
+		$this->report(__FUNCTION__,'fetched key: '.$key);
 		
-		return $this->key;
+		return $key;
 	}
 	
 	function create($post) {
 		$this->report(__FUNCTION__,$post);
 			
-		$url = $this->api_path.'articles/';
+		$url = $this->api_url.'articles/';
 		
 		$args = array(
 			'headers' => $this->get_headers(),
@@ -67,8 +67,12 @@ class NGCP_API {
 		}
 		
 		$response_decoded = json_decode($response['body'],true);
-		if ($response_decoded == NULL || !array_key_exists("id",$response_decoded) || !array_key_exists("display_url",$response_decoded)) {
-			$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.$response['body']);
+		if ($response_decoded == NULL || !array_key_exists("id", $response_decoded) || !array_key_exists("display_url",$response_decoded)) {
+			if ($response_decoded != NULL && array_key_exists("message", $response_decoded)) {
+				$this->error(__FUNCTION__,'Fetch Key failed: '.$response_decoded['message']);
+			} else {
+				$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
+			}
 			return False;
 		}
 		
@@ -77,10 +81,12 @@ class NGCP_API {
 		update_post_meta($post->wp_id, 'ngcp_sync', time());
 		
 		$this->report(__FUNCTION__,'done');
+		
+		return True;
 	}
 	
 	function get($post) {
-		$url = $this->api_path.'articles/';
+		$url = $this->api_url.'articles/';
 		
 		$args = array(
 			'headers' => $this->get_headers(),
@@ -94,7 +100,7 @@ class NGCP_API {
 		$this->report(__FUNCTION__,$post);
 		
 		$ngcp_id = get_post_meta($post->wp_id, 'ngcp_id', true);
-		$url = $this->api_path.'articles/'.$ngcp_id.'/';
+		$url = $this->api_url.'articles/'.$ngcp_id.'/';
 		
 		$args = array(
 			'method' => 'PUT',
@@ -118,6 +124,8 @@ class NGCP_API {
 		update_post_meta($post->wp_id, 'ngcp_sync', time());
 		
 		$this->report(__FUNCTION__,'done');
+		
+		return True;
 	}
 	
 	function delete($post) {
@@ -134,7 +142,7 @@ class NGCP_API {
 			'X-BASE-URL' => home_url()
 		);
 		
-		if($this->dev) {
+		if(NGCP_DEBUG) {
 			$headers['Authorization'] = 'Basic ' . base64_encode("stefan" . ':' . "wordpress"); //TODO remove
 		}
 		
@@ -142,15 +150,29 @@ class NGCP_API {
 	}
 	
 	private function report($function_name, $message="start") {
-		if($this->dev) {
+		if(NGCP_DEBUG) {
 			error_log("NGCP API ($function_name): $message");
 		}
 	}
 
-	private function error($function_name, $message="") {
-		if($this->dev) {
-			error_log("NGCP API ($function_name) ERROR: $message");
+	private function error($function_name, $message="", $id=null) {
+		if($id) {
+			$this->errors[$id] = __($message, 'ngcp');
+		} else {
+			$this->errors[$function_name] = __($message, 'ngcp');
+		}
+		if(NGCP_DEBUG) {
+			error_log("NGCP API ($function_name) ERROR: $message ($id)");
 		}
 	}
 
+	function has_errors() {
+		return (0 != sizeof($this->error));
+	}
+	
+	function handle_errors() {
+		if($this->has_errors()) {
+			update_option('ngcp_error_notice', $this->errors);
+		}
+	}
 }

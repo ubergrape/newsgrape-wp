@@ -21,7 +21,7 @@ class NGCP_Post {
 	public $description = "";
 	public $language = "en";
 	public $tags = array();
-	private $options = array();
+	public $options = array();
 	
 	function __construct($wp_post_id = NULL) {
 		if (NULL != $wp_post_id) {
@@ -103,7 +103,6 @@ class NGCP_Post {
 		// If the post was manually set to not be crossposted,
 		// or nothing was set and the default is not to crosspost,
 		// or it's private and the default is not to crosspost private posts, give up now
-		$options = ngcp_get_options();
 		
 		if (
 			0 == $this->options['crosspost'] ||
@@ -122,7 +121,6 @@ class NGCP_Post {
 		// - It's changed to private, and we've chosen not to crosspost private entries
 		// - It now isn't published or private (trash, pending, draft, etc.)
 		// - It was crossposted but now it's set to not crosspost
-		$options = ngcp_get_options();
 		
 		if (
 			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no') || 
@@ -141,8 +139,6 @@ class NGCP_Post {
 		// crossposted before (so the forbidden category list must have changed),
 		// delete the post. Otherwise, just give up now
 		$should_be_deleted = True;
-		
-		$options = ngcp_get_options();
 
 		$postcats = wp_get_post_categories($this->wp_id);
 		foreach($postcats as $cat) {

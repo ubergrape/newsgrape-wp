@@ -1,6 +1,11 @@
 <?php
-// set defaults
+
 function ngcp_get_options() {
+	if (NGCP_DEBUG) {
+			error_log("NGCP ngcp_get_options() called");
+	}
+	
+	// set defaults
 	$defaults = array(
 			'username'			=> '',
 			'api_key'			=> '',
@@ -34,7 +39,6 @@ function ngcp_get_options() {
 	$options = get_option('ngcp');
 	if (!is_array($options)) $options = array();
 
-	
 	// still need to get the defaults for the new settings, so we'll merge again
 	return array_merge( $defaults, $options );
 }
@@ -44,15 +48,26 @@ function ngcp_validate_options($input) {
 	$msg = array();
 	$linkmsg = '';
 	$msgtype = 'error';
-	$options = ngcp_get_options();
+	$api = new NGCP_API();
 	
 	// API key
 	if (isset($input['password']) && !empty($input['password'])) {
-		//TODO call API getkey
+		$key = $api->fetch_new_key($input['username'],$input['password']);
+		if ($key) {
+			$input['api_key'] = $key;
+			$msg[] .= __('Sucessfully connected to Newsgrape!', 'ngcp');
+			$msgtype = 'updated';
+		} else {
+			$msg[] .= __('Newsgrape Username or Password wrong. Sorry, please try again.', 'ngcp');
+		}
 	}
-		
+	
+	$options = ngcp_get_options();
+	
+	
+
 	// If we're handling a submission, save the data
-	if(isset($input['update_ngcp_options']) || isset($input['crosspost_all']) || isset($input['delete_all'])) {
+	if (isset($input['update_ngcp_options']) || isset($input['crosspost_all']) || isset($input['delete_all'])) {
 		
 		if (isset($input['delete_all'])) {
 			// If we need to delete all, grab a list of all entries that have been crossposted
@@ -75,7 +90,7 @@ function ngcp_validate_options($input) {
 		if (!empty($input['custom_name']))	$input['custom_name'] = 	trim(stripslashes($input['custom_name']));
 		if (!empty($input['custom_header'])) $input['custom_header'] = 	trim(stripslashes($input['custom_header']));
 
-		if(isset($input['crosspost_all'])) {
+		if (isset($input['crosspost_all'])) {
 			$msg[] .= __('Settings saved.', 'ngcp');
 			$msg[] .= ngcp_post_all();
 			$msgtype = 'updated';
@@ -121,7 +136,7 @@ function ngcp_add_pages() {
 add_action('plugin_action_links_' . plugin_basename(__FILE__), 'ngcp_plugin_actions');
 function ngcp_plugin_actions($links) {
 	$new_links = array();
-	$new_links[] = '<a href="options-general.php?page=ngcp_crosspost.php">' . __('Settings', 'ngcp') . '</a>';
+	$new_links[] = '<a href="options-general.php?page=ngcp-options.php">' . __('Settings', 'ngcp') . '</a>';
 	return array_merge($new_links, $links);
 }
 
@@ -137,7 +152,6 @@ function ngcp_display_options() {
 		$options = ngcp_get_options();
 		?>
 		<h2><?php _e('Newsgrape Crossposter Options', 'ngcp'); ?></h2>
-		<pre><?php print_r($options); ?></pre>
 		
 		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
 		
@@ -338,6 +352,11 @@ function ngcp_display_options() {
 				<input type="submit" name="ngcp[update_ngcp_options]" value="<?php esc_attr_e('Update Options'); ?>" class="button-primary" />
 			</p>
 		<?php endif; ?>
+		
+		<?php if(NGCP_DEBUG): ?>
+		<pre><?php print_r($options); ?></pre>
+		<?php endif; ?>
+		
 	</form>
 	<script type="text/javascript">
 	jQuery(document).ready(function($){
@@ -349,6 +368,7 @@ function ngcp_display_options() {
 	});
 	</script>
 </div>
+		
 <?php
 }
 

@@ -2,7 +2,12 @@
 
 class NGCP_Core_Controller {
 	static function post($post_ID) {
+		if (!NGCP_Core_Controller::has_api_key()) {
+			return $post_ID;
+		}
+		
 		$post = new NGCP_Post($post_ID);
+		
 		
 		if (!$post->should_be_crossposted()) {
 			return $post_ID;
@@ -23,6 +28,10 @@ class NGCP_Core_Controller {
 	}
 	
 	static function edit($post_ID) {
+		if (!NGCP_Core_Controller::has_api_key()) {
+			return $post_ID;
+		}
+
 		$post = new NGCP_Post($post_ID);
 		
 		if (!$post->was_crossposted()) {
@@ -35,9 +44,15 @@ class NGCP_Core_Controller {
 		
 		$api = new NGCP_API();
 		$api->update($post);
+		
+		return $post_ID;
 	}
 	
 	static function delete($post_ID) {
+		if (!NGCP_Core_Controller::has_api_key()) {
+			return $post_ID;
+		}
+
 		$post = new NGCP_Post($post_ID);
 		
 		if ($post->was_never_crossposted()) {
@@ -48,6 +63,17 @@ class NGCP_Core_Controller {
 		$api->delete($post);
 		
 		return $post_ID;
+	}
+	
+	static function has_api_key() {
+		$options = ngcp_get_options();
+		
+		if ("" == $options['api_key']) {
+			update_option('ngcp_error_notice', array("no_api_key" => "No API key set."));
+			return False;
+		}
+		
+		return True;
 	}
 }
 		

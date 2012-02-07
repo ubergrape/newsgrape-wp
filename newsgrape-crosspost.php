@@ -5,7 +5,9 @@ Description: The Newsgrape Crosstposts automatically crossposts wordpress articl
 Version: 1.0
 Author: Stefan Kröner
 Author URI: http://www.kanen.at/
-*/ 
+*/
+
+define('NGCP_DEBUG', true);
 
 $ngcp_dir = dirname(__FILE__);
 
@@ -57,12 +59,10 @@ function ngcp_inner_meta_box( $post ) {
 	$ngcp_id = (isset($post_meta['ngcp_id']) ? $post_meta['ngcp_id'][0] : false);
 	$ngcp_display_url = (isset($post_meta['ngcp_display_url']) ? $post_meta['ngcp_display_url'][0] : false);
 ?>
-    <div class="misc-pub-section  ngcp-info">
-		<!--<pre><?php print_r( $post_meta )?></pre> <?php //TODO remove dev only ?>-->
-    	
+    <div class="misc-pub-section ngcp-info">    	
 		<?php if($ngcp_display_url): ?>
 		    <p><a href="<?php echo $ngcp_display_url?>"><?php echo $ngcp_display_url?></a></p>
-		    <!--<p>Newsgrape ID: <?php echo $ngcp_id?></p> <?php //TODO remove dev only ?>-->
+		    <?php if(NGCP_DEBUG) { echo "<p>NG ID: $ngcp_id</p>"; }?>
 		<?php else: ?>
 		    <em><?php _e('Not crossposted yet.', 'ngcp');?></em>
 		<?php endif; ?>
@@ -106,7 +106,13 @@ function ngcp_inner_meta_box( $post ) {
         </div>
     </div>
 
-		
+	<?php
+	if(NGCP_DEBUG) {
+		echo "<pre>";
+		print_r( $post_meta );
+		echo "</pre>";
+	}
+	?>
 
 	<?php
 }
@@ -158,16 +164,17 @@ function ngcp_settings_css() { ?>
 }
 
 function ngcp_can_replace() {
-	return true; //TODO remove
 	global $id, $post;
 	
 	$options = ngcp_get_options();
 	
 	if(is_feed()){
+		ngcp_report(__FUNCTION__,"is feed");
 		return false;
 	}
 	
     if('draft' == $post->post_status){
+		ngcp_report(__FUNCTION__,"draft");
 		return false;
 	}
 	
@@ -183,6 +190,51 @@ function ngcp_can_replace() {
 	}
 	
 	return true;
+}
+
+function ngcp_report($function_name, $message) {
+	if(NGCP_DEBUG) {
+		error_log("NGCP ($function_name): $message");
+	}
+}
+
+function ngcp_error_notice() {
+	$errors = get_option('ngcp_error_notice');
+	if (!empty($errors)) { 
+    	add_action('admin_notices', 'ngcp_print_notices');
+	}
+}
+
+function ngcp_print_notices() {
+	$errors = get_option('ngcp_error_notice');
+	$class = 'updated';
+	if (!empty($errors) && isset($_GET['action']) && $_GET['action'] == 'edit') { // show this only after we've posted something
+		foreach ($errors as $code => $error) {
+			$code = trim( (string)$code);
+			switch ($code) {
+				case 'no_api_key' :
+					$msg .= sprintf(__('Could not crosspost to Newsgrape. Please got to the <a href="%s">Newsgrape options screen</a> and enter enter your Newsgrape username and password.', 'ngcp'), 'options-general.php?page=ngcp-options.php');
+					$class = 'error';
+					break;
+				case 'create' : 
+					$msg .= sprintf(__('Could not crosspost to Newsgrape. (Error: %s)', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
+					$class = 'error';
+					break;
+				case 'update' : 
+					$msg .= sprintf(__('Could not crosspost the updated entry to (Error: %s)', 'ngcp'), $error );
+					$class = 'error';
+					break;
+				default: 
+					$msg .= sprintf(__('Error (%s): %s', 'ngcp'), $code, $error );
+					$class = 'error';
+					break;
+			}
+		}
+	}
+	if ($class == 'updated') // still good?
+		$msg = sprintf(__("Crossposted to Newsgrape.", 'ngcp')); 
+	echo '<div class="'.$class.'"><p>'.$msg.'</p></div>';
+	update_option('ngcp_error_notice', ''); // turn off the message
 }
 
 function ngcp_comments($file) {
@@ -201,7 +253,6 @@ function ngcp_comments($file) {
 $class = 'NGCP_Core_Controller';
 
 add_action('admin_menu', 'ngcp_add_pages'); // Add settings menu to admin
-//add_action('admin_init', 'ngcp_meta_box', 1); //TODO old wordpress?
 add_action('add_meta_boxes', 'ngcp_add_meta_box'); //Add meta box
 add_action('admin_head-post-new.php', 'ngcp_css');
 add_action('admin_head-post.php', 'ngcp_css');
@@ -216,8 +267,8 @@ add_action('untrashed_post', array($class,'edit'));
 add_action('edit_post', array($class,'edit'));
 add_action('delete_post', array($class,'delete'));
 //add_action('save_post', 'ngcp_save', 1); //TODO
-//add_action('admin_head-post.php', 'ngcp_error_notice'); //TODO
-//add_action('admin_head-post-new.php', 'ngcp_error_notice'); //TODO
+add_action('admin_head-post.php', 'ngcp_error_notice');
+add_action('admin_head-post-new.php', 'ngcp_error_notice');
 add_filter('comments_template', 'ngcp_comments');
 
 
