@@ -152,11 +152,12 @@ class NGCP_Post {
 	}
 	
 	function was_crossposted() {
-		return (!$this->was_never_crossposted);
+		return !$this->was_never_crossposted();
+		
 	}
 	
 	function was_never_crossposted() {
-	    return (0 == $this->id);
+	    return ("" == $this->id || null == $this->id || 0 == $this->id);
 	}
 }
 
