@@ -65,6 +65,31 @@ class NGCP_Core_Controller {
 		return $post_ID;
 	}
 	
+	static function save($post_ID) {		
+		if (!isset($_POST['ngcp_nonce']) || !wp_verify_nonce($_POST['ngcp_nonce'], "ngcp_metabox")) {
+			return $post_ID;
+		}
+		
+		$meta_keys = array(
+			'ngcp_language',
+			'ngcp_license',
+			'ngcp_comments',
+			'ngcp_type',
+			'ngcp_crosspost',
+		);
+		
+		foreach ($meta_keys as $meta_key) {
+			if (isset($_POST[$meta_key])) {
+				$meta_value = $_POST[$meta_key];
+				if ('on' == $meta_value) { $meta_value = 1; }
+				if ('off' == $meta_value) { $meta_value = 0; }
+				update_post_meta($post_ID, $meta_key, $meta_value);
+			}
+		}
+		
+		return $post_ID;
+	}
+	
 	static function has_api_key() {
 		$options = ngcp_get_options();
 		

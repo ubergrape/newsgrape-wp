@@ -41,7 +41,7 @@ function ngcp_add_meta_box() {
     add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', null, 'side', 'high');
 }
 
-function ngcp_inner_meta_box( $post ) {
+function ngcp_inner_meta_box($post) {
 	global $post;
 	$options = ngcp_get_options();
 	
@@ -51,14 +51,20 @@ function ngcp_inner_meta_box( $post ) {
 	$cats = wp_get_post_categories($post->ID);
 	$post_meta = get_post_custom($post->ID);
 	
-	$ngcp_crosspost = (isset($post_meta['ngcp_crosspost']) ? $post_meta['ngcp_crosspost'][0] : $options['crosspost']);
-	$ngcp_language = (isset($post_meta['language']) ? $post_meta['language'][0] : $options['language']);
-	$ngcp_license = (isset($post_meta['license']) ? $post_meta['license'][0] : $options['license']);
-	$ngcp_comments = (isset($post_meta['comments']) ? $post_meta['comments'][0] : $options['comments']);
-	$ngcp_type = (isset($post_meta['type']) ? $post_meta['type'][0] : $options['type']["category-".$cats[0]]);
-	$ngcp_id = (isset($post_meta['ngcp_id']) ? $post_meta['ngcp_id'][0] : false);
-	$ngcp_display_url = (isset($post_meta['ngcp_display_url']) ? $post_meta['ngcp_display_url'][0] : false);
+	$ngcp_crosspost = (array_key_exists("ngcp_crosspost",$post_meta)) ? $post_meta['ngcp_crosspost'][0] : $options['crosspost'];
+	$ngcp_promotional = (array_key_exists("ngcp_promotional",$post_meta)) ? $post_meta['ngcp_promotional'][0] : false;
+	$ngcp_language = (array_key_exists("ngcp_language",$post_meta)) ? $post_meta['ngcp_language'][0] : $options['language'];
+	$ngcp_license = (array_key_exists("ngcp_license",$post_meta)) ? $post_meta['ngcp_license'][0] : $options['license'];
+	$ngcp_comments = (array_key_exists("ngcp_comments",$post_meta)) ? $post_meta['ngcp_comments'][0] : $options['comments'];
+	$ngcp_type = (array_key_exists("ngcp_type",$post_meta)) ? $post_meta['ngcp_type'][0] : $options['type']["category-".$cats[0]];
+	$ngcp_id = (array_key_exists("ngcp_id",$post_meta)) ? $post_meta['ngcp_id'][0] : false;
+	$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
 ?>
+
+
+
+	<?php wp_nonce_field( 'ngcp_metabox', 'ngcp_nonce' ); ?>
+	
     <div class="misc-pub-section ngcp-info">    	
 		<?php if($ngcp_display_url): ?>
 		    <p><a href="<?php echo $ngcp_display_url?>"><?php echo $ngcp_display_url?></a></p>
@@ -77,7 +83,7 @@ function ngcp_inner_meta_box( $post ) {
             <h4><?php _e('Language', 'ngcp'); ?></h4>
             <select name="ngcp_language" id="ngcp_language">
                 <?php foreach($languages as $short => $long): ?>
-                    <option value="<?php echo $short?>" <?php selected( $options['language'], $short ); ?>>
+                    <option value="<?php echo $short?>" <?php selected($ngcp_language, $short); ?>>
                         <?php echo $long?>
                     </option>
                 <?php endforeach; ?>
@@ -85,9 +91,9 @@ function ngcp_inner_meta_box( $post ) {
         </div>
         <div class="ngcp-setting">
             <h4><?php _e('license', 'ngcp'); ?></h4>
-            <select name="ngcp_language" id="ngcp_language">
+            <select name="ngcp_license" id="ngcp_license">
                 <?php foreach($licenses as $short => $long): ?>
-                    <option value="<?php echo $short?>" <?php selected( $options['license'], $short ); ?>>
+                    <option value="<?php echo $short?>" <?php selected($ngcp_license, $short); ?>>
                         <?php echo $long?>
                     </option>
                 <?php endforeach; ?>
@@ -110,7 +116,13 @@ function ngcp_inner_meta_box( $post ) {
 	if(NGCP_DEBUG) {
 		echo "<pre>";
 		print_r( $post_meta );
+		
+		echo "$ngcp_crosspost\n";
+		echo "$ngcp_language\n";
+		echo "$ngcp_license\n";
+		echo "$ngcp_type\n";
 		echo "</pre>";
+		
 	}
 	?>
 
@@ -266,7 +278,7 @@ add_action('private_to_password', array($class,'edit'));
 add_action('untrashed_post', array($class,'edit'));
 add_action('edit_post', array($class,'edit'));
 add_action('delete_post', array($class,'delete'));
-//add_action('save_post', 'ngcp_save', 1); //TODO
+add_action('save_post', array($class,'save'));
 add_action('admin_head-post.php', 'ngcp_error_notice');
 add_action('admin_head-post-new.php', 'ngcp_error_notice');
 add_filter('comments_template', 'ngcp_comments');
