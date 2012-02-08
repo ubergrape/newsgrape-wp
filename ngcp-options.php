@@ -12,7 +12,7 @@ function ngcp_get_options() {
 			'crosspost'			=> 1,
 			'privacy'			=> 'public',
 			'privacy_private'	=> 'ngcp_no',
-			'comments'			=> 0,
+			'comments'			=> 1,
 			'tag'				=> '2',
 			'more'				=> 'link',
 			'skip_cats'			=> array(),
