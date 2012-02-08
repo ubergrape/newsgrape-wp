@@ -10,14 +10,17 @@ class NGCP_Core_Controller {
 		
 		
 		if (!$post->should_be_crossposted()) {
+			NGCP_Core_Controller::debug("post -> STOP");
 			return $post_ID;
 		}
 		
 		if ($post->should_be_deleted_because_category_changed()) {
+			NGCP_Core_Controller::debug("post -> delete");
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
 		if ($post->was_crossposted()) {
+			NGCP_Core_Controller::debug("post -> edit");
 			return NGCP_Core_Controller::edit($postID);
 		}
 		
@@ -35,10 +38,12 @@ class NGCP_Core_Controller {
 		$post = new NGCP_Post($post_ID);
 		
 		if (!$post->was_crossposted()) {
+			NGCP_Core_Controller::debug("edit -> STOP");
 			return $post_ID;
 		}
 		
 		if ($post->should_be_deleted_because_private()) {
+			NGCP_Core_Controller::debug("edit -> delete");
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
@@ -56,6 +61,7 @@ class NGCP_Core_Controller {
 		$post = new NGCP_Post($post_ID);
 		
 		if ($post->was_never_crossposted()) {
+			NGCP_Core_Controller::debug("delete -> STOP");
 			return $post_ID;
 		}
 		
@@ -67,6 +73,7 @@ class NGCP_Core_Controller {
 	
 	static function save($post_ID) {		
 		if (!isset($_POST['ngcp_nonce']) || !wp_verify_nonce($_POST['ngcp_nonce'], "ngcp_metabox")) {
+			error_log("NGCP Controller save -> STOP; wrong nonce");
 			return $post_ID;
 		}
 		
@@ -99,6 +106,12 @@ class NGCP_Core_Controller {
 		}
 		
 		return True;
+	}
+	
+	static function debug($message) {
+		if (NGCP_DEBUG) {
+			error_log("NGCP Core Controller ".$message);
+		}
 	}
 }
 		
