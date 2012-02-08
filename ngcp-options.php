@@ -161,14 +161,14 @@ function ngcp_display_options() {
 					<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
 					<td>
 						<input name="ngcp[username]" type="text" id="username" value="<?php esc_attr_e($options['username']); ?>" size="40" <?php if ('' != $options['api_key']) echo 'readonly="readyonly"'; ?> />
-						<a href="http://www.newsgrape.com/register/" style="margin-left: 20px">Create Newsgrape Account</a>
+						<a href="http://www.newsgrape.com/register/" style="margin-left: 20px"><?php _e('Create Newsgrape Account', 'ngcp'); ?></a>
 						</td>
 				</tr>
 				
 				<tr valign="top">
 					<th scope="row"><?php _e('Newsgrape Password', 'ngcp'); ?></th>
 					<td><input name="ngcp[password]" type="password" id="password" size="40" />
-					<a href="http://www.newsgrape.com/accounts/password/reset/" style="margin-left: 20px">Forgot Password</a>
+					<a href="http://www.newsgrape.com/accounts/password/reset/" style="margin-left: 20px"><?php _e('Forgot Password', 'ngcp'); ?></a>
 					<br />
 					<span  class="description"><?php
 					_e('Your password will not be saved. It is needed only once to connect your wordpress with newsgrape', 'ngcp');
