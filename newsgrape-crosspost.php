@@ -51,7 +51,6 @@ function ngcp_inner_meta_box($post) {
 	$cats = wp_get_post_categories($post->ID);
 	$post_meta = get_post_custom($post->ID);
 	
-	$ngcp_crosspost = (array_key_exists("ngcp_crosspost",$post_meta)) ? $post_meta['ngcp_crosspost'][0] : $options['crosspost'];
 	$ngcp_promotional = (array_key_exists("ngcp_promotional",$post_meta)) ? $post_meta['ngcp_promotional'][0] : false;
 	$ngcp_language = (array_key_exists("ngcp_language",$post_meta)) ? $post_meta['ngcp_language'][0] : $options['language'];
 	$ngcp_license = (array_key_exists("ngcp_license",$post_meta)) ? $post_meta['ngcp_license'][0] : $options['license'];
@@ -59,6 +58,17 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_type = (array_key_exists("ngcp_type",$post_meta)) ? $post_meta['ngcp_type'][0] : $options['type']["category-".$cats[0]];
 	$ngcp_id = (array_key_exists("ngcp_id",$post_meta)) ? $post_meta['ngcp_id'][0] : false;
 	$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
+	
+	if (!array_key_exists("ngcp_crosspost",$post_meta)) {
+		if("published" != get_post_status($post->ID) && !$ngcp_id) {
+			$ngcp_crosspost = 0;
+		} else {
+			$ngcp_crosspost = $options['crosspost'];
+		}
+	} else {
+			$ngcp_crosspost = $post_meta['ngcp_crosspost'][0];
+	}
+
 ?>
 
 
@@ -116,11 +126,6 @@ function ngcp_inner_meta_box($post) {
 	if(NGCP_DEBUG) {
 		echo "<pre>";
 		print_r( $post_meta );
-		
-		echo "$ngcp_crosspost\n";
-		echo "$ngcp_language\n";
-		echo "$ngcp_license\n";
-		echo "$ngcp_type\n";
 		echo "</pre>";
 		
 	}
