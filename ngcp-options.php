@@ -1,10 +1,6 @@
 <?php
 
 function ngcp_get_options() {
-	if (NGCP_DEBUG) {
-			error_log("NGCP ngcp_get_options() called");
-	}
-	
 	// set defaults
 	$defaults = array(
 			'username'			=> '',
