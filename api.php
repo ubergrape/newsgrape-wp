@@ -36,7 +36,7 @@ class NGCP_API {
 		$response = wp_remote_post($url,$args);
 		
 		if (is_wp_error($response)) {
-			$this->error(__FUNCTION__,__('API key request failed: '.$result->get_error_message()),'key_fetch_fail');
+			$this->error(__FUNCTION__,__('API key request failed: '.$response->get_error_message()),'key_fetch_fail');
 			return False;
 		}
 		
@@ -122,7 +122,7 @@ class NGCP_API {
 		
 		$response_decoded = json_decode($response['body'],true);
 		if ($response_decoded == NULL || !array_key_exists("id",$response_decoded) || !array_key_exists("display_url",$response_decoded)) {
-			$this->error(__FUNCTION__,'Something went wrong while decoding json: '.$response['body']);
+			$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
 			return False;
 		}
 		
@@ -137,7 +137,63 @@ class NGCP_API {
 		$this->report(__FUNCTION__,$post);
 		
 		$this->report(__FUNCTION__,'done');
-	}	
+	}
+	
+	function get_languages() {
+		$languages = $this->get_get('languages/');
+		$languages = json_decode('[{"code": "id", "international_name": "Indonesian", "name": "Bahasa Indonesia"},{"code": "de", "international_name": "German", "name": "Deutsch"}]', true);
+		$output = array();
+		foreach ($languages as $lang) {
+			$output[$lang['code']] = $lang['name'];
+		}
+		$this->report(__FUNCTION__,var_export($output, true));
+		return $output;
+	}
+	
+	function get_licenses() {
+		$licenses = $this->get_get('languages/');
+		$licenses = json_decode('[{"code": "cc", "name": "CC"},{"code": "cc-uc", "name": "CC-UC"},{"code": "res", "name": "Restricted"}]', true);
+		$output = array();
+		foreach ($licenses as $license) {
+			$output[$license['code']] = $license['name'];
+		}
+		$this->report(__FUNCTION__,var_export($output, true));
+		return $output;
+	}
+	
+	function get_creative_categories() {
+		return $this->get_get('categories/');
+	}
+	
+	function get_get($url='languages/') {
+		$this->report(__FUNCTION__,"Get $url");
+		
+		$url = $this->api_url.$url;
+		
+		$args = array(
+			'headers' => $this->get_headers(),
+		);
+		
+		$response = wp_remote_get($url,$args);
+		
+		if (is_wp_error($response)) {
+			$this->error(__FUNCTION__,'Something went wrong fetching '.$url.': '.$response->get_error_message());
+			return False;
+		}
+		
+		$response_decoded = json_decode($response['body'],true);
+		if ($response_decoded == NULL) {
+			$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
+			return False;
+		} else if(array_key_exists("message",$response_decoded)) {
+			$this->error(__FUNCTION__,'Something went wrong fetching '.$url.': '.$response_decoded['message']);
+			return False;
+		}
+		
+		$this->report(__FUNCTION__,'done');
+		
+		return $response_decoded;
+	}
 
 	private function get_headers() {
 		$headers = array(

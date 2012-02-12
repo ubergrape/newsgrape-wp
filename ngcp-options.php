@@ -20,19 +20,10 @@ function ngcp_get_options() {
 			'header_loc'		=> 0,		// 0 means top, 1 means bottom
 			'custom_header'		=> '',
 			'cut_text'			=> __('Read the rest of this entry &raquo;', 'ngcp'),
-			'languages'			=> array(
-				'en' => 'English',
-				'de' => 'Deutsch',
-				'nl' => 'Neederlanski',
-				'ru' => 'Russian'
-			),
+			'languages'			=> array(),
 			'language'			=> substr(get_bloginfo('language'),0,2),
-			'licenses'			=> array(
-				'res' => __('Restricted', 'ngcp'),
-				'ccuc' => __('CC-UC','ngcp'),
-				'cc' => __('CC','ngcp')
-			),
-			'license'			=> 'cc'
+			'licenses'			=> array(),
+			'license'			=> ''
 			
 	);
 	
@@ -63,8 +54,6 @@ function ngcp_validate_options($input) {
 	}
 	
 	$options = ngcp_get_options();
-	
-	
 
 	// If we're handling a submission, save the data
 	if (isset($input['update_ngcp_options']) || isset($input['crosspost_all']) || isset($input['delete_all'])) {
@@ -154,6 +143,23 @@ function ngcp_display_options() {
 		<h2><?php _e('Newsgrape Crossposter Options', 'ngcp'); ?></h2>
 		
 		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
+		
+			<?php
+				$api = new NGCP_API();
+				$update = 0;
+				if (empty($options['languages']) && ($languages = $api->get_languages())) {
+					$options['languages'] = $languages;
+					$update = 1;
+				}
+				if (empty($options['licenses']) && ($licenses =$api->get_licenses())) {
+					$options['licenses'] = $licenses;
+					$options['license'] = $licenses[0]['code'];
+					$update = 1;
+				}
+				if ($update) {
+					update_option('ngcp',$options);
+				}
+			?>
 		
 			<h3>Login to Newsgrape</h3>
 			<table class="form-table ui-tabs-panel">
