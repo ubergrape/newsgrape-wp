@@ -15,6 +15,7 @@ $ngcp_dir = dirname(__FILE__);
 @require_once "$ngcp_dir/controllers.php";
 @require_once "$ngcp_dir/models.php";
 @require_once "$ngcp_dir/ngcp-options.php";
+@require_once "$ngcp_dir/ngcp-options-fast-edit.php";
 
 // set default options 
 function ngcp_set_defaults() {
@@ -26,6 +27,7 @@ register_activation_hook(__FILE__, 'ngcp_set_defaults');
 //register our settings
 function register_ngcp_settings() {
 	register_setting( 'ngcp', 'ngcp', 'ngcp_validate_options');
+	register_setting( 'ngcp_fe', 'ngcp_fe', 'ngcp_validate_fe_options');
 }
 
 // when uninstalled, remove option
@@ -299,6 +301,36 @@ function ngcp_settings_css() { ?>
 		#ngcp-logout { margin-bottom: 30px; }
 		#ngcp-advanced-options { /*display: none;*/ }
 		#category-children select { float: right; }
+		#ngcp-fast-edit {
+			width: 450px;
+			background: #fafafa;
+			padding: 18px;
+			margin-bottom: 20px;
+		}
+		
+		#ngcp-fast-edit-button {
+			float: right;
+		}
+		.ngcp-the-date{
+			border-left: 1px solid #8f8f8f;
+			padding-left: 8px;
+			padding-right: 12px;
+			color: #8f8f8f;
+			font-size: 10px;
+		}
+		.ngcp-the-title {
+			padding-right: 8px;
+		}
+		.ngcp-has-no-type {
+			background: #f8f8f8;
+		}
+		.ngcp-all-articles td{
+			padding: 6px;
+		}
+		.ngcp-edit-all {
+			color: #fff;
+			background: #8f8f8f;
+		}
 		.ngcp-hidden {
 			visibility: hidden;
 		}
@@ -396,6 +428,7 @@ function ngcp_comments($file) {
 $class = 'NGCP_Core_Controller';
 
 add_action('admin_menu', 'ngcp_add_pages'); // Add settings menu to admin
+add_action('admin_menu', 'ngcp_add_fe_pages'); // Add fast edit page to admin
 add_action('add_meta_boxes', 'ngcp_add_meta_box'); //Add meta box
 add_action('admin_head-post-new.php', 'ngcp_css');
 add_action('admin_head-post.php', 'ngcp_css');

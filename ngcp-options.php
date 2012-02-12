@@ -6,6 +6,7 @@ function ngcp_get_options() {
 			'username'			=> '',
 			'api_key'			=> '',
 			'crosspost'			=> 1,
+			'published_old'		=> 0,
 			'privacy'			=> 'public',
 			'privacy_private'	=> 'ngcp_no',
 			'comments'			=> 1,
@@ -132,7 +133,7 @@ function ngcp_display_options() {
 ?>
 <div class="wrap">
 	<form method="post" id="ngcp" action="options.php">
-		<?php 
+		<?php
 		settings_fields('ngcp');
 		get_settings_errors( 'ngcp' );	
 		settings_errors( 'ngcp' );
@@ -210,6 +211,17 @@ function ngcp_display_options() {
 					</td>
 				</tr>
 			</table>
+			
+			<?php if (0 == $options['published_old']): ?>
+				<div id="ngcp-fast-edit">
+					<span class="info"><?php _e('Some Types for your Articles have not been set yet.'); ?></span>
+					<a href="options-general.php?page=ngcp-options-fast-edit.php" id="ngcp-fast-edit-button" class="button-primary"><?php _e('Fast-Edit Articles', 'ngcp'); ?></a>
+					<br />
+					<br />
+					<span class="description"><?php _e('Opinions are News-Related and get tagged automatically, Creative articles are anything non-news related and have to be categorized.'); ?></span>
+				</div>
+			<?php endif; ?>
+			
 			<fieldset class="options">
 				<legend><h3><?php _e('Main Options', 'ngcp'); ?></h3></legend>
 				<table class="form-table ui-tabs-panel">
