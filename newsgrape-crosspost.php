@@ -55,7 +55,6 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_language = (array_key_exists("ngcp_language",$post_meta)) ? $post_meta['ngcp_language'][0] : $options['language'];
 	$ngcp_license = (array_key_exists("ngcp_license",$post_meta)) ? $post_meta['ngcp_license'][0] : $options['license'];
 	$ngcp_comments = (array_key_exists("ngcp_comments",$post_meta)) ? $post_meta['ngcp_comments'][0] : $options['comments'];
-	$ngcp_type = (array_key_exists("ngcp_type",$post_meta)) ? $post_meta['ngcp_type'][0] : $options['type']["category-".$cats[0]];
 	$ngcp_id = (array_key_exists("ngcp_id",$post_meta)) ? $post_meta['ngcp_id'][0] : false;
 	$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
 	
@@ -68,10 +67,18 @@ function ngcp_inner_meta_box($post) {
 	} else {
 			$ngcp_crosspost = $post_meta['ngcp_crosspost'][0];
 	}
-
+	
+	if (!array_key_exists("ngcp_type",$post_meta)) {
+		if (sizeof($cats) >= 1) {
+			$ngcp_type = $options['type']["category-".$cats[0]];
+		} else {
+			$ngcp_type = 'opinion';
+		}
+	} else {
+			$ngcp_type = $post_meta['ngcp_type'][0];
+	}
+	
 ?>
-
-
 
 	<?php wp_nonce_field( 'ngcp_metabox', 'ngcp_nonce' ); ?>
 	
@@ -83,39 +90,67 @@ function ngcp_inner_meta_box($post) {
 		    <em><?php _e('Not crossposted yet.', 'ngcp');?></em>
 		<?php endif; ?>
 	</div>
-    
-    
-    <div class="misc-pub-section  misc-pub-section -last">
-        <div class="ngcp-setting">
+	
+	<div class="misc-pub-section">
+		<div class="ngcp-setting">
             <label><input type="checkbox" name="ngcp_crosspost" id="ngcp_crosspost" <?php checked($ngcp_crosspost, '1'); ?>/><?php _e('Crosspost', 'ngcp'); ?></label>
-        </div>
-        <div class="ngcp-setting">
-            <h4><?php _e('Language', 'ngcp'); ?></h4>
-            <select name="ngcp_language" id="ngcp_language">
-                <?php foreach($languages as $short => $long): ?>
+		</div>
+    </div>
+	
+	<div class="misc-pub-section"><label for="ngcp-language"><?php _e('Language:', 'ngcp'); ?></label>
+		<span id="ngcp-language-display" style="font-weight: bold;"><?php echo $languages[$ngcp_language] ?></span>
+		<a href="#ngcp_language" class="edit-ngcp-language hide-if-no-js"><?php _e('Edit') ?></a>
+
+		<div id="ngcp-language-select" class="hide-if-js">
+		<input type="hidden" name="hidden_ngcp_language" id="hidden_ngcp_language" value="<?php echo $ngcp_language; ?>" />
+		<select name='ngcp_language' id='ngcp_language'>
+			<?php foreach($languages as $short => $long): ?>
                     <option value="<?php echo $short?>" <?php selected($ngcp_language, $short); ?>>
                         <?php echo $long?>
                     </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="ngcp-setting">
-            <h4><?php _e('license', 'ngcp'); ?></h4>
-            <select name="ngcp_license" id="ngcp_license">
-                <?php foreach($licenses as $short => $long): ?>
+            <?php endforeach; ?>
+		</select>
+		<a href="#ngcp_language" class="save-ngcp-language hide-if-no-js button"><?php _e('OK'); ?></a>
+		<a href="#ngcp_language" class="cancel-ngcp-language hide-if-no-js"><?php _e('Cancel'); ?></a>
+		</div>
+	</div>
+	
+	<div class="misc-pub-section"><label for="ngcp-license"><?php _e('License:', 'ngcp'); ?></label>
+		<span id="ngcp-license-display" style="font-weight: bold;"><?php echo $licenses[$ngcp_license] ?></span>
+		<a href="#ngcp_license" class="edit-ngcp-license hide-if-no-js"><?php _e('Edit') ?></a>
+
+		<div id="ngcp-license-select" class="hide-if-js">
+		<input type="hidden" name="hidden_ngcp_license" id="hidden_ngcp_license" value="<?php echo $ngcp_license; ?>" />
+		<select name='ngcp_license' id='ngcp_license'>
+			<?php foreach($licenses as $short => $long): ?>
                     <option value="<?php echo $short?>" <?php selected($ngcp_license, $short); ?>>
                         <?php echo $long?>
                     </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="ngcp-setting">
-            <h4><?php _e('Type', 'ngcp'); ?></h4>
-            <label><input type="radio" name="ngcp_type" id="ngcp_type_opinion" value="opinion" <?php checked($ngcp_type, 'opinion'); ?>>  <?php _e('Opinion', 'ngcp'); ?></label><br />
-            <label><input type="radio" name="ngcp_type" id="ngcp_type_creative" value="creative" <?php checked($ngcp_type, 'creative'); ?>>  <?php _e('Creative', 'ngcp'); ?></label><br />
-        </div>
-        
-        <div class="ngcp-setting">
+            <?php endforeach; ?>
+		</select>
+		<a href="#ngcp_license" class="save-ngcp-license hide-if-no-js button"><?php _e('OK'); ?></a>
+		<a href="#ngcp_license" class="cancel-ngcp-license hide-if-no-js"><?php _e('Cancel'); ?></a>
+		</div>
+	</div>
+	
+	<div class="misc-pub-section"><label for="ngcp-type"><?php _e('Type:', 'ngcp'); ?></label>
+		<span id="ngcp-type-display" style="font-weight: bold;"><?php echo ucfirst($ngcp_type); ?></span>
+		<a href="#ngcp_type" class="edit-ngcp-type hide-if-no-js"><?php _e('Edit') ?></a>
+
+		<div id="ngcp-type-select" class="hide-if-js">
+		<input type="hidden" name="hidden_ngcp_type" id="hidden_ngcp_type" value="<?php echo $ngcp_type; ?>" />
+		<label><input type="radio" name="ngcp_type" id="ngcp_type_opinion" value="opinion" <?php checked($ngcp_type, 'opinion'); ?>>  <?php _e('Opinion', 'ngcp'); ?></label><br />
+        <label><input type="radio" name="ngcp_type" id="ngcp_type_creative" value="creative" <?php checked($ngcp_type, 'creative'); ?>>  <?php _e('Creative', 'ngcp'); ?></label><br />
+        <br />
+		<a href="#ngcp_type" class="save-ngcp-type hide-if-no-js button"><?php _e('OK'); ?></a>
+		<a href="#ngcp_type" class="cancel-ngcp-type hide-if-no-js"><?php _e('Cancel'); ?></a>
+		</div>
+	</div>
+    
+    
+    <div class="misc-pub-section  misc-pub-section-last">
+		<a href="#" id="ngcp_more" class="hide-if-no-js"><?php _e('More', 'ngcp'); ?></a>
+        <div id="ngcp_more_inner" class="ngcp-setting hide-if-js">
             <h4>More Settings</h4>
             <label><input type="checkbox" name="ngcp_comments" id="ngcp_comments" <?php checked($ngcp_comments, '1'); ?>>  <?php _e('Allow Comments', 'ngcp'); ?></label><br />
             <label><input type="checkbox" name="ngcp_promotional" id="ngcp_promotional" <?php checked($ngcp_promotional, '1'); ?>>  <?php _e('This is a Promotional Article', 'ngcp'); ?></label> <a href="#TB_inline?height=100&width=150&inlineId=ngcp-promotional-info&modal=true" class="thickbox">What is a promotional article?</a><div id="ngcp-promotional-info"><p><?php _e('Promotional articles have to be marked on Newsgrape, or users risk account suspendings.','ngcp'); ?><p><p style="text-align:center"><a href="#"onclick="tb_remove()" />close</a></p></div>
@@ -130,6 +165,94 @@ function ngcp_inner_meta_box($post) {
 		
 	}
 	?>
+	
+		<script type="text/javascript">
+	(function(){
+		function ngcpUpdateText() {
+			jQuery('#ngcp-language-display').html(jQuery('#ngcp_language option:selected').text());
+			jQuery('#ngcp-license-display').html(jQuery('#ngcp_license option:selected').text());
+			jQuery('#ngcp-type-display').html(jQuery('input[name=ngcp_type]:checked').parent().text());
+		}
+		
+		jQuery('#ngcp-language-select').siblings('a.edit-ngcp-language').click(function() {
+			if (jQuery('#ngcp-language-select').is(":hidden")) {
+				jQuery('#ngcp-language-select').slideDown('fast');
+				jQuery(this).hide();
+			}
+			return false;
+		});
+		
+		jQuery('.save-ngcp-language', '#ngcp-language-select').click(function() {
+			jQuery('#ngcp-language-select').slideUp('fast');
+			jQuery('#ngcp-language-select').siblings('a.edit-ngcp-language').show();
+			ngcpUpdateText();
+			return false;
+		});
+
+		jQuery('.cancel-ngcp-language', '#ngcp-language-select').click(function() {
+			jQuery('#ngcp-language-select').slideUp('fast');
+			jQuery('#ngcp_language').val(jQuery('#hidden_ngcp_language').val());
+			jQuery('#ngcp-language-select').siblings('a.edit-ngcp-language').show();
+			ngcpUpdateText();
+			return false;
+		});
+		
+		jQuery('#ngcp-license-select').siblings('a.edit-ngcp-license').click(function() {
+			if (jQuery('#ngcp-license-select').is(":hidden")) {
+				jQuery('#ngcp-license-select').slideDown('fast');
+				jQuery(this).hide();
+			}
+			return false;
+		});
+
+		jQuery('.save-ngcp-license', '#ngcp-license-select').click(function() {
+			jQuery('#ngcp-license-select').slideUp('fast');
+			jQuery('#ngcp-license-select').siblings('a.edit-ngcp-license').show();
+			ngcpUpdateText();
+			return false;
+		});
+
+		jQuery('.cancel-ngcp-license', '#ngcp-license-select').click(function() {
+			jQuery('#ngcp-license-select').slideUp('fast');
+			jQuery('#ngcp_license').val(jQuery('#hidden_ngcp_license').val());
+			jQuery('#ngcp-license-select').siblings('a.edit-ngcp-license').show();
+			ngcpUpdateText();
+			return false;
+		});
+		
+		jQuery('#ngcp-type-select').siblings('a.edit-ngcp-type').click(function() {
+			if (jQuery('#ngcp-type-select').is(":hidden")) {
+				jQuery('#ngcp-type-select').slideDown('fast');
+				jQuery(this).hide();
+			}
+			return false;
+		});
+
+		jQuery('.save-ngcp-type', '#ngcp-type-select').click(function() {
+			jQuery('#ngcp-type-select').slideUp('fast');
+			jQuery('#ngcp-type-select').siblings('a.edit-ngcp-type').show();
+			ngcpUpdateText();
+			return false;
+		});
+
+		jQuery('.cancel-ngcp-type', '#ngcp-type-select').click(function() {
+			jQuery('#ngcp-type-select').slideUp('fast');
+			jQuery('#ngcp_type').val(jQuery('#hidden_ngcp_type').val());
+			jQuery('#ngcp-type-select').siblings('a.edit-ngcp-type').show();
+			ngcpUpdateText();
+			return false;
+		});
+		
+		jQuery('#ngcp_more').click(function() {
+			if (jQuery('#ngcp_more_inner').is(":hidden")) {
+				jQuery('#ngcp_more_inner').slideDown('fast');
+				//jQuery(this).hide();
+			} else {
+				jQuery('#ngcp_more_inner').slideUp('fast');
+			}
+		});
+	})();
+	</script>
 
 	<?php
 }
@@ -174,7 +297,7 @@ function ngcp_settings_css() { ?>
 		tr#scary-buttons { display: none; }
 		#delete_all { font-weight: bold; color: #c00; }
 		#ngcp-logout { margin-bottom: 30px; }
-		#ngcp-advanced-options { display: none; }
+		#ngcp-advanced-options { /*display: none;*/ }
 		#category-children select { float: right; }
 	</style>
 <?php
