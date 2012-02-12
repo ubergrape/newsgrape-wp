@@ -20,6 +20,7 @@ function ngcp_get_options() {
 			'language'			=> substr(get_bloginfo('language'),0,2),
 			'licenses'			=> array(),
 			'categories'		=> array(),
+			'ng_category'		=> array(),
 			'license'			=> ''
 			
 	);
@@ -143,19 +144,20 @@ function ngcp_display_options() {
 		
 			<?php
 				$api = new NGCP_API();
-				$update = 0;
+				$update = False;
+				
 				if (empty($options['languages']) && ($languages = $api->get_languages())) {
 					$options['languages'] = $languages;
-					$update = 1;
+					$update = True;
 				}
 				if (empty($options['licenses']) && ($licenses =$api->get_licenses())) {
 					$options['licenses'] = $licenses;
 					$options['license'] = $licenses[0]['code'];
-					$update = 1;
+					$update = True;
 				}
-				if (empty($options['categories']) && ($categories =$api->get_creative_categories())) {
+				if (empty($options['categories']) && ($categories = $api->get_creative_categories())) {
 					$options['categories'] = $categories;
-					$update = 1;
+					$update = True;
 				}
 				if ($update) {
 					update_option('ngcp',$options);
@@ -373,7 +375,15 @@ function ngcp_display_options() {
 			$('.checkall').click(function () {
 				$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
 			});
+			$('.ngcp-select-type').change(function () {
+				if ("creative" == this.value) {
+					$(this).siblings('.ngcp-select-cat').css('visibility','visible');
+				} else {
+					$(this).siblings('.ngcp-select-cat').css('visibility','hidden');
+				}
+			});
 		});
+		
 	});
 	</script>
 </div>
@@ -420,7 +430,17 @@ class ngcp_Walker_Category_Checklist extends Walker {
  
  	function end_el(&$output, $category, $depth, $args) {
 		$options = ngcp_get_options();
-		$output .= '<select name="ngcp[type][category-'.$category->term_id.']">';
+		$output .= '<select name="ngcp[ng_category][category-'.$category->term_id.']" ';
+		if ("creative" == $options['type']['category-'.$category->term_id]) {
+			$output .= 'class="ngcp-select-cat">';
+		} else {
+			$output .= 'class="ngcp-select-cat ngcp-hidden">';
+		}
+		foreach ($options['categories'] as $cat_id => $cat_name) {
+			$output .= '<option value="'.$cat_id.'" '.selected($options['ng_category']['category-'.$category->term_id], $cat_id, false).' >'.__($cat_name,'ngcp').'</option>';
+		}
+		$output .= '</select>';
+		$output .= '<select name="ngcp[type][category-'.$category->term_id.']" class="ngcp-select-type">';
 		$output .= '<option value="opinion" '.selected($options['type']['category-'.$category->term_id], 'opinion', false).' >'.__('Opinion','ngcp').'</option>';
 		$output .= '<option value="creative" '.selected($options['type']['category-'.$category->term_id], 'creative', false).' >'.__('Creative','ngcp').'</option>';
 		$output .= '</select>';

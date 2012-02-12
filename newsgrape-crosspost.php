@@ -299,6 +299,9 @@ function ngcp_settings_css() { ?>
 		#ngcp-logout { margin-bottom: 30px; }
 		#ngcp-advanced-options { /*display: none;*/ }
 		#category-children select { float: right; }
+		.ngcp-hidden {
+			visibility: hidden;
+		}
 	</style>
 <?php
 }
