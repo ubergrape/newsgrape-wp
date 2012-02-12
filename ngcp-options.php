@@ -238,11 +238,11 @@ function ngcp_display_options() {
 					</tr>
 				</table>
 			</fieldset>
-			<a href="#" onclick="javascript: jQuery('#ngcp-advanced-options').show('fast');"><?php _e('Show advanced options', 'ngcp'); ?></a>
-			<br />
+			<!--<a href="#" onclick="javascript: jQuery('#ngcp-advanced-options').show('fast');"><?php _e('Show advanced options', 'ngcp'); ?></a>
+			<br />-->
 			<div id="ngcp-advanced-options">
 				<fieldset class="options">
-					<legend><h3><?php _e('Post Privacy', 'ngcp'); ?></h3></legend>
+					<!--<legend><h3><?php _e('Post Privacy', 'ngcp'); ?></h3></legend>
 					<table class="form-table ui-tabs-panel">
 						<tr valign="top">
 							<th scope="row"><?php _e('Newsgrape privacy level for all published WordPress posts', 'ngcp'); ?></th>
@@ -278,8 +278,9 @@ function ngcp_display_options() {
 							</td>
 						</tr>
 					</table>
-				</fieldset>
-				<fieldset class="options">
+				</fieldset>-->
+				
+				<!--<fieldset class="options">
 					<legend><h3><?php _e('Newsgrape Tags', 'ngcp'); ?></h3></legend>
 					<table class="form-table ui-tabs-panel">
 						<tr valign="top">
@@ -307,7 +308,7 @@ function ngcp_display_options() {
 							</td>
 						</tr>
 					</table>
-				</fieldset>
+				</fieldset>-->
 				
 				<fieldset class="options">
 					<legend><h3><?php _e('Category Selection', 'ngcp'); ?></h3></legend>
@@ -331,6 +332,7 @@ function ngcp_display_options() {
 						</tr>
 					</table>
 				</fieldset>
+				
 				<!--<fieldset class="options">
 					<legend><h3><?php _e('Crosspost or delete all entries', 'ngcp'); ?></h3></legend>
 					<table class="form-table ui-tabs-panel">
