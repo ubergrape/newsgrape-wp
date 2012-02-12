@@ -19,6 +19,7 @@ function ngcp_get_options() {
 			'languages'			=> array(),
 			'language'			=> substr(get_bloginfo('language'),0,2),
 			'licenses'			=> array(),
+			'categories'		=> array(),
 			'license'			=> ''
 			
 	);
@@ -150,6 +151,10 @@ function ngcp_display_options() {
 				if (empty($options['licenses']) && ($licenses =$api->get_licenses())) {
 					$options['licenses'] = $licenses;
 					$options['license'] = $licenses[0]['code'];
+					$update = 1;
+				}
+				if (empty($options['categories']) && ($categories =$api->get_creative_categories())) {
+					$options['categories'] = $categories;
 					$update = 1;
 				}
 				if ($update) {

@@ -162,7 +162,14 @@ class NGCP_API {
 	}
 	
 	function get_creative_categories() {
-		return $this->get_get('categories/');
+		$categories = $this->get_get('categories/');
+		$categories = json_decode('[{"id": "1", "name": "Cat 1"}, {"id": "2", "name": "Cat 2"},{"id": "3", "name": "Cat 3"}]', true);
+		$output = array();
+		foreach ($categories as $cat) {
+			$output[$cat['id']] = $cat['name'];
+		}
+		$this->report(__FUNCTION__,var_export($output, true));
+		return $output;
 	}
 	
 	function get_get($url='languages/') {
