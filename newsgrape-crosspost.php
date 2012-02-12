@@ -293,6 +293,7 @@ function ngcp_settings_css() { ?>
 		dt { font-weight: bold; }
 		#ngcp dd { font-style: italic; }
 		ul#category-children { list-style: none; height: 15em; width: 20em; overflow-y: scroll; border: 1px solid #dfdfdf; padding: 0 1em; background: #fff; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+		ul#category-children { list-style: none; height: 15em; width: 30em; overflow-y: scroll; border: 1px solid #dfdfdf; padding: 0 1em; background: #fff; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 		ul.children { margin-left: 1.5em; }
 		tr#scary-buttons { display: none; }
 		#delete_all { font-weight: bold; color: #c00; }
