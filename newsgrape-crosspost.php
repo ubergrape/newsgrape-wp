@@ -39,6 +39,12 @@ register_uninstall_hook( __FILE__, 'ngcp_remove_options' );
 
 
 function ngcp_add_meta_box() {
+	/* only show meta box when connected to newsgrape */
+	$options = ngcp_get_options();
+	if (empty($options['api_key'])) {
+		return;
+	}
+	
     $label = __( 'Newsgrape', 'ngcp' );
     add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', null, 'side', 'high');
 }
@@ -46,6 +52,7 @@ function ngcp_add_meta_box() {
 function ngcp_inner_meta_box($post) {
 	global $post;
 	$options = ngcp_get_options();
+	
 	$categories = $options['categories'];
 	
 	$languages = $options['languages'];
