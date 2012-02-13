@@ -386,7 +386,9 @@ function ngcp_display_options() {
 		<?php endif; ?>
 		
 		<?php if(NGCP_DEBUG): ?>
-		<pre><?php print_r($options); ?></pre>
+			<h3>Options Debug Output</h3>
+			<pre><?php print_r($options); ?></pre>
+			<pre>ngcp_blog_id: <?php print_r(get_option('ngcp_blog_id','No NGCP Blog ID')); ?></pre>
 		<?php endif; ?>
 		
 	</form>
