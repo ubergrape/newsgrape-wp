@@ -74,7 +74,7 @@ class NGCP_API {
 		$response_decoded = json_decode($response['body'],true);
 		if ($response_decoded == NULL || !array_key_exists("id", $response_decoded) || !array_key_exists("display_url",$response_decoded)) {
 			if ($response_decoded != NULL && array_key_exists("message", $response_decoded)) {
-				$this->error(__FUNCTION__,'Fetch Key failed: '.$response_decoded['message']);
+				$this->error(__FUNCTION__,'Article creation failed: '.$response_decoded['message']);
 			} else {
 				$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
 			}
