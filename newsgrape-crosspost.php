@@ -46,6 +46,7 @@ function ngcp_add_meta_box() {
 function ngcp_inner_meta_box($post) {
 	global $post;
 	$options = ngcp_get_options();
+	$categories = $options['categories'];
 	
 	$languages = $options['languages'];
 	$licenses = $options['licenses'];
@@ -58,6 +59,7 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_license = (array_key_exists("ngcp_license",$post_meta)) ? $post_meta['ngcp_license'][0] : $options['license'];
 	$ngcp_comments = (array_key_exists("ngcp_comments",$post_meta)) ? $post_meta['ngcp_comments'][0] : $options['comments'];
 	$ngcp_id = (array_key_exists("ngcp_id",$post_meta)) ? $post_meta['ngcp_id'][0] : false;
+	$ngcp_category = (array_key_exists("ngcp_category",$post_meta)) ? $post_meta['category'][0] : false;
 	$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
 	
 	if (!array_key_exists("ngcp_crosspost",$post_meta)) {
@@ -143,7 +145,13 @@ function ngcp_inner_meta_box($post) {
 		<input type="hidden" name="hidden_ngcp_type" id="hidden_ngcp_type" value="<?php echo $ngcp_type; ?>" />
 		<label><input type="radio" name="ngcp_type" id="ngcp_type_opinion" value="opinion" <?php checked($ngcp_type, 'opinion'); ?>>  <?php _e('Opinion', 'ngcp'); ?></label><br />
         <label><input type="radio" name="ngcp_type" id="ngcp_type_creative" value="creative" <?php checked($ngcp_type, 'creative'); ?>>  <?php _e('Creative', 'ngcp'); ?></label><br />
-        <br />
+        <select id="ngcp-cat-select" class="<?php if($ngcp_type=="opinion") { echo "hide-if-js"; } ?>" name="ngcp_category">
+			<?php foreach ($categories as $cat_id => $cat_name): ?>
+				<option value="<?php echo $cat_id; ?>" <?php selected($ngcp_category, $cat_id); ?>><?php _e($cat_name,'ngcp'); ?></option>
+			<?php endforeach; ?>
+		</select>
+		<br />
+		<br />
 		<a href="#ngcp_type" class="save-ngcp-type hide-if-no-js button"><?php _e('OK'); ?></a>
 		<a href="#ngcp_type" class="cancel-ngcp-type hide-if-no-js"><?php _e('Cancel'); ?></a>
 		</div>
@@ -253,6 +261,14 @@ function ngcp_inner_meta_box($post) {
 				jQuery('#ngcp_more_inner').slideUp('fast');
 			}
 		});
+		
+		jQuery('input[name=ngcp_type]').change(function() {
+			if ('creative' == this.value) {
+				jQuery('#ngcp-cat-select').slideDown('fast');
+			} else {
+				jQuery('#ngcp-cat-select').slideUp('fast');
+			}
+		});
 	})();
 	</script>
 
@@ -333,6 +349,12 @@ function ngcp_settings_css() { ?>
 		}
 		.ngcp-hidden {
 			visibility: hidden;
+		}
+		#ngcp-cat-select {
+			margin-bottom: 10px;
+		}
+		.options h3 {
+			padding-top: 20px;
 		}
 	</style>
 <?php
