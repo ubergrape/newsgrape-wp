@@ -52,6 +52,14 @@ function ngcp_validate_options($input) {
 		}
 	}
 	
+	if (isset($input['delete_options'])) {
+		delete_option('ngcp');
+	}
+	
+	if (isset($input['delete_blog_id'])) {
+		delete_option('ngcp_blog_id');
+	}
+	
 	$options = ngcp_get_options();
 
 	// If we're handling a submission, save the data
@@ -389,6 +397,10 @@ function ngcp_display_options() {
 			<h3>Options Debug Output</h3>
 			<pre><?php print_r($options); ?></pre>
 			<pre>ngcp_blog_id: <?php print_r(get_option('ngcp_blog_id','No NGCP Blog ID')); ?></pre>
+			<input type="submit" name="ngcp[delete_options]" id="ngcp-delete-options" value="<?php esc_attr_e('Delete all options', 'ngcp'); ?>" class="button-primary" /> 
+			<span class="description">This forces the plugin to fetch a list of languages and licenses again</span><br/><br/>
+			<input type="submit" name="ngcp[delete_blog_id]" id="ngcp-delete-blog-id" value="<?php esc_attr_e('Delete blog id', 'ngcp'); ?>" class="button-primary" /> 
+			<span class="description">A new unique blog id will be generated</span>
 		<?php endif; ?>
 		
 	</form>
