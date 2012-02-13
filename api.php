@@ -3,7 +3,7 @@
 class NGCP_API {
 	private $errors = array();
 	
-	function __construct($user=null, $api_key=null, $api_url='http://www.newsgrape.com/api/0.1/') {
+	function __construct($username=null, $api_key=null, $api_url='http://www.newsgrape.com/api/0.1/') {
 		$this->api_url = $api_url;
 		
 		if (NGCP_DEBUG) {
@@ -17,12 +17,12 @@ class NGCP_API {
 		 * This option will not be deleted when uninstalling the plugin*/
 		$this->external_id = get_option('ngcp_blog_id');
 		
-		if (null==$user) {
+		if (null==$username) {
 			$options = ngcp_get_options();
-			$this->user = $options['user'];
+			$this->username = $options['username'];
 			$this->api_key = $options['api_key'];
 		} else {
-			$this->user = $user;
+			$this->username = $username;
 			$this->api_key = $api_key;
 		}
 	}
@@ -207,7 +207,7 @@ class NGCP_API {
 
 	private function get_headers() {
 		$headers = array(
-			'X-NEWSGRAPE-USER' => $this->user,
+			'X-NEWSGRAPE-USER' => $this->username, 
 			'X-NEWSGRAPE-KEY' => $this->api_key,
 			'X-CLIENT' => $this->client,
 			'X-EXTERNAL-ID' => $this->external_id,
