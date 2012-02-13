@@ -11,7 +11,7 @@ class NGCP_Post {
 	public $wp_post;
 	public $wp_id;
 	public $id = 0;
-	public $type;
+	public $wp_type;
 	public $slug = "";
 	public $url = "";
 	public $status ="";
@@ -21,6 +21,7 @@ class NGCP_Post {
 	public $description = "";
 	public $language = "en";
 	public $tags = array();
+	public $is_creative = False;
 	public $options = array();
 	
 	function __construct($wp_post_id = NULL) {
@@ -44,7 +45,7 @@ class NGCP_Post {
 		$this->wp_post		= $wp_post;
 		$this->wp_id		= (int) $wp_post_id;
 		$this->id			= get_post_meta($wp_post_id, 'ngcp_id', true);
-		$this->type			= $wp_post->post_type;
+		$this->wp_type		= $wp_post->post_type;
 		$this->slug			= $wp_post->post_name;
 		$this->url			= get_permalink($wp_post_id);
 		$this->status		= $wp_post->post_status;
@@ -52,8 +53,9 @@ class NGCP_Post {
 		$this->title_plain	= strip_tags(@$this->title);
 		$this->content		= $the_content;
 		$this->description	= $wp_post->post_excerpt;
-		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true) || $this->options['language'];
+		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true); //|| $this->options['language'];
 		$this->tags			= $this->import_tags($wp_post_id);
+		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
 	}
 	
 	function import_tags($wp_post_id) {
@@ -86,13 +88,15 @@ class NGCP_Post {
 		// title=this+is+a+title&pub_status=3&description=this+is+a+description&language=en&text=this+is+the+body+text
 		
 		$data = array (
-			'title'			=> $this->title,
-			'pub_status'	=> 3, // 0=Unpublished, 3=Published
-			'description'	=> $this->description,
-			'language'		=> $this->language,
-			'text'			=> $this->content,
-			'image_blob'	=> base64_encode_image(get_the_post_thumbnail($this->wp_id)), //TODO thumbnail size?
-			'tags'			=> json_encode($this->tags)
+			'title'				=> $this->title,
+			'pub_status'		=> 3, // 0=Unpublished, 3=Published
+			'description'		=> $this->description,
+			'language'			=> $this->language,
+			'text'				=> $this->content,
+			'image_blob'		=> base64_encode_image(get_the_post_thumbnail($this->wp_id)), //TODO thumbnail size?
+			'tags'				=> json_encode($this->tags),
+			'external_post_id'	=> $this->wp_id, // has to be unique in combination with the X-EXTERNAL-ID header
+			'is_creative'		=> $this->is_createive
 		);
 		
 		return http_build_query($data);
