@@ -304,6 +304,9 @@ function ngcp_css() { ?>
 		#ngcp-promotional-info {
 			display: none;
 		}
+		.ngcp-info a {
+			word-break: break-word;
+		}
 		div.ngcp-radio-column ul li { list-style: none; padding: 0; text-indent: 0; margin-left: 0; }
 		div#post-body-content div.ngcp-radio-column, div#post-body-content p.ngcp-userpics { float: left; width: 22%; margin-right: 2%; }
 		div#side-info-column div.ngcp-radio-column ul { margin: 1em; }
