@@ -61,6 +61,17 @@ function ngcp_validate_options($input) {
 	}
 	
 	$options = ngcp_get_options();
+	
+	error_log(var_export($input['languages']));
+	error_log(var_export($options['languages']));
+	
+	// Do not lose settings
+	$fields = array('languages', 'licenses', 'categories', 'api_key');
+	foreach ($fields as $field) {
+		if(empty($input[$field])) {
+			$input[$field] = $options[$field];
+		}
+	}
 
 	// If we're handling a submission, save the data
 	if (isset($input['update_ngcp_options']) || isset($input['crosspost_all']) || isset($input['delete_all'])) {
