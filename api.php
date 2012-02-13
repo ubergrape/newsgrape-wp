@@ -14,8 +14,8 @@ class NGCP_API {
 		$this->client = 'Wordpress/'.get_bloginfo('version').' NGWPCrossposter/1.0'; //TODO discuss name
 		
 		/* Unique Blog ID. Should be the same after domain change or plugin uninstall:
-		 * Doesn't matter if collissions can be found, so we use md5*/
-		$this->external_id = 'WP'.md5(AUTH_KEY);
+		 * This option will not be deleted when uninstalling the plugin*/
+		$this->external_id = get_option('ngcp_blog_id');
 		
 		if (null==$user) {
 			$options = ngcp_get_options();

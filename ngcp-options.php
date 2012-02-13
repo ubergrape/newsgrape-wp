@@ -144,6 +144,15 @@ function ngcp_display_options() {
 		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
 		
 			<?php
+				/* Fill database with fresh values:
+				 * - Generate unique blog id;
+				 * - Fetch languages, licenses and creative categories via API
+				 */
+				
+				if(!get_option('ngcp_blog_id')) {
+					update_option('ngcp_blog_id',ngcp_random(24));
+				}
+				 
 				$api = new NGCP_API();
 				$update = False;
 				
