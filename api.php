@@ -140,33 +140,36 @@ class NGCP_API {
 	}
 	
 	function get_languages() {
-		$languages = $this->get_get('languages/');
-		$languages = json_decode('[{"code": "id", "international_name": "Indonesian", "name": "Bahasa Indonesia"},{"code": "de", "international_name": "German", "name": "Deutsch"}]', true);
+		$response = $this->get_get('languages/?format=json');
 		$output = array();
-		foreach ($languages as $lang) {
-			$output[$lang['code']] = $lang['name'];
+		if ($response) {
+			foreach ($response['objects'] as $lang) {
+				$output[$lang['code']] = $lang['name'];
+			}
 		}
 		$this->report(__FUNCTION__,var_export($output, true));
 		return $output;
 	}
 	
 	function get_licenses() {
-		$licenses = $this->get_get('languages/');
-		$licenses = json_decode('[{"code": "cc", "name": "CC"},{"code": "cc-uc", "name": "CC-UC"},{"code": "res", "name": "Restricted"}]', true);
+		$response = $this->get_get('licenses/?format=json');
 		$output = array();
-		foreach ($licenses as $license) {
-			$output[$license['code']] = $license['name'];
+		if($response) {
+			foreach ($response['objects'] as $license) {
+				$output[$license['id']] = $license['name'];
+			}
 		}
 		$this->report(__FUNCTION__,var_export($output, true));
 		return $output;
 	}
 	
 	function get_creative_categories() {
-		$categories = $this->get_get('categories/');
-		$categories = json_decode('[{"id": "1", "name": "Cat 1"}, {"id": "2", "name": "Cat 2"},{"id": "3", "name": "Cat 3"}]', true);
+		$response = $this->get_get('categories/');
 		$output = array();
-		foreach ($categories as $cat) {
-			$output[$cat['id']] = $cat['name'];
+		if ($response) {
+			foreach ($response as $cat) {
+				$output[$cat['id']] = $cat['name'];
+			}
 		}
 		$this->report(__FUNCTION__,var_export($output, true));
 		return $output;
@@ -189,7 +192,7 @@ class NGCP_API {
 		}
 		
 		$response_decoded = json_decode($response['body'],true);
-		if ($response_decoded == NULL) {
+		if ($response_decoded == NULL || empty($response_decoded)) {
 			$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
 			return False;
 		} else if(array_key_exists("message",$response_decoded)) {
