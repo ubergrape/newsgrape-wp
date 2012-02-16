@@ -369,6 +369,10 @@ function ngcp_display_options() {
 							<span class="description">
 							<?php _e('Any post that has <em>at least one</em> of the above categories selected will be crossposted.'); ?><br />
 							</span>
+							<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "Opinion", what is a "Creative Article"?', 'ngcp'); ?></a>
+							<div id="ngcp-help-text" class="hide-if-js">
+								<?php _e('Opinion ....', 'ngcp'); //TODO explain ?>
+							</div>
 							</td>
 						</tr>
 					</table>
@@ -411,7 +415,12 @@ function ngcp_display_options() {
 	</form>
 	<script type="text/javascript">
 	jQuery(document).ready(function($){
-		$(function () { // this line makes sure this code runs on page load
+		$(function () {
+			$('#ngcp-help').click(function(event) {
+					event.preventDefault();
+					$('#ngcp-help-text').slideDown('fast');
+					$(this).hide();
+				});
 			$('.checkall').click(function () {
 				$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
 			});

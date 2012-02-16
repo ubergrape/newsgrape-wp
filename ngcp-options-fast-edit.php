@@ -59,10 +59,10 @@ function ngcp_display_fast_edit() {
 		
 		<h2><?php _e('Newsgrape Crossposter Fast Edit Articles', 'ngcp'); ?></h2>
 		
-		<a id="ngcp-help" href="#" class="hide-if-no-js">What is "Opinion", what is "Creative-Article"?</a>
+		<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "Opinion", what is a "Creative Article"?', 'ngcp'); ?></a>
 
 		<div id="ngcp-help-text" class="hide-if-js">
-		Opinion ....
+		<?php _e('Opinion ....', 'ngcp'); //TODO explain ?>
 		</div>
 		
 		
@@ -130,7 +130,8 @@ function ngcp_display_fast_edit() {
 	<script type="text/javascript">
 		jQuery(document).ready(function($){
 			$(function () {
-				$('#ngcp-help').click(function () {
+				$('#ngcp-help').click(function(event) {
+					event.preventDefault();
 					$('#ngcp-help-text').slideDown('fast');
 					$(this).hide();
 				});
