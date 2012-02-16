@@ -15,7 +15,6 @@ function ngcp_get_options() {
 			'skip_cats'			=> array(),
 			'type'				=> array(),
 			'header_loc'		=> 0,		// 0 means top, 1 means bottom
-			'custom_header'		=> '',
 			'cut_text'			=> __('Read the rest of this entry &raquo;', 'ngcp'),
 			'languages'			=> array(),
 			'language'			=> substr(get_bloginfo('language'),0,2),
@@ -59,7 +58,7 @@ function ngcp_validate_options($input) {
 	if (isset($input['delete_blog_id'])) {
 		delete_option('ngcp_blog_id');
 	}
-	
+
 	$options = ngcp_get_options();
 	
 	error_log(var_export($input['languages']));
@@ -101,9 +100,6 @@ function ngcp_validate_options($input) {
 
 		// trim and stripslash
 		if (!empty($input['username']))		$input['username'] = 		trim($input['username']);
-		if (!empty($input['community']))	$input['community'] = 		trim($input['community']);
-		if (!empty($input['custom_name']))	$input['custom_name'] = 	trim(stripslashes($input['custom_name']));
-		if (!empty($input['custom_header'])) $input['custom_header'] = 	trim(stripslashes($input['custom_header']));
 
 		if (isset($input['crosspost_all'])) {
 			$msg[] .= __('Settings saved.', 'ngcp');
@@ -135,16 +131,6 @@ function ngcp_add_pages() {
 	add_action("admin_head-$pg", 'ngcp_settings_css');
 	// register setting
 	add_action( 'admin_init', 'register_ngcp_settings' );
-	
-	// Help screen //TODO
-	$text = '<h3>'.__('How To', 'ngcp')."</h3>";
-	$text .= 'help help help';
-	$text .= '<h3>' . __( 'More Help', 'ngcp' ) . '</h3>';
-	$text .= '<ul>';
-	$text .= '<li><a href="http://www.newsgrape.com">' . __( 'Newsgrape.com', 'ngcp' ) . '</a></li>';
-	$text .= '</ul>';
-
-	add_contextual_help( $pg, $text );	
 }
 
 // Add link to options page from plugin list
