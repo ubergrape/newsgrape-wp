@@ -72,6 +72,14 @@ function ngcp_validate_options($input) {
 			$input[$field] = $options[$field];
 		}
 	}
+	
+	// Logout
+	if (isset($input['logout'])) {
+		$input['api_key'] = "";
+		
+		$msg[] .=  __('Disconnected from Newsgrape...'.$input['api_key'], 'ngcp');
+		$msgtype = 'updated';
+	}
 
 	// If we're handling a submission, save the data
 	if (isset($input['update_ngcp_options']) || isset($input['crosspost_all']) || isset($input['delete_all'])) {
