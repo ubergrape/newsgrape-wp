@@ -8,20 +8,19 @@ class NGCP_Core_Controller {
 		
 		$post = new NGCP_Post($post_ID);
 		
-		
 		if (!$post->should_be_crossposted()) {
-			NGCP_Core_Controller::debug("post -> STOP");
+			NGCP_Core_Controller::debug("post -> STOP (should not be crossposted)");
 			return $post_ID;
 		}
 		
 		if ($post->should_be_deleted_because_category_changed()) {
-			NGCP_Core_Controller::debug("post -> delete");
+			NGCP_Core_Controller::debug("post -> delete (should be deleted)");
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
 		if ($post->was_crossposted()) {
-			NGCP_Core_Controller::debug("post -> edit");
-			return NGCP_Core_Controller::edit($postID);
+			NGCP_Core_Controller::debug("post -> edit (was crossposted before)");
+			return NGCP_Core_Controller::edit($post_ID);
 		}
 		
 		$api = new NGCP_API();
@@ -38,12 +37,12 @@ class NGCP_Core_Controller {
 		$post = new NGCP_Post($post_ID);
 		
 		if (!$post->was_crossposted()) {
-			NGCP_Core_Controller::debug("edit -> STOP");
-			return $post_ID;
+			NGCP_Core_Controller::debug("edit -> post (was never crossposted before)");
+			return NGCP_Core_Controller::post($post_ID);
 		}
 		
 		if ($post->should_be_deleted_because_private()) {
-			NGCP_Core_Controller::debug("edit -> delete");
+			NGCP_Core_Controller::debug("edit -> delete (should be deleted)");
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
@@ -61,7 +60,7 @@ class NGCP_Core_Controller {
 		$post = new NGCP_Post($post_ID);
 		
 		if ($post->was_never_crossposted()) {
-			NGCP_Core_Controller::debug("delete -> STOP");
+			NGCP_Core_Controller::debug("delete -> STOP (was never crossposted before)");
 			return $post_ID;
 		}
 		
@@ -86,12 +85,13 @@ class NGCP_Core_Controller {
 		);
 		
 		foreach ($meta_keys as $meta_key) {
+			$meta_value = 0;
 			if (isset($_POST[$meta_key])) {
 				$meta_value = $_POST[$meta_key];
 				if ('on' == $meta_value) { $meta_value = 1; }
 				if ('off' == $meta_value) { $meta_value = 0; }
-				update_post_meta($post_ID, $meta_key, $meta_value);
 			}
+			update_post_meta($post_ID, $meta_key, $meta_value);
 		}
 		
 		return $post_ID;

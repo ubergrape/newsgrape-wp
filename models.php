@@ -9,7 +9,7 @@ function base64_encode_image ($filename=string,$filetype=string) {
 
 class NGCP_Post {
 	public $wp_post;
-	public $wp_id;
+	public $wp_id = 0;
 	public $id = 0;
 	public $wp_type;
 	public $slug = "";
@@ -43,7 +43,7 @@ class NGCP_Post {
 		$the_content = str_replace(']]>', ']]&gt;', $the_content);
 		
 		$this->wp_post		= $wp_post;
-		$this->wp_id		= (int) $wp_post_id;
+		$this->wp_id		= $wp_post_id;
 		$this->id			= get_post_meta($wp_post_id, 'ngcp_id', true);
 		$this->wp_type		= $wp_post->post_type;
 		$this->slug			= $wp_post->post_name;
@@ -103,14 +103,13 @@ class NGCP_Post {
 	}
 	
 	function should_be_crossposted() {
-		return True; //TODO testing
 		// If the post was manually set to not be crossposted,
 		// or nothing was set and the default is not to crosspost,
 		// or it's private and the default is not to crosspost private posts, give up now
 		
 		if (
 			0 == $this->options['crosspost'] ||
-			get_post_meta($this->wp_id, 'ngcp_no', true) ||
+			0 == get_post_meta($this->wp_id, 'ngcp_crosspost', true) ||
 			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no')
 		) {
 			return False;
@@ -120,7 +119,6 @@ class NGCP_Post {
 	}
 	
 	function should_be_deleted_because_private(){
-		return False; //TODO testing
 		// If ...
 		// - It's changed to private, and we've chosen not to crosspost private entries
 		// - It now isn't published or private (trash, pending, draft, etc.)
@@ -129,30 +127,27 @@ class NGCP_Post {
 		if (
 			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no') || 
 			('publish' != $this->post_status && 'private' != $this->post_status) || 
-			1 == get_post_meta($this->wp_id, 'ngcp_no', true)
+			0 == get_post_meta($this->wp_id, 'ngcp_crosspost', true)
 		) {
-			return False;
+			return True;
 		}
 		
-		return True;
+		return False;
 	}
 	
 	function should_be_deleted_because_category_changed() {
-		return False; //TODO testing
 		// If the post shows up in the forbidden category list and it has been
 		// crossposted before (so the forbidden category list must have changed),
 		// delete the post. Otherwise, just give up now
-		$should_be_deleted = True;
 
 		$postcats = wp_get_post_categories($this->wp_id);
 		foreach($postcats as $cat) {
-			if(in_array($cat, $this->options['categories'])) {
-				$should_be_deleted = False;
-				break; // decision made and cannot be altered, fly on
+			if(in_array($cat, $this->options['skip_cats'])) {
+				return True;
 			}
 		}
 
-		return $should_be_deleted;
+		return False;
 	}
 	
 	function was_crossposted() {
