@@ -70,7 +70,7 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
 	
 	if (!array_key_exists("ngcp_crosspost",$post_meta)) {
-		if("published" != get_post_status($post->ID) && !$ngcp_id) {
+		if('published' != get_post_status($post->ID) && 'auto-draft' != get_post_status($post->ID) && !$ngcp_id) {
 			$ngcp_crosspost = 0;
 		} else {
 			$ngcp_crosspost = $options['crosspost'];
