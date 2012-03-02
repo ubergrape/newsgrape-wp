@@ -164,10 +164,10 @@ class NGCP_API {
 	}
 	
 	function get_creative_categories() {
-		$response = $this->get_get('creative_categories/');
+		$response = $this->get_get('creative_categories/?format=json');
 		$output = array();
 		if ($response) {
-			foreach ($response as $cat) {
+			foreach ($response['objects'] as $cat) {
 				$output[$cat['uuid']] = $cat['name'];
 			}
 		}
