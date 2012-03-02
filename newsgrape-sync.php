@@ -256,7 +256,7 @@ function ngcp_inner_meta_box($post) {
 
 		jQuery('.cancel-ngcp-type', '#ngcp-type-select').click(function() {
 			jQuery('#ngcp-type-select').slideUp('fast');
-			jQuery('#ngcp_type').val(jQuery('#hidden_ngcp_type').val());
+			jQuery('#ngcp_type_' + jQuery('#hidden_ngcp_type').val()).prop('checked', true);
 			jQuery('#ngcp-type-select').siblings('a.edit-ngcp-type').show();
 			ngcpUpdateText();
 			return false;
