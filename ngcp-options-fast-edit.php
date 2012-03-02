@@ -8,8 +8,8 @@ function ngcp_validate_fe_options($input) {
 	
 	$options = ngcp_get_options();
 	
-	foreach ($input['crosspost'] as $post_id => $value) {
-		update_post_meta($post_id, 'ngcp_crosspost', $value);
+	foreach ($input['sync'] as $post_id => $value) {
+		update_post_meta($post_id, 'ngcp_sync', $value);
 	}
 	
 	foreach ($input['type'] as $post_id => $value) {
@@ -57,7 +57,7 @@ function ngcp_display_fast_edit() {
 		$posts = query_posts('posts_per_page=-1');
 		?>
 		
-		<h2><?php _e('Newsgrape Crossposter Fast Edit Articles', 'ngcp'); ?></h2>
+		<h2><?php _e('Newsgrape Syncer Fast Edit Articles', 'ngcp'); ?></h2>
 		
 		<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "Opinion", what is a "Creative Article"?', 'ngcp'); ?></a>
 
@@ -71,8 +71,8 @@ function ngcp_display_fast_edit() {
 				<td>Edit All</td>
 				<td>
 					<label>
-						<input name="ngcp-crosspost-all" id="ngcp-crosspost-all" type="checkbox" value="1" />
-						<?php _e('Crosspost all', 'ngcp'); ?>
+						<input name="ngcp-sync-all" id="ngcp-sync-all" type="checkbox" value="1" />
+						<?php _e('Sync all', 'ngcp'); ?>
 					</label>
 				</td>
 				<td>
@@ -104,8 +104,8 @@ function ngcp_display_fast_edit() {
 					<span class="ngcp-the-date"><?php the_time(get_option('date_format')); ?></span>
 				<td>
 					<label>
-						<input class="ngcp-crosspost" name="ngcp_fe[crosspost][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_crosspost'], 1); ?> />
-						<?php _e('Crosspost to Newsgrape', 'ngcp'); ?>
+						<input class="ngcp-sync" name="ngcp_fe[sync][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_sync'], 1); ?> />
+						<?php _e('Sync to Newsgrape', 'ngcp'); ?>
 					</label>
 				</td>
 				<td>
@@ -142,11 +142,11 @@ function ngcp_display_fast_edit() {
 						$(this).siblings('.ngcp-select-cat').hide();
 					}
 				});
-				$('#ngcp-crosspost-all').change(function () {
+				$('#ngcp-sync-all').change(function () {
 					if (this.checked) {
-						$('.ngcp-crosspost').prop("checked", true);
+						$('.ngcp-sync').prop("checked", true);
 					} else {
-						$('.ngcp-crosspost').prop("checked", false);
+						$('.ngcp-sync').prop("checked", false);
 					}
 				});
 				$('#ngcp-type-all').change(function () {

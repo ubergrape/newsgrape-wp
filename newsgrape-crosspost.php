@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: Newsgrape Crossposter
-Description: The Newsgrape Crosstposts automatically crossposts wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
+Plugin Name: Newsgrape Syncer
+Description: The Newsgrape Crosstposts automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
 Version: 1.0
 Author: Stefan Kröner
 Author URI: http://www.kanen.at/
@@ -69,14 +69,14 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_category = (array_key_exists("ngcp_category",$post_meta)) ? $post_meta['category'][0] : false;
 	$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
 	
-	if (!array_key_exists("ngcp_crosspost",$post_meta)) {
+	if (!array_key_exists("ngcp_sync",$post_meta)) {
 		if('published' != get_post_status($post->ID) && 'auto-draft' != get_post_status($post->ID) && !$ngcp_id) {
-			$ngcp_crosspost = 0;
+			$ngcp_sync = 0;
 		} else {
-			$ngcp_crosspost = $options['crosspost'];
+			$ngcp_sync = $options['sync'];
 		}
 	} else {
-			$ngcp_crosspost = $post_meta['ngcp_crosspost'][0];
+			$ngcp_sync = $post_meta['ngcp_sync'][0];
 	}
 	
 	if (!array_key_exists("ngcp_type",$post_meta)) {
@@ -98,13 +98,13 @@ function ngcp_inner_meta_box($post) {
 		    <p><strong class="on-newsgrape">On Newsgrape: </strong><a href="<?php echo $ngcp_display_url?>"><?php echo substr($ngcp_display_url,11); ?></a></p>
 		    <?php if(NGCP_DEBUG) { echo "<p>NG ID: $ngcp_id</p>"; }?>
 		<?php else: ?>
-		    <em><?php _e('Not crossposted yet.', 'ngcp');?></em>
+		    <em><?php _e('Not synced yet.', 'ngcp');?></em>
 		<?php endif; ?>
 	</div>
 	
 	<div class="misc-pub-section">
 		<div class="ngcp-setting">
-            <label><input type="checkbox" name="ngcp_crosspost" id="ngcp_crosspost" <?php checked($ngcp_crosspost, '1'); ?>/><?php _e('Crosspost', 'ngcp'); ?></label>
+            <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync, '1'); ?>/><?php _e('Sync', 'ngcp'); ?></label>
 		</div>
     </div>
 	
@@ -431,15 +431,15 @@ function ngcp_print_notices() {
 			$code = trim( (string)$code);
 			switch ($code) {
 				case 'no_api_key' :
-					$msg .= sprintf(__('Could not crosspost to Newsgrape. Please got to the <a href="%s">Newsgrape options screen</a> and enter enter your Newsgrape username and password.', 'ngcp'), 'options-general.php?page=ngcp-options.php');
+					$msg .= sprintf(__('Could not sync to Newsgrape. Please got to the <a href="%s">Newsgrape options screen</a> and enter enter your Newsgrape username and password.', 'ngcp'), 'options-general.php?page=ngcp-options.php');
 					$class = 'error';
 					break;
 				case 'create' : 
-					$msg .= sprintf(__('Could not crosspost to Newsgrape. (Error: %s)', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
+					$msg .= sprintf(__('Could not sync to Newsgrape. (Error: %s)', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
 					$class = 'error';
 					break;
 				case 'update' : 
-					$msg .= sprintf(__('Could not crosspost the updated entry to (Error: %s)', 'ngcp'), $error );
+					$msg .= sprintf(__('Could not sync the updated entry to (Error: %s)', 'ngcp'), $error );
 					$class = 'error';
 					break;
 				default: 
@@ -450,7 +450,7 @@ function ngcp_print_notices() {
 		}
 	}
 	if ($class == 'updated') // still good?
-		$msg = sprintf(__("Crossposted to Newsgrape.", 'ngcp')); 
+		$msg = sprintf(__("Synced to Newsgrape.", 'ngcp')); 
 	echo '<div class="'.$class.'"><p>'.$msg.'</p></div>';
 	update_option('ngcp_error_notice', ''); // turn off the message
 }

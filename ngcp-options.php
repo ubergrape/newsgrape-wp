@@ -5,7 +5,7 @@ function ngcp_get_options() {
 	$defaults = array(
 			'username'			=> '',
 			'api_key'			=> '',
-			'crosspost'			=> 1,
+			'sync'			=> 1,
 			'published_old'		=> 0,
 			'privacy'			=> 'public',
 			'privacy_private'	=> 'ngcp_no',
@@ -78,10 +78,10 @@ function ngcp_validate_options($input) {
 	}
 
 	// If we're handling a submission, save the data
-	if (isset($input['update_ngcp_options']) || isset($input['crosspost_all']) || isset($input['delete_all'])) {
+	if (isset($input['update_ngcp_options']) || isset($input['sync_all']) || isset($input['delete_all'])) {
 		
 		if (isset($input['delete_all'])) {
-			// If we need to delete all, grab a list of all entries that have been crossposted
+			// If we need to delete all, grab a list of all entries that have been synced
 			$beenposted = get_posts(array('meta_key' => 'ngcp_id', 'post_type' => 'any', 'post_status' => 'any', 'numberposts' => '-1'));
 			foreach ($beenposted as $post) {
 				$repost_ids[] = $post->ID;
@@ -98,7 +98,7 @@ function ngcp_validate_options($input) {
 		// trim and stripslash
 		if (!empty($input['username']))		$input['username'] = 		trim($input['username']);
 
-		if (isset($input['crosspost_all'])) {
+		if (isset($input['sync_all'])) {
 			$msg[] .= __('Settings saved.', 'ngcp');
 			$msg[] .= ngcp_post_all();
 			$msgtype = 'updated';
@@ -106,7 +106,7 @@ function ngcp_validate_options($input) {
 		
 	} // if updated
 	unset($input['delete_all']);
-	unset($input['crosspost_all']);
+	unset($input['sync_all']);
 	unset($input['update_ngcp_options']);
 		
 	// Send custom updated message
@@ -149,7 +149,7 @@ function ngcp_display_options() {
 		settings_errors( 'ngcp' );
 		$options = ngcp_get_options();
 		?>
-		<h2><?php _e('Newsgrape Crossposter Options', 'ngcp'); ?></h2>
+		<h2><?php _e('Newsgrape Syncer Options', 'ngcp'); ?></h2>
 		
 		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
 		
@@ -245,16 +245,16 @@ function ngcp_display_options() {
 				<legend><h3><?php _e('Main Options', 'ngcp'); ?></h3></legend>
 				<table class="form-table ui-tabs-panel">
 					<tr valign="top">
-						<th scope="row"><?php _e('Crosspost', 'ngcp'); ?></th>
+						<th scope="row"><?php _e('Sync', 'ngcp'); ?></th>
 						<td>
 						<label>
-							<input name="ngcp[crosspost]" type="checkbox" value="1" <?php checked($options['crosspost'], 1); ?>/>
-							<?php _e('Crosspost to Newsgrape', 'ngcp'); ?>
+							<input name="ngcp[sync]" type="checkbox" value="1" <?php checked($options['sync'], 1); ?>/>
+							<?php _e('Sync to Newsgrape', 'ngcp'); ?>
 						</label>
 						<br />
 						<span class="description">
 						<?php
-						_e('You can enable/disable crossposting for individual posts.', 'ngcp');
+						_e('You can enable/disable syncing for individual posts.', 'ngcp');
 						?>
 						</span>
 						</ td>
@@ -263,7 +263,7 @@ function ngcp_display_options() {
 						<th scope="row"><?php _e('Comments', 'ngcp'); ?></th>
 						<td>
 						<label>
-							<input name="ngcp[comments]" type="checkbox" value="1" <?php checked($options['crosspost'], 1); ?>/>
+							<input name="ngcp[comments]" type="checkbox" value="1" <?php checked($options['sync'], 1); ?>/>
 							<?php _e('Newsgrape Comments', 'ngcp'); ?>
 						</label>
 						<br />
@@ -311,7 +311,7 @@ function ngcp_display_options() {
 								<br />
 								<label>
 									<input name="ngcp[privacy_private]" type="radio" value="ngcp_no" <?php checked($options['privacy_private'], 'ngcp_no'); ?>/>
-									<?php _e('Do not crosspost at all', 'ngcp'); ?>
+									<?php _e('Do not sync at all', 'ngcp'); ?>
 								</label>
 							</td>
 						</tr>
@@ -364,7 +364,7 @@ function ngcp_display_options() {
 									?>
 								</ul>
 							<span class="description">
-							<?php _e('Any post that has <em>at least one</em> of the above categories selected will be crossposted.'); ?><br />
+							<?php _e('Any post that has <em>at least one</em> of the above categories selected will be synced.'); ?><br />
 							</span>
 							<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "Opinion", what is a "Creative Article"?', 'ngcp'); ?></a>
 							<div id="ngcp-help-text" class="hide-if-js">
@@ -376,18 +376,18 @@ function ngcp_display_options() {
 				</fieldset>
 				
 				<!--<fieldset class="options">
-					<legend><h3><?php _e('Crosspost or delete all entries', 'ngcp'); ?></h3></legend>
+					<legend><h3><?php _e('Sync or delete all entries', 'ngcp'); ?></h3></legend>
 					<table class="form-table ui-tabs-panel">
 						<tr valign="top">
 							<th scope="row"> </th>
 							<td>
-							<?php printf(__('If you have changed your username, you might want to crosspost all your entries, or delete all the old ones from your journal. These buttons are hidden so you don\'t press them by accident. <a href="%s" %s>Show the buttons.</a>', 'ngcp'), '#scary-buttons', 'onclick="javascript: jQuery(\'#scary-buttons\').show(\'fast\');"'); ?>
+							<?php printf(__('If you have changed your username, you might want to sync all your entries, or delete all the old ones from your journal. These buttons are hidden so you don\'t press them by accident. <a href="%s" %s>Show the buttons.</a>', 'ngcp'), '#scary-buttons', 'onclick="javascript: jQuery(\'#scary-buttons\').show(\'fast\');"'); ?>
 							</td>
 						</tr>
 						<tr valign="top" id="scary-buttons">
 							<th scope="row"> </th>
 							<td>
-							<input type="submit" name="ngcp[crosspost_all]" id="crosspost_all" value="<?php esc_attr_e('Update options and crosspost all WordPress entries', 'ngcp'); ?>" class="button-secondary" />
+							<input type="submit" name="ngcp[sync_all]" id="sync_all" value="<?php esc_attr_e('Update options and sync all WordPress entries', 'ngcp'); ?>" class="button-secondary" />
 							<input type="submit" name="ngcp[delete_all]" id="delete_all" value="<?php esc_attr_e('Update options and delete all journal entries', 'ngcp'); ?>" class="button-secondary" />
 							</td>
 						</tr>

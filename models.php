@@ -102,14 +102,14 @@ class NGCP_Post {
 		return http_build_query($data);
 	}
 	
-	function should_be_crossposted() {
-		// If the post was manually set to not be crossposted,
-		// or nothing was set and the default is not to crosspost,
-		// or it's private and the default is not to crosspost private posts, give up now
+	function should_be_synced() {
+		// If the post was manually set to not be synced,
+		// or nothing was set and the default is not to sync,
+		// or it's private and the default is not to sync private posts, give up now
 		
 		if (
-			0 == $this->options['crosspost'] ||
-			0 == get_post_meta($this->wp_id, 'ngcp_crosspost', true) ||
+			0 == $this->options['sync'] ||
+			0 == get_post_meta($this->wp_id, 'ngcp_sync', true) ||
 			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no')
 		) {
 			return False;
@@ -120,14 +120,14 @@ class NGCP_Post {
 	
 	function should_be_deleted_because_private(){
 		// If ...
-		// - It's changed to private, and we've chosen not to crosspost private entries
+		// - It's changed to private, and we've chosen not to sync private entries
 		// - It now isn't published or private (trash, pending, draft, etc.)
-		// - It was crossposted but now it's set to not crosspost
+		// - It was synced but now it's set to not sync
 		
 		if (
 			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no') || 
 			('publish' != $this->post_status && 'private' != $this->post_status) || 
-			0 == get_post_meta($this->wp_id, 'ngcp_crosspost', true)
+			0 == get_post_meta($this->wp_id, 'ngcp_sync', true)
 		) {
 			return True;
 		}
@@ -137,7 +137,7 @@ class NGCP_Post {
 	
 	function should_be_deleted_because_category_changed() {
 		// If the post shows up in the forbidden category list and it has been
-		// crossposted before (so the forbidden category list must have changed),
+		// synced before (so the forbidden category list must have changed),
 		// delete the post. Otherwise, just give up now
 
 		$postcats = wp_get_post_categories($this->wp_id);
@@ -150,12 +150,12 @@ class NGCP_Post {
 		return False;
 	}
 	
-	function was_crossposted() {
-		return !$this->was_never_crossposted();
+	function was_synced() {
+		return !$this->was_never_synced();
 		
 	}
 	
-	function was_never_crossposted() {
+	function was_never_synced() {
 	    return ("" == $this->id || null == $this->id || 0 == $this->id);
 	}
 }
