@@ -1,5 +1,5 @@
 === Newsgrape Crosspost ===
-Contributors: sk7
+Contributors: Newsgrape.com, sk7
 Tags: newsgrape, newsgrape.com, ng, crosspost
 Requires at least: 3.2
 Tested up to: 3.3
