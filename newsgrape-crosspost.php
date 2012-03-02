@@ -312,6 +312,9 @@ function ngcp_css() { ?>
 		div#side-info-column div.ngcp-radio-column ul { margin: 1em; }
 		p.ngcp-cut-text { clear: both; }
 		input#ngcp_cut_text { width: 90%; }
+		#ngcp_license {
+			max-width: 100%;
+		}
 	</style>
 <?php 
 }

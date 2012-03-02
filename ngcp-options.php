@@ -21,7 +21,7 @@ function ngcp_get_options() {
 			'licenses'			=> array(),
 			'categories'		=> array(),
 			'ng_category'		=> array(),
-			'license'			=> ''
+			'license'			=> '1'
 			
 	);
 	
