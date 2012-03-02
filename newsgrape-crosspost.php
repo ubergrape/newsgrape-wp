@@ -95,7 +95,7 @@ function ngcp_inner_meta_box($post) {
 	
     <div class="misc-pub-section ngcp-info">    	
 		<?php if($ngcp_display_url): ?>
-		    <p><a href="<?php echo $ngcp_display_url?>"><?php echo $ngcp_display_url?></a></p>
+		    <p><strong class="on-newsgrape">On Newsgrape: </strong><a href="<?php echo $ngcp_display_url?>"><?php echo substr($ngcp_display_url,11); ?></a></p>
 		    <?php if(NGCP_DEBUG) { echo "<p>NG ID: $ngcp_id</p>"; }?>
 		<?php else: ?>
 		    <em><?php _e('Not crossposted yet.', 'ngcp');?></em>
@@ -306,6 +306,9 @@ function ngcp_css() { ?>
 		}
 		.ngcp-info a {
 			word-break: break-word;
+		}
+		.ngcp-info .on-newsgrape {
+			display: block;
 		}
 		div.ngcp-radio-column ul li { list-style: none; padding: 0; text-indent: 0; margin-left: 0; }
 		div#post-body-content div.ngcp-radio-column, div#post-body-content p.ngcp-userpics { float: left; width: 22%; margin-right: 2%; }
