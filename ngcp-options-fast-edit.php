@@ -105,7 +105,7 @@ function ngcp_display_fast_edit() {
 				<td>
 					<label>
 						<input class="ngcp-sync" name="ngcp_fe[sync][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_sync'], 1); ?> />
-						<?php _e('Sync to Newsgrape', 'ngcp'); ?>
+						<?php _e('Sync with Newsgrape', 'ngcp'); ?>
 					</label>
 				</td>
 				<td>

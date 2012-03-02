@@ -431,11 +431,11 @@ function ngcp_print_notices() {
 			$code = trim( (string)$code);
 			switch ($code) {
 				case 'no_api_key' :
-					$msg .= sprintf(__('Could not sync to Newsgrape. Please got to the <a href="%s">Newsgrape options screen</a> and enter enter your Newsgrape username and password.', 'ngcp'), 'options-general.php?page=ngcp-options.php');
+					$msg .= sprintf(__('Could not sync with Newsgrape. Please got to the <a href="%s">Newsgrape options screen</a> and enter enter your Newsgrape username and password.', 'ngcp'), 'options-general.php?page=ngcp-options.php');
 					$class = 'error';
 					break;
 				case 'create' : 
-					$msg .= sprintf(__('Could not sync to Newsgrape. (Error: %s)', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
+					$msg .= sprintf(__('Could not sync with Newsgrape. (Error: %s)', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
 					$class = 'error';
 					break;
 				case 'update' : 

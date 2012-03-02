@@ -249,7 +249,7 @@ function ngcp_display_options() {
 						<td>
 						<label>
 							<input name="ngcp[sync]" type="checkbox" value="1" <?php checked($options['sync'], 1); ?>/>
-							<?php _e('Sync to Newsgrape', 'ngcp'); ?>
+							<?php _e('Sync with Newsgrape', 'ngcp'); ?>
 						</label>
 						<br />
 						<span class="description">
