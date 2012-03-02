@@ -14,7 +14,7 @@ class NGCP_Core_Controller {
 		}
 		
 		if ($post->should_be_deleted_because_category_changed()) {
-			NGCP_Core_Controller::debug("post -> delete (should be deleted)");
+			NGCP_Core_Controller::debug("post -> delete (should be deleted, category)");
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
@@ -42,7 +42,7 @@ class NGCP_Core_Controller {
 		}
 		
 		if ($post->should_be_deleted_because_private()) {
-			NGCP_Core_Controller::debug("edit -> delete (should be deleted)");
+			NGCP_Core_Controller::debug("edit -> delete (should be deleted, private)");
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
