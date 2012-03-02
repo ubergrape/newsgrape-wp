@@ -61,9 +61,6 @@ function ngcp_validate_options($input) {
 
 	$options = ngcp_get_options();
 	
-	error_log(var_export($input['languages']));
-	error_log(var_export($options['languages']));
-	
 	// Do not lose settings
 	$fields = array('languages', 'licenses', 'categories', 'api_key');
 	foreach ($fields as $field) {
