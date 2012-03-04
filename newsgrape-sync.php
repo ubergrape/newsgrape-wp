@@ -93,7 +93,7 @@ function ngcp_inner_meta_box($post) {
 
 	<?php wp_nonce_field( 'ngcp_metabox', 'ngcp_nonce' ); ?>
 	
-    <div class="misc-pub-section ngcp-info">    	
+    <div class="misc-pub-section ngcp-info <?php if($ngcp_display_url) { echo "synced"; } ?>">    	
 		<?php if($ngcp_display_url): ?>
 		    <p><strong class="on-newsgrape">On Newsgrape: </strong><a href="<?php echo $ngcp_display_url?>"><?php echo substr($ngcp_display_url,11); ?></a></p>
 		    <?php if(NGCP_DEBUG) { echo "<p>NG ID: $ngcp_id</p>"; }?>
@@ -309,6 +309,9 @@ function ngcp_css() { ?>
 		}
 		.ngcp-info .on-newsgrape {
 			display: block;
+		}
+		.ngcp-info synced{
+			background: #F8FFF7;
 		}
 		div.ngcp-radio-column ul li { list-style: none; padding: 0; text-indent: 0; margin-left: 0; }
 		div#post-body-content div.ngcp-radio-column, div#post-body-content p.ngcp-userpics { float: left; width: 22%; margin-right: 2%; }
