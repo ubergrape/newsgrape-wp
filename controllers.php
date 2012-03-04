@@ -8,8 +8,8 @@ class NGCP_Core_Controller {
 		
 		$post = new NGCP_Post($post_ID);
 		
-		if (!$post->should_be_crossposted()) {
-			NGCP_Core_Controller::debug("post -> STOP (should not be crossposted)");
+		if (!$post->should_be_synced()) {
+			NGCP_Core_Controller::debug("post -> STOP (should not be synced)");
 			return $post_ID;
 		}
 		
@@ -18,8 +18,8 @@ class NGCP_Core_Controller {
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
-		if ($post->was_crossposted()) {
-			NGCP_Core_Controller::debug("post -> edit (was crossposted before)");
+		if ($post->was_synced()) {
+			NGCP_Core_Controller::debug("post -> edit (was synced before)");
 			return NGCP_Core_Controller::edit($post_ID);
 		}
 		
@@ -36,8 +36,8 @@ class NGCP_Core_Controller {
 
 		$post = new NGCP_Post($post_ID);
 		
-		if (!$post->was_crossposted()) {
-			NGCP_Core_Controller::debug("edit -> post (was never crossposted before)");
+		if (!$post->was_synced()) {
+			NGCP_Core_Controller::debug("edit -> post (was never synced before)");
 			return NGCP_Core_Controller::post($post_ID);
 		}
 		
@@ -59,8 +59,8 @@ class NGCP_Core_Controller {
 
 		$post = new NGCP_Post($post_ID);
 		
-		if ($post->was_never_crossposted()) {
-			NGCP_Core_Controller::debug("delete -> STOP (was never crossposted before)");
+		if ($post->was_never_synced()) {
+			NGCP_Core_Controller::debug("delete -> STOP (was never synced before)");
 			return $post_ID;
 		}
 		
@@ -81,7 +81,7 @@ class NGCP_Core_Controller {
 			'ngcp_license',
 			'ngcp_comments',
 			'ngcp_type',
-			'ngcp_crosspost',
+			'ngcp_sync',
 		);
 		
 		foreach ($meta_keys as $meta_key) {
