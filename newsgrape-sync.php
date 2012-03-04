@@ -104,7 +104,7 @@ function ngcp_inner_meta_box($post) {
 	
 	<div class="misc-pub-section">
 		<div class="ngcp-setting">
-            <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync, '1'); ?>/><?php _e('Sync', 'ngcp'); ?></label>
+            <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync, '1'); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?></label>
 		</div>
     </div>
 	
