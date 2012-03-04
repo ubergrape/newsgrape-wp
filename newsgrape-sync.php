@@ -464,6 +464,33 @@ function ngcp_print_notices() {
 	update_option('ngcp_error_notice', ''); // turn off the message
 }
 
+function ngcp_rel_canonical() {
+	global $posts;
+	
+	if ( is_single() || is_page() ) {
+		$id = $posts[0]->ID;
+		$options = ngcp_get_options();
+		$ngcp_display_url = get_post_meta($id, 'ngcp_display_url',true);
+		
+		if (NGCP_DEBUG) {
+			echo "\n<!-- Newsgrape Sync Debug Information";
+			echo "\nGlobal Sync: ".$options['sync'];
+			echo "\nArticle Sync: ".get_post_meta($id, 'ngcp_sync',true)==1;
+			echo "\nNewsgrape URL: ".$ngcp_display_url;
+			echo "-->";
+		}
+		if( 1==$options['sync'] &&
+		    0!==get_post_meta($id, 'ngcp_sync',true) &&
+		    ""!=$ngcp_display_url &&
+		    NULL!=$ngcp_display_url ){
+				echo "\n<link rel='canonical' href='$ngcp_display_url'><!-- Newsgrape Sync-->\n";
+				return;
+		}
+	}
+	
+	rel_canonical();
+}
+
 function ngcp_comments($file) {
 	/*if ( !( is_singular() && ( have_comments() || 'open' == $post->comment_status ) ) ) {
         return;
@@ -524,6 +551,8 @@ add_action('save_post', array($class,'save'));
 add_action('admin_head-post.php', 'ngcp_error_notice');
 add_action('admin_head-post-new.php', 'ngcp_error_notice');
 add_filter('comments_template', 'ngcp_comments');
+remove_action('wp_head', 'rel_canonical');
+add_action('wp_head', 'ngcp_rel_canonical');
 
 
 // Make Plugin Multilingual
