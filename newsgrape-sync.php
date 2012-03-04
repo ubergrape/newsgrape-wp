@@ -166,7 +166,8 @@ function ngcp_inner_meta_box($post) {
     
     
     <div class="misc-pub-section  misc-pub-section-last">
-		<a href="#" id="ngcp_more" class="hide-if-no-js"><?php _e('More', 'ngcp'); ?></a>
+		<a href="#" id="ngcp_more" class="hide-if-no-js"><?php _e('More Settings', 'ngcp'); ?></a>
+		<a href="#" id="ngcp_less" class="hidden"><?php _e('Less Settings', 'ngcp'); ?></a>
         <div id="ngcp_more_inner" class="ngcp-setting hide-if-js">
             <h4>More Settings</h4>
             <label><input type="checkbox" name="ngcp_comments" id="ngcp_comments" <?php checked($ngcp_comments, '1'); ?>>  <?php _e('Allow Comments', 'ngcp'); ?></label><br />
@@ -263,13 +264,18 @@ function ngcp_inner_meta_box($post) {
 		});
 		
 		jQuery('#ngcp_more').click(function() {
-			if (jQuery('#ngcp_more_inner').is(":hidden")) {
-				jQuery('#ngcp_more_inner').slideDown('fast');
-				//jQuery(this).hide();
-			} else {
-				jQuery('#ngcp_more_inner').slideUp('fast');
-			}
+			jQuery('#ngcp_more_inner').slideDown('fast');
+			jQuery(this).hide();
+			jQuery('#ngcp_less').show();
+			return false;
 		});
+		jQuery('#ngcp_less').click(function() {
+			jQuery('#ngcp_more_inner').slideUp('fast');
+			jQuery(this).hide();
+			jQuery('#ngcp_more').show();
+			return false;
+		});
+		
 		
 		jQuery('input[name=ngcp_type]').change(function() {
 			if ('creative' == this.value) {
