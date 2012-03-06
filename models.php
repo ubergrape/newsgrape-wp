@@ -96,7 +96,7 @@ class NGCP_Post {
 			'image_blob'		=> base64_encode_image(get_the_post_thumbnail($this->wp_id)), //TODO thumbnail size?
 			'tags'				=> json_encode($this->tags),
 			'external_post_id'	=> $this->wp_id, // has to be unique in combination with the X-EXTERNAL-ID header
-			'is_creative'		=> $this->is_createive
+			'is_creative'		=> $this->is_creative,
 		);
 		
 		return http_build_query($data);
