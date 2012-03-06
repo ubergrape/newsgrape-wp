@@ -409,10 +409,12 @@ function ngcp_can_replace() {
 	$allow_comments_for_this_post = get_post_meta($id, 'ngcp_comments', true);
 	
 	if(0 == $allow_comments_global){
+		ngcp_report(__FUNCTION__,"global");
 		return false;
 	}
 	
 	if(0 == $allow_comments_for_this_post){
+		ngcp_report(__FUNCTION__,"post");
 		return false;
 	}
 	
