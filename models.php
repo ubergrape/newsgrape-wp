@@ -48,7 +48,7 @@ class NGCP_Post {
 		$this->wp_type		= $wp_post->post_type;
 		$this->slug			= $wp_post->post_name;
 		$this->url			= get_permalink($wp_post_id);
-		$this->status		= $wp_post->post_status;
+		$this->post_status 	= $wp_post->post_status;
 		$this->title		= get_the_title($wp_post_id);
 		$this->title_plain	= strip_tags(@$this->title);
 		$this->content		= $the_content;
