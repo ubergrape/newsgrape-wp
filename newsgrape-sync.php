@@ -95,7 +95,7 @@ function ngcp_inner_meta_box($post) {
 	
     <div class="misc-pub-section ngcp-info <?php if($ngcp_display_url) { echo "synced"; } ?>">    	
 		<?php if($ngcp_display_url): ?>
-		    <p><strong class="on-newsgrape">On Newsgrape: </strong><a href="<?php echo $ngcp_display_url?>"><?php echo substr($ngcp_display_url,11); ?></a></p>
+		    <p><strong class="on-newsgrape">On Newsgrape: </strong><a href="<?php echo $ngcp_display_url?>"><?php echo substr($ngcp_display_url,7); ?></a></p>
 		    <?php if(NGCP_DEBUG) { echo "<p>NG ID: $ngcp_id</p>"; }?>
 		<?php else: ?>
 		    <em><?php _e('Not synced yet.', 'ngcp');?></em>
