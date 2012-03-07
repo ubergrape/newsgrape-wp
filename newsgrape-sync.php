@@ -181,6 +181,7 @@ function ngcp_inner_meta_box($post) {
 	if(NGCP_DEBUG) {
 		echo "<pre>";
 		print_r( $post_meta );
+		echo "ngcp_sync: $ngcp_sync";
 		echo "</pre>";
 		
 	}
