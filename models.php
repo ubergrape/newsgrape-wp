@@ -93,7 +93,7 @@ class NGCP_Post {
 			'description'		=> $this->description,
 			'language'			=> $this->language,
 			'text'				=> $this->content,
-			'image_blob'		=> base64_encode_image(get_the_post_thumbnail($this->wp_id)), //TODO thumbnail size?
+			'image_blob'		=> base64_encode_image(get_attached_file(get_post_thumbnail_id($this->wp_id))), //TODO thumbnail size?
 			'tags'				=> json_encode($this->tags),
 			'external_post_id'	=> $this->wp_id, // has to be unique in combination with the X-EXTERNAL-ID header
 			'external_post_url'	=> get_permalink($this->wp_id),
