@@ -11,12 +11,6 @@ Syncs your WP articles to newsgrape.com
 
 The Newsgrape Crosstposts automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
 
-= Features =
-
-* 1
-* sdcyc
-* sdfdsaf
-
 = Thanks = 
 
 Thanks to the great [Newsgrape team](http://www.newsgrape.com/p/about-us/) for collaborating and providing its API.
