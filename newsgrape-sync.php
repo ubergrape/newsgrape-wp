@@ -7,7 +7,7 @@ Author: Stefan Kröner
 Author URI: http://www.kanen.at/
 */
 
-define('NGCP_DEBUG', true);
+define('NGCP_DEBUG', false);
 
 $ngcp_dir = dirname(__FILE__);
 
