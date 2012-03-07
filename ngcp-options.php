@@ -377,7 +377,11 @@ function ngcp_display_options() {
 							</span>
 							<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "Opinion", what is a "Creative Article"?', 'ngcp'); ?></a>
 							<div id="ngcp-help-text" class="hide-if-js">
-								<?php _e('Opinion ....', 'ngcp'); //TODO explain ?>
+								<?php _e('What is "Opinion"?<br />
+In school you write "opinion essays" - an "Opinion" is basically the same thing. It expresses your personal point of view on some controversial topic. It might be in relation to a certain article or comment. However you could also just share your thoughts about something you heard about. The main difference to „Creative“ is that you cannot just make things up – an „Opinion“ is non-fictional so you should keep the facts straight.<br />
+<br />
+What is "Creative"?<br />
+A „Creative“ is any text that you just make up in your mind. When writing a "Creative" you can let your mind wander – it is fictional and you can write about whatever you want. It is usually not related to a certain article or comment. It might be a short story, parody or a poem.', 'ngcp'); ?>
 							</div>
 							</td>
 						</tr>
