@@ -17,6 +17,9 @@ class NGCP_API {
 		 * This option will not be deleted when uninstalling the plugin*/
 		$this->external_id = get_option('ngcp_blog_id');
 		
+		/* Blog Name */
+		$this->external_name = get_bloginfo('name');
+		
 		if (null==$username) {
 			$options = ngcp_get_options();
 			$this->username = $options['username'];
@@ -211,7 +214,8 @@ class NGCP_API {
 			'X-NEWSGRAPE-KEY' => $this->api_key,
 			'X-CLIENT' => $this->client,
 			'X-EXTERNAL-ID' => $this->external_id,
-			'X-BASE-URL' => home_url()
+			'X-BASE-URL' => home_url(),
+			'X-EXTERNAL-NAME' => $this->external_name,
 		);
 		
 		if(NGCP_DEBUG) {
