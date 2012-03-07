@@ -104,7 +104,7 @@ function ngcp_display_fast_edit() {
 					<span class="ngcp-the-date"><?php the_time(get_option('date_format')); ?></span>
 				<td>
 					<label>
-						<input class="ngcp-sync" name="ngcp_fe[sync][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_sync'], 1); ?> />
+						<input class="ngcp-sync" name="ngcp_fe[sync][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_sync'][0], 1); ?> />
 						<?php _e('Sync with Newsgrape', 'ngcp'); ?>
 					</label>
 				</td>

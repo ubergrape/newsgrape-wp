@@ -80,6 +80,15 @@ function ngcp_validate_options($input) {
 	// If we're handling a submission, save the data
 	if (isset($input['update_ngcp_options']) || isset($input['sync_all']) || isset($input['delete_all'])) {
 		
+		// Uncheck boxes
+		if (!isset($input['sync'])) {
+			$input['sync'] = '0';
+		}
+		
+		if (!isset($input['comments'])) {
+			$input['comments'] = '0';
+		}
+				
 		if (isset($input['delete_all'])) {
 			// If we need to delete all, grab a list of all entries that have been synced
 			$beenposted = get_posts(array('meta_key' => 'ngcp_id', 'post_type' => 'any', 'post_status' => 'any', 'numberposts' => '-1'));
@@ -263,7 +272,7 @@ function ngcp_display_options() {
 						<th scope="row"><?php _e('Comments', 'ngcp'); ?></th>
 						<td>
 						<label>
-							<input name="ngcp[comments]" type="checkbox" value="1" <?php checked($options['sync'], 1); ?>/>
+							<input name="ngcp[comments]" type="checkbox" value="1" <?php checked($options['comments'], 1); ?>/>
 							<?php _e('Newsgrape Comments', 'ngcp'); ?>
 						</label>
 						<br />
