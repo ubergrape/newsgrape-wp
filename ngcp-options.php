@@ -160,6 +160,8 @@ function ngcp_display_options() {
 		?>
 		<h2><?php _e('Newsgrape Syncer Options', 'ngcp'); ?></h2>
 		
+		<img id="ngcp_header_img" src="<?php echo plugin_dir_url(__FILE__); ?>header.jpeg" />
+		
 		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
 		
 			<?php

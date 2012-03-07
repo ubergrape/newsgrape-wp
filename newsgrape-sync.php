@@ -386,6 +386,11 @@ function ngcp_settings_css() { ?>
 		.options h3 {
 			padding-top: 20px;
 		}
+		#ngcp_header_img {
+			border-radius: 15px;
+			max-width: 100%;
+			height: auto;
+		}
 	</style>
 <?php
 }
