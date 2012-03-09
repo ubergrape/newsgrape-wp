@@ -139,6 +139,61 @@ function ngcp_inner_meta_box($post) {
                     </option>
             <?php endforeach; ?>
 		</select>
+		<a href="#TB_inline?height=100&width=150&inlineId=ngcp-license-info&modal=true" class="thickbox"><?php _e("What do these licenses mean?"); ?></a><br /><br />
+        <div id="ngcp-license-info" class="hide-if-js"><p><?php _e('<h1>Licenses</h1>
+<p><strong>„by“</strong><br/>
+You are free:<br/>
+to <strong>Share</strong> — to copy, distribute and transmit the work<br/>
+to <strong>Remix</strong> — to adapt the work<br/>
+to make <strong>commercial use</strong> of the work<br/>
+Under the following conditions:<br/>
+<strong>Attribution</strong> — You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work.<br/>
+</p>
+<p><strong>„by-nd“</strong><br/>
+You are free:<br/>
+to <strong>Share</strong> — to copy, distribute and transmit the work<br/>
+to make commercial use of the work<br/>
+Under the following conditions:<br/>
+<strong>Attribution</strong> — You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).<br/>
+No Derivative Works — You may not alter, transform, or build upon this work.<br/>
+</p>
+
+<p><strong>„by-nc“</strong><br/>
+You are free:<br/>
+to <strong>Share</strong> — to copy, distribute and transmit the work<br/>
+to <strong>Remix</strong> — to adapt the work<br/>
+Under the following conditions:<br/>
+<strong>Attribution</strong> — You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).<br/>
+Noncommercial — You may not use this work for commercial purposes.<br/>
+</p>
+
+<p><strong>„by-nc-nd“</strong><br/>
+You are free to <strong>share</strong> — to copy, distribute and transmit the work<br/>
+Under the following conditions:<br/>
+<strong>Attribution</strong> — You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).<br/>
+<strong>Noncommercial</strong> — You may not use this work for commercial purposes.<br/>
+<strong>No Derivative Works</strong> — You may not alter, transform, or build upon this work.<br/>
+</p>
+
+<p><strong>„by-nc-sa“</strong><br/>
+You are free:<br/>
+to Share — to copy, distribute and transmit the work<br/>
+to Remix — to adapt the work<br/>
+Under the following conditions:<br/>
+<strong>Attribution</strong> — You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).<br/>
+<strong>Noncommercial</strong> — You may not use this work for commercial purposes.<br/>
+<strong>Share Alike</strong> — If you alter, transform, or build upon this work, you may distribute the resulting work only under the same or similar license to this one.<br/>
+
+
+<p><strong>„by-sa“</strong><br/>
+You are free:<br/>
+to <strong>Share</strong> — to copy, distribute and transmit the work<br/>
+to <strong>Remix</strong> — to adapt the work<br/>
+to make commercial use of the work<br/>
+Under the following conditions:<br/>
+<strong>Attribution</strong> — You must attribute the work in the manner specified by the author or licensor (but not in any way that suggests that they endorse you or your use of the work).<br/>
+<strong>Share Alike</strong> — If you alter, transform, or build upon this work, you may distribute the resulting work only under the same or similar license to this one.<br/>
+','ngcp'); ?><p><p style="text-align:center"><a href="#"onclick="tb_remove()" />close</a></p></div>
 		<a href="#ngcp_license" class="save-ngcp-license hide-if-no-js button"><?php _e('OK'); ?></a>
 		<a href="#ngcp_license" class="cancel-ngcp-license hide-if-no-js"><?php _e('Cancel'); ?></a>
 		</div>
