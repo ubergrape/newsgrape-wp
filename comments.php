@@ -3,7 +3,11 @@
 global $id;
 
 $ngcp_id = get_post_meta($id, 'ngcp_id', true);
-$ngcp_provider = "http://staging.newsgrape.com";
+$ngcp_provider = "http://www.newsgrape.com";
+
+if (NGCP_DEBUG) {
+	$ngcp_provider = "http://staging.newsgrape.com";
+}
 
 ?>
 
