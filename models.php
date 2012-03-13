@@ -93,12 +93,16 @@ class NGCP_Post {
 			'description'		=> $this->description,
 			'language'			=> $this->language,
 			'text'				=> $this->content,
-			'image'				=> base64_encode_image(get_attached_file(get_post_thumbnail_id($this->wp_id))), //TODO thumbnail size?
 			'tags'				=> json_encode($this->tags),
 			'external_post_id'	=> $this->wp_id, // has to be unique in combination with the X-EXTERNAL-ID header
 			'external_post_url'	=> get_permalink($this->wp_id),
 			'is_creative'		=> $this->is_creative,
 		);
+		
+		// Check for post image
+		if(null!=get_post_thumbnail_id($this->wp_id)){
+			$data['image'] = base64_encode_image(get_attached_file(get_post_thumbnail_id($this->wp_id))); //TODO thumbnail size?
+		}
 		
 		return http_build_query($data);
 	}
