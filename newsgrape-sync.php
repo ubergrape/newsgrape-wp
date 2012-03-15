@@ -8,6 +8,7 @@ Author URI: http://www.kanen.at/
 */
 
 define('NGCP_DEBUG', false);
+define('NGCP_DEBUG_FILE', true);
 
 $ngcp_dir = dirname(__FILE__);
 
@@ -565,6 +566,20 @@ function ngcp_comments($file) {
     
 	$file = dirname( __FILE__ ) . '/comments.php';
     return $file;
+}
+
+function ngcp_debug($message) {
+	if(NGCP_DEBUG) {
+		if(NGCP_DEBUG_FILE) {
+			$path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'debug.log';
+			$fp = fopen($path ,"a");
+			if(false==$fp) die("Debug file $path not writable!");
+			fwrite($fp, $message."\n");
+			fclose($fp);
+		} else {
+			error_log($message);
+		}
+	}
 }
 
 function ngcp_random($len) { 

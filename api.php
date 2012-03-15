@@ -46,6 +46,7 @@ class NGCP_API {
 		$response_decoded = json_decode($response['body'],true);
 		if ($response_decoded == NULL || !array_key_exists("key",$response_decoded)) {
 			$this->error(__FUNCTION__,__($username.":".$password.'Something went wrong while decoding json answer: '.substr($response['body'],0,300)),'key_fetch_fail');
+			echo "<pre>"; print_r($response); echo "</pre>";
 			return False;
 		}
 		
@@ -197,6 +198,7 @@ class NGCP_API {
 		$response_decoded = json_decode($response['body'],true);
 		if ($response_decoded == NULL || empty($response_decoded)) {
 			$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
+			echo "<pre>"; print_r($response); echo "</pre>";
 			return False;
 		} else if(array_key_exists("message",$response_decoded)) {
 			$this->error(__FUNCTION__,'Something went wrong fetching '.$url.': '.$response_decoded['message']);
@@ -226,9 +228,7 @@ class NGCP_API {
 	}
 	
 	private function report($function_name, $message="start") {
-		if(NGCP_DEBUG) {
-			error_log("NGCP API ($function_name): $message");
-		}
+		ngcp_debug("NGCP API ($function_name): $message");
 	}
 
 	private function error($function_name, $message="", $id=null) {
@@ -237,9 +237,7 @@ class NGCP_API {
 		} else {
 			$this->errors[$function_name] = __($message, 'ngcp');
 		}
-		if(NGCP_DEBUG) {
-			error_log("NGCP API ($function_name) ERROR: $message ($id)");
-		}
+		ngcp_debug("NGCP API ($function_name) ERROR: $message ($id)");
 	}
 
 	function has_errors() {

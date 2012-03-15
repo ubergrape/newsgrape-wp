@@ -9,17 +9,17 @@ class NGCP_Core_Controller {
 		$post = new NGCP_Post($post_ID);
 		
 		if (!$post->should_be_synced()) {
-			NGCP_Core_Controller::debug("post -> STOP (should not be synced)");
+			ngcp_debug("controller: post -> STOP (should not be synced)");
 			return $post_ID;
 		}
 		
 		if ($post->should_be_deleted_because_category_changed()) {
-			NGCP_Core_Controller::debug("post -> delete (should be deleted, category)");
+			ngcp_debug("controller: post -> delete (should be deleted, category)");
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
 		if ($post->was_synced()) {
-			NGCP_Core_Controller::debug("post -> edit (was synced before)");
+			ngcp_debug("controller: post -> edit (was synced before)");
 			return NGCP_Core_Controller::edit($post_ID);
 		}
 		
@@ -37,12 +37,12 @@ class NGCP_Core_Controller {
 		$post = new NGCP_Post($post_ID);
 		
 		if (!$post->was_synced()) {
-			NGCP_Core_Controller::debug("edit -> post (was never synced before)");
+			ngcp_debug("controller: edit -> post (was never synced before)");
 			return NGCP_Core_Controller::post($post_ID);
 		}
 		
 		if ($post->should_be_deleted_because_private()) {
-			NGCP_Core_Controller::debug("edit -> delete (should be deleted, private)");
+			ngcp_debug("controller: edit -> delete (should be deleted, private)");
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
@@ -60,7 +60,7 @@ class NGCP_Core_Controller {
 		$post = new NGCP_Post($post_ID);
 		
 		if ($post->was_never_synced()) {
-			NGCP_Core_Controller::debug("delete -> STOP (was never synced before)");
+			ngcp_debug("controller: delete -> STOP (was never synced before)");
 			return $post_ID;
 		}
 		
@@ -72,7 +72,7 @@ class NGCP_Core_Controller {
 	
 	static function save($post_ID) {		
 		if (!isset($_POST['ngcp_nonce']) || !wp_verify_nonce($_POST['ngcp_nonce'], "ngcp_metabox")) {
-			error_log("NGCP Controller save -> STOP; wrong nonce");
+			ngcp_debug("controller: save -> STOP; wrong nonce");
 			return $post_ID;
 		}
 		
@@ -106,12 +106,6 @@ class NGCP_Core_Controller {
 		}
 		
 		return True;
-	}
-	
-	static function debug($message) {
-		if (NGCP_DEBUG) {
-			error_log("NGCP Core Controller ".$message);
-		}
 	}
 }
 		
