@@ -104,6 +104,11 @@ class NGCP_Post {
 			$data['image'] = base64_encode_image(get_attached_file(get_post_thumbnail_id($this->wp_id))); //TODO thumbnail size?
 		}
 		
+		// If creative add genre
+		if(1==$this->is_creative){
+			$data['genre'] = get_post_meta($this->wp_id, 'ngcp_category', true);
+		}
+		
 		return http_build_query($data);
 	}
 	

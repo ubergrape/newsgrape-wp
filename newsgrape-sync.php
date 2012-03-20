@@ -67,7 +67,7 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_license = (array_key_exists("ngcp_license",$post_meta)) ? $post_meta['ngcp_license'][0] : $options['license'];
 	$ngcp_comments = (array_key_exists("ngcp_comments",$post_meta)) ? $post_meta['ngcp_comments'][0] : $options['comments'];
 	$ngcp_id = (array_key_exists("ngcp_id",$post_meta)) ? $post_meta['ngcp_id'][0] : false;
-	$ngcp_category = (array_key_exists("ngcp_category",$post_meta)) ? $post_meta['category'][0] : false;
+	$ngcp_category = (array_key_exists("ngcp_category",$post_meta)) ? $post_meta['ngcp_category'][0] : false;
 	$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
 	
 	if (!array_key_exists("ngcp_sync",$post_meta)) {
