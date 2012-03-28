@@ -9,6 +9,7 @@ Author URI: http://www.kanen.at/
 
 define('NGCP_DEBUG', false);
 define('NGCP_DEBUG_FILE', true);
+define('NGCP_DEV', false);
 
 $ngcp_dir = dirname(__FILE__);
 
