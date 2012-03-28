@@ -607,7 +607,17 @@ function ngcp_random($len) {
         $return.=chr($rand); 
     } 
     return $return; 
-} 
+}
+
+function ngcp_log_http($data = '', $log_type = '', $extra = '') {
+	$data_readable = print_r($data,true);
+	if (strlen($data_readable)>3000){
+		$data_readable = substr($data_readable,0,3000)." ... (truncated after 3000 characters)\n";
+	}
+	$message = 'HTTP ('.current_filter().'): '.$data_readable;
+	ngcp_debug($message);
+	return $data;
+}
 
 $class = 'NGCP_Core_Controller';
 
@@ -633,6 +643,13 @@ add_filter('comments_template', 'ngcp_comments');
 remove_action('wp_head', 'rel_canonical');
 add_action('wp_head', 'ngcp_rel_canonical');
 
+
+// enable http logging
+if(NGCP_DEBUG) {
+	add_filter('pre_http_request', 'ngcp_log_http', 10, 3);
+	add_filter('http_request_args', 'ngcp_log_http', 10, 2 );
+	add_action('http_api_debug', 'ngcp_log_http', 10, 3);
+}
 
 // Make Plugin Multilingual
 load_plugin_textdomain('ngcp', false, basename($ngcp_dir.'/lang'));
