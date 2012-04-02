@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Newsgrape Syncer
-Description: The Newsgrape Crosstposts automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
+Plugin Name: Newsgrape Sync
+Description: The Plugin automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
 Version: 1.0
-Author: Stefan Kröner
+Author: Newsgrape.com, Stefan Kröner
 Author URI: http://www.kanen.at/
 */
 
