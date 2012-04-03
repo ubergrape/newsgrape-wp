@@ -8,7 +8,7 @@ class NGCP_API {
 		
 		if (NGCP_DEV) {
 			 $this->api_url = 'http://staging.newsgrape.com/api/0.1/';
-		}
+		} 
 		
 		/* Client info for newsgrape's statistics */
 		$this->client = 'Wordpress/'.get_bloginfo('version').' NGWPSync/1.0'; //TODO discuss name
@@ -108,8 +108,7 @@ class NGCP_API {
 	function update($post) {
 		$this->report(__FUNCTION__,$post);
 		
-		$ngcp_id = get_post_meta($post->wp_id, 'ngcp_id', true);
-		$url = $this->api_url.'articles/'.$ngcp_id.'/';
+		$url = $this->api_url.'articles/'.$post->id.'/';
 		
 		$args = array(
 			'method' => 'PUT',
@@ -140,7 +139,28 @@ class NGCP_API {
 	function delete($post) {
 		$this->report(__FUNCTION__,$post);
 		
+		$url = $this->api_url.'articles/'.$post->id.'/';
+		
+		$args = array(
+			'method' => 'DELETE',
+			'headers' => $this->get_headers(),
+		);
+		
+		$response = wp_remote_post($url,$args);
+		
+		if (is_wp_error($response)) {
+			$this->error(__FUNCTION__,'Something went wrong deleting the article: '.$response->get_error_message());
+			return False;
+		}
+		
+		if (204 != $response['response']['code']) {
+			$this->error(__FUNCTION__,'Article could not be deleted.');
+			return False;
+		}
+		
 		$this->report(__FUNCTION__,'done');
+		
+		return True;
 	}
 	
 	function get_languages() {
