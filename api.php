@@ -240,10 +240,6 @@ class NGCP_API {
 			'X-EXTERNAL-NAME' => $this->external_name,
 		);
 		
-		if(NGCP_DEBUG) {
-			$headers['Authorization'] = 'Basic ' . base64_encode("stefan" . ':' . "wordpress"); //TODO remove
-		}
-		
 		return $headers;
 	}
 	
