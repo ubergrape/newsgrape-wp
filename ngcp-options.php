@@ -219,7 +219,7 @@ function ngcp_display_options() {
 					<a href="http://www.newsgrape.com/accounts/password/reset/" style="margin-left: 20px"><?php _e('Forgot Password', 'ngcp'); ?></a>
 					<br />
 					<span  class="description"><?php
-					_e('Your password will not be saved. It is needed only once to connect your wordpress with newsgrape', 'ngcp');
+					_e('Your password will not be saved. It is needed only once to connect your WordPress with Newsgrape', 'ngcp');
 					?></span>
 					</td>
 				<tr valign="top">
@@ -303,7 +303,7 @@ function ngcp_display_options() {
 						<br />
 						<span class="description">
 						<?php
-						_e('Move the standard wordpress excerpt input box to the top when editing an article.<br />This is alsow used as the description in your newsgrape article.', 'ngcp');
+						_e('Move the standard WordPres excerpt input box to the top when editing an article.<br />This is alsow used as the description in your newsgrape article.', 'ngcp');
 						?>
 						</span>
 						</ td>
