@@ -239,8 +239,8 @@ Under the following conditions:<br/>
 	}
 	?>
 	
-		<script type="text/javascript">
-	(function(){
+	<script type="text/javascript">
+	jQuery(function(){
 		function ngcpUpdateText() {
 			jQuery('#ngcp-language-display').html(jQuery('#ngcp_language option:selected').text());
 			jQuery('#ngcp-license-display').html(jQuery('#ngcp_license option:selected').text());
@@ -334,6 +334,10 @@ Under the following conditions:<br/>
 				jQuery('#ngcp-cat-select').slideUp('fast');
 			}
 		});
+		
+		/* Excerpt */
+		jQuery('#postexcerpt').appendTo('#titlediv');
+		jQuery('#postexcerpt h3 span')[0].innerHTML += "<?php _e(' + Newsgrape Description') ?>";
 	})();
 	</script>
 
