@@ -38,8 +38,8 @@ function ngcp_validate_fe_options($input) {
 
 // ---- Options Page -----
 
-function ngcp_add_fe_pages() {
-	$pg = add_options_page("Newsgrape Fast Edit", "Newsgrape Fast Edit", 'manage_options', basename(__FILE__), 'ngcp_display_fast_edit');
+function ngcp_add_fe_page() {
+	$pg = add_submenu_page('newsgrape', __('Fast Edit Articles','ngcp'), __('Fast Edit Articles','ngcp'), 'manage_options', basename(__FILE__), 'ngcp_display_fast_edit');
 	add_action("admin_head-$pg", 'ngcp_settings_css');
 }
 

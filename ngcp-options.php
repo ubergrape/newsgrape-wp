@@ -132,12 +132,15 @@ function ngcp_validate_options($input) {
 
 // ---- Options Page -----
 
-function ngcp_add_pages() {
-	$pg = add_options_page("Newsgrape", "Newsgrape", 'manage_options', basename(__FILE__), 'ngcp_display_options');
+function ngcp_add_menu() {
+	$pg = add_utility_page(__('Newsgrape Syncer Options','ngcp'),__('Newsgrape','ngcp'), 'manage_options', 'newsgrape', 'ngcp_display_options', plugins_url('newsgrape-sync/menu_icon.png'));
 	add_action("admin_head-$pg", 'ngcp_settings_css');
 	// register setting
-	add_action( 'admin_init', 'register_ngcp_settings' );
+	add_action('admin_init', 'register_ngcp_settings');
+	
+	ngcp_add_fe_page();
 }
+
 
 // Add link to options page from plugin list
 add_action('plugin_action_links_' . plugin_basename(__FILE__), 'ngcp_plugin_actions');

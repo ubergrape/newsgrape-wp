@@ -621,8 +621,7 @@ function ngcp_log_http($data = '', $log_type = '', $extra = '') {
 
 $class = 'NGCP_Core_Controller';
 
-add_action('admin_menu', 'ngcp_add_pages'); // Add settings menu to admin
-add_action('admin_menu', 'ngcp_add_fe_pages'); // Add fast edit page to admin
+add_action('admin_menu', 'ngcp_add_menu'); // Add menu to admin
 add_action('add_meta_boxes', 'ngcp_add_meta_box'); //Add meta box
 add_action('admin_head-post-new.php', 'ngcp_css');
 add_action('admin_head-post.php', 'ngcp_css');
