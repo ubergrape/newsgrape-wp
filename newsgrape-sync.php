@@ -335,9 +335,11 @@ Under the following conditions:<br/>
 			}
 		});
 		
-		/* Excerpt */
-		jQuery('#postexcerpt').appendTo('#titlediv');
-		jQuery('#postexcerpt h3 span')[0].innerHTML += "<?php _e(' + Newsgrape Description') ?>";
+		<?php if($options['excerpt'] == 1): ?>
+			/* Move excerpt box above article body editor*/
+			jQuery('#postexcerpt').appendTo('#titlediv');
+			jQuery('#postexcerpt h3 span')[0].innerHTML += "<?php _e(' + Newsgrape Description') ?>";
+		<?php endif; ?>
 	})();
 	</script>
 

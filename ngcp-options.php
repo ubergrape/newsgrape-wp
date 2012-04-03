@@ -10,6 +10,7 @@ function ngcp_get_options() {
 			'privacy'			=> 'public',
 			'privacy_private'	=> 'ngcp_no',
 			'comments'			=> 1,
+			'excerpt'			=> 1,
 			'tag'				=> '2',
 			'more'				=> 'link',
 			'skip_cats'			=> array(),
@@ -87,6 +88,10 @@ function ngcp_validate_options($input) {
 		
 		if (!isset($input['comments'])) {
 			$input['comments'] = '0';
+		}
+		
+		if (!isset($input['excerpt'])) {
+			$input['excerpt'] = '0';
 		}
 				
 		if (isset($input['delete_all'])) {
@@ -284,6 +289,21 @@ function ngcp_display_options() {
 						<span class="description">
 						<?php
 						_e('Show Newsgrape comment system instead of WordPress comments', 'ngcp');
+						?>
+						</span>
+						</ td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><?php _e('Excerpt', 'ngcp'); ?></th>
+						<td>
+						<label>
+							<input name="ngcp[excerpt]" type="checkbox" value="1" <?php checked($options['excerpt'], 1); ?>/>
+							<?php _e('Move excpert box to the top', 'ngcp'); ?>
+						</label>
+						<br />
+						<span class="description">
+						<?php
+						_e('Move the standard wordpress excerpt input box to the top when editing an article.<br />This is alsow used as the description in your newsgrape article.', 'ngcp');
 						?>
 						</span>
 						</ td>
