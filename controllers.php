@@ -30,11 +30,9 @@ class NGCP_Core_Controller {
 	}
 	
 	static function edit($post_ID) {
-		ngcp_debug("blah1");
 		if (!NGCP_Core_Controller::check_nonce() || !NGCP_Core_Controller::has_api_key()) {
 			return $post_ID;
 		}
-		ngcp_debug("blah2");
 
 		$post = new NGCP_Post($post_ID);
 		
