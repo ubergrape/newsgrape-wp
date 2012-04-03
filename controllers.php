@@ -2,7 +2,7 @@
 
 class NGCP_Core_Controller {
 	static function post($post_ID) {
-		if (!NGCP_Core_Controller::has_api_key()) {
+		if (!NGCP_Core_Controller::check_nonce() || NGCP_Core_Controller::has_api_key()) {
 			return $post_ID;
 		}
 		
@@ -30,7 +30,7 @@ class NGCP_Core_Controller {
 	}
 	
 	static function edit($post_ID) {
-		if (!NGCP_Core_Controller::has_api_key()) {
+		if (!NGCP_Core_Controller::check_nonce() || NGCP_Core_Controller::has_api_key()) {
 			return $post_ID;
 		}
 
@@ -53,7 +53,7 @@ class NGCP_Core_Controller {
 	}
 	
 	static function delete($post_ID) {
-		if (!NGCP_Core_Controller::has_api_key()) {
+		if (!NGCP_Core_Controller::check_nonce() || NGCP_Core_Controller::has_api_key()) {
 			return $post_ID;
 		}
 
@@ -71,11 +71,11 @@ class NGCP_Core_Controller {
 	}
 	
 	static function save($post_ID) {		
-		if (!isset($_POST['ngcp_nonce']) || !wp_verify_nonce($_POST['ngcp_nonce'], "ngcp_metabox")) {
-			ngcp_debug("controller: save -> STOP; wrong nonce");
+		if(get_post_status($post_ID)=='auto-draft') {
 			return $post_ID;
 		}
 		
+
 		$meta_keys = array(
 			'ngcp_language',
 			'ngcp_license',
@@ -95,6 +95,8 @@ class NGCP_Core_Controller {
 			update_post_meta($post_ID, $meta_key, $meta_value);
 		}
 		
+		ngcp_debug("controller: saved post ".$post_ID);
+		
 		return $post_ID;
 	}
 	
@@ -103,9 +105,19 @@ class NGCP_Core_Controller {
 		
 		if ("" == $options['api_key']) {
 			update_option('ngcp_error_notice', array("no_api_key" => "No API key set."));
+			ngcp_debug("controller: NO API KEY");
 			return False;
 		}
 		
+		return True;
+	}
+	
+	static function check_nonce() {
+		if (!isset($_POST['ngcp_nonce']) || False==wp_verify_nonce($_POST['ngcp_nonce'], "ngcp_metabox")) {
+			update_option('ngcp_error_notice', array("worng_nonce" => "Wrong NONCE"));
+			ngcp_debug("controller: STOP (wrong nonce)");
+			return False;
+		}
 		return True;
 	}
 }

@@ -120,7 +120,8 @@ class NGCP_Post {
 		if (
 			0 == $this->options['sync'] ||
 			0 == get_post_meta($this->wp_id, 'ngcp_sync', true) ||
-			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no')
+			//('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no') ||
+			('publish' != $this->post_status)
 		) {
 			return False;
 		}
