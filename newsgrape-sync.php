@@ -109,6 +109,22 @@ function ngcp_inner_meta_box($post) {
             <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync, '1'); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?></label>
 		</div>
     </div>
+    
+    <div class="misc-pub-section"><label for="ngcp-type"><?php _e('Type:', 'ngcp'); ?></label>
+		<select name='ngcp_type' id='ngcp_type'>
+			<option value='Please Select'>Please Select</option>
+			<option value='opinion' <?php selected($ngcp_type, 'opinion'); ?>><?php _e('Opinion', 'ngcp'); ?></option>
+			<option value='creative' <?php selected($ngcp_type, 'creative'); ?>><?php _e('Creative', 'ngcp'); ?></option>
+		</select>
+
+		<div id="ngcp-type-select" class="<?php if($ngcp_type=="opinion") { echo "hide-if-js"; } ?>">
+        Category: <select id="ngcp-cat-select" name="ngcp_category">
+			<?php foreach ($categories as $cat_id => $cat_name): ?>
+				<option value="<?php echo $cat_id; ?>" <?php selected($ngcp_category, $cat_id); ?>><?php _e($cat_name,'ngcp'); ?></option>
+			<?php endforeach; ?>
+		</select>
+		</div>
+	</div>
 	
 	<div class="misc-pub-section"><label for="ngcp-language"><?php _e('Language:', 'ngcp'); ?></label>
 		<span id="ngcp-language-display" style="font-weight: bold;"><?php echo $languages[$ngcp_language] ?></span>
@@ -201,27 +217,6 @@ Under the following conditions:<br/>
 		</div>
 	</div>
 	
-	<div class="misc-pub-section"><label for="ngcp-type"><?php _e('Type:', 'ngcp'); ?></label>
-		<span id="ngcp-type-display" style="font-weight: bold;"><?php echo ucfirst($ngcp_type); ?></span>
-		<a href="#ngcp_type" class="edit-ngcp-type hide-if-no-js"><?php _e('Edit') ?></a>
-
-		<div id="ngcp-type-select" class="hide-if-js">
-		<input type="hidden" name="hidden_ngcp_type" id="hidden_ngcp_type" value="<?php echo $ngcp_type; ?>" />
-		<label><input type="radio" name="ngcp_type" id="ngcp_type_opinion" value="opinion" <?php checked($ngcp_type, 'opinion'); ?>>  <?php _e('Opinion', 'ngcp'); ?></label><br />
-        <label><input type="radio" name="ngcp_type" id="ngcp_type_creative" value="creative" <?php checked($ngcp_type, 'creative'); ?>>  <?php _e('Creative', 'ngcp'); ?></label><br />
-        <select id="ngcp-cat-select" class="<?php if($ngcp_type=="opinion") { echo "hide-if-js"; } ?>" name="ngcp_category">
-			<?php foreach ($categories as $cat_id => $cat_name): ?>
-				<option value="<?php echo $cat_id; ?>" <?php selected($ngcp_category, $cat_id); ?>><?php _e($cat_name,'ngcp'); ?></option>
-			<?php endforeach; ?>
-		</select>
-		<br />
-		<br />
-		<a href="#ngcp_type" class="save-ngcp-type hide-if-no-js button"><?php _e('OK'); ?></a>
-		<a href="#ngcp_type" class="cancel-ngcp-type hide-if-no-js"><?php _e('Cancel'); ?></a>
-		</div>
-	</div>
-    
-    
     <div class="misc-pub-section  misc-pub-section-last">
 		<a href="#" id="ngcp_more" class="hide-if-no-js"><?php _e('More Settings', 'ngcp'); ?></a>
 		<a href="#" id="ngcp_less" class="hidden"><?php _e('Less Settings', 'ngcp'); ?></a>
@@ -298,18 +293,15 @@ Under the following conditions:<br/>
 			return false;
 		});
 		
-		jQuery('#ngcp-type-select').siblings('a.edit-ngcp-type').click(function() {
-			if (jQuery('#ngcp-type-select').is(":hidden")) {
-				jQuery('#ngcp-type-select').slideDown('fast');
-				jQuery(this).hide();
-			}
-			return false;
-		});
 
-		jQuery('.save-ngcp-type', '#ngcp-type-select').click(function() {
-			jQuery('#ngcp-type-select').slideUp('fast');
-			jQuery('#ngcp-type-select').siblings('a.edit-ngcp-type').show();
-			ngcpUpdateText();
+		jQuery('#ngcp_type').click(function() {
+			if (jQuery('#ngcp_type')[0].value == "creative") {
+				if (jQuery('#ngcp-type-select').is(":hidden")) {
+					jQuery('#ngcp-type-select').slideDown('fast');
+				}
+			} else {
+				jQuery('#ngcp-type-select').slideUp('fast');
+			}
 			return false;
 		});
 
