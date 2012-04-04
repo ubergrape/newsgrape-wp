@@ -83,6 +83,7 @@ class NGCP_Core_Controller {
 			'ngcp_type',
 			'ngcp_sync',
 			'ngcp_category',
+			'ngcp_description',
 		);
 		
 		foreach ($meta_keys as $meta_key) {
