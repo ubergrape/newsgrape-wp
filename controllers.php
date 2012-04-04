@@ -114,11 +114,11 @@ class NGCP_Core_Controller {
 	}
 	
 	static function check_nonce() {
-		if (!isset($_POST['ngcp_nonce']) || False==wp_verify_nonce($_POST['ngcp_nonce'], "ngcp_metabox")) {
-			update_option('ngcp_error_notice', array("worng_nonce" => "Wrong NONCE"));
+		/*if (!isset($_POST['ngcp_nonce']) || False==wp_verify_nonce($_POST['ngcp_nonce'], "ngcp_metabox")) {
+			update_option('ngcp_error_notice', array("wrong_nonce" => "Wrong NONCE"));
 			ngcp_debug("controller: STOP (wrong nonce)");
 			return False;
-		}
+		}*/
 		return True;
 	}
 }
