@@ -590,15 +590,15 @@ function ngcp_print_notices() {
 			$code = trim( (string)$code);
 			switch ($code) {
 				case 'no_api_key' :
-					$msg .= sprintf(__('Could not sync with Newsgrape. Please got to the <a href="%s">Newsgrape options screen</a> and enter enter your Newsgrape username and password.', 'ngcp'), 'options-general.php?page=ngcp-options.php');
+					$msg .= sprintf(__('Could not sync. Please got to the <a href="%s">Newsgrape options screen</a> and enter enter your Newsgrape username and password.', 'ngcp'), 'options-general.php?page=ngcp-options.php');
 					$class = 'error';
 					break;
 				case 'create' : 
-					$msg .= sprintf(__('Could not sync with Newsgrape. (Error: %s)', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
+					$msg .= sprintf(__('Could not sync. (Error: %s)', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
 					$class = 'error';
 					break;
 				case 'update' : 
-					$msg .= sprintf(__('Could not sync the updated entry to (Error: %s)', 'ngcp'), $error );
+					$msg .= sprintf(__('Could not sync the updated entry. (Error: %s)', 'ngcp'), $error );
 					$class = 'error';
 					break;
 				default: 
@@ -610,7 +610,7 @@ function ngcp_print_notices() {
 	}
 	if ($class == 'updated') // still good?
 		$msg = sprintf(__("Synced to Newsgrape.", 'ngcp')); 
-	echo '<div class="'.$class.'"><p>'.$msg.'</p></div>';
+	echo "<div class='$class'><p><strong>Newsgrape:</strong> $msg</p></div>";
 	update_option('ngcp_error_notice', ''); // turn off the message
 }
 

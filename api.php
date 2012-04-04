@@ -117,13 +117,23 @@ class NGCP_API {
 		);
 		
 		$response = wp_remote_post($url,$args);
-		
+
 		if (is_wp_error($response)) {
 			$this->error(__FUNCTION__,'Something went wrong with the article creation: '.$response->get_error_message());
 			return False;
 		}
 		
 		$response_decoded = json_decode($response['body'],true);
+		if ($response_decoded == NULL) {
+			$this->error(__FUNCTION__,'Something went wrong while decoding JSON answer: '.substr($response['body'],0,300));
+			return False;
+		}
+		
+		if ($this->is_ngcp_error($response) && array_key_exists("message",$response_decoded)) {
+			$this->error(__FUNCTION__,'Could not update article: '.$response_decoded['message']);
+			return False;
+		}
+		
 		if ($response_decoded == NULL || !array_key_exists("id",$response_decoded) || !array_key_exists("display_url",$response_decoded)) {
 			$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
 			return False;
@@ -243,6 +253,10 @@ class NGCP_API {
 		return $headers;
 	}
 	
+	private function is_ngcp_error($response) {
+		return $response['response']['code'] == '401';
+	}
+	
 	private function report($function_name, $message="start") {
 		ngcp_debug("NGCP API ($function_name): $message");
 	}
@@ -253,11 +267,12 @@ class NGCP_API {
 		} else {
 			$this->errors[$function_name] = __($message, 'ngcp');
 		}
+		$this->handle_errors();
 		ngcp_debug("NGCP API ($function_name) ERROR: $message ($id)");
 	}
 
 	function has_errors() {
-		return (0 != sizeof($this->error));
+		return (0 != sizeof($this->errors));
 	}
 	
 	function handle_errors() {
