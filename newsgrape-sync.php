@@ -49,6 +49,22 @@ function ngcp_add_meta_box() {
 	
     $label = __( 'Newsgrape', 'ngcp' );
     add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', null, 'side', 'high');
+    
+    $label = __( 'Newsgrape Article Intro', 'ngcp' );
+    add_meta_box('newsgrape_description', $label, 'ngcp_inner_meta_box_description', null, 'normal', 'high');
+}
+
+function ngcp_inner_meta_box_description($post) {
+	global $post;
+	$ngcp_description = get_post_meta($post->ID, 'ngcp_description', true);
+?>
+	<div id="newsgrape_description_inner">
+	<label class="hide-if-no-js" style="<?php if ($ngcp_description!='') echo 'visibility:hidden'; ?>" id="ngcp_description-prompt-text" for="ngcp_description"><?php _e('Enter Newsgrape article intro here','ngcp'); ?></label>
+	<input type="text" name="ngcp_description" size="30" tabindex="2" value="<?php echo $ngcp_description; ?>" id="ngcp_description" autocomplete="off">
+	</div>
+
+<?php
+	
 }
 
 function ngcp_inner_meta_box($post) {
@@ -335,10 +351,37 @@ Under the following conditions:<br/>
 			}
 		});
 		
+		/* hide/show ngcp_description-prompt-text */
+		
+		wptitlehint = function(id) {
+			id = id || 'title';
+
+			var title = jQuery('#' + id), titleprompt = jQuery('#' + id + '-prompt-text');
+
+			if ( title.val() == '' )
+				titleprompt.css('visibility', '');
+
+			titleprompt.click(function(){
+				jQuery(this).css('visibility', 'hidden');
+				title.focus();
+			});
+
+			title.blur(function(){
+				if ( this.value == '' )
+					titleprompt.css('visibility', '');
+			}).focus(function(){
+				titleprompt.css('visibility', 'hidden');
+			}).keydown(function(e){
+				titleprompt.css('visibility', 'hidden');
+				jQuery(this).unbind(e);
+			});
+		}
+
+		wptitlehint('ngcp_description');
+		
 		<?php if($options['excerpt'] == 1): ?>
-			/* Move excerpt box above article body editor*/
-			jQuery('#postexcerpt').appendTo('#titlediv');
-			jQuery('#postexcerpt h3 span')[0].innerHTML += "<?php _e(' + Newsgrape Description') ?>";
+			/* Move newsgrape description box above article body editor*/
+			jQuery('#newsgrape_description').appendTo('#titlediv');
 		<?php endif; ?>
 	})();
 	</script>
@@ -383,6 +426,39 @@ function ngcp_css() { ?>
 		#ngcp_license {
 			max-width: 100%;
 		}
+		
+		#newsgrape_description {
+			border: none;
+			background: none;
+			margin-top: 16px;
+		}
+		#newsgrape_description .inside {
+			padding: 0;
+		}
+		
+		#newsgrape_description h3, #newsgrape_description .handlediv {
+			display: none;
+		}
+	
+		#ngcp_description {
+			border-color: #CCC;
+			background-color: white;
+			padding: 3px 8px;
+			font-size: 1.7em;
+			line-height: 100%;
+			width: 100%;
+			outline: none;
+		}
+		
+		#ngcp_description-prompt-text {
+			color: #BBB;
+			position: absolute;
+			font-size: 1.7em;
+			padding: 8px 10px;
+			cursor: text;
+			vertical-align: middle;
+		}
+
 	</style>
 <?php 
 }
@@ -449,6 +525,17 @@ function ngcp_settings_css() { ?>
 		}
 	</style>
 <?php
+}
+
+function ngcp_add_description_to_content($content) {
+	global $id, $post;
+	
+	$description = get_post_meta($id, 'ngcp_description', true);
+
+	if('' != $description) {
+		return '<p class="ng_intro"><strong>'.$description.'</strong></p>'.$content;
+	}
+	return $content;
 }
 
 function ngcp_can_replace() {
@@ -617,6 +704,7 @@ function ngcp_log_http($data = '', $log_type = '', $extra = '') {
 	return $data;
 }
 
+
 $class = 'NGCP_Core_Controller';
 
 add_action('admin_menu', 'ngcp_add_menu'); // Add menu to admin
@@ -639,6 +727,7 @@ add_action('admin_head-post-new.php', 'ngcp_error_notice');
 add_filter('comments_template', 'ngcp_comments');
 remove_action('wp_head', 'rel_canonical');
 add_action('wp_head', 'ngcp_rel_canonical');
+add_filter('the_content', 'ngcp_add_description_to_content', 30);
 
 
 // enable http logging

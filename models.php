@@ -52,10 +52,14 @@ class NGCP_Post {
 		$this->title		= get_the_title($wp_post_id);
 		$this->title_plain	= strip_tags(@$this->title);
 		$this->content		= $the_content;
-		$this->description	= $wp_post->post_excerpt;
+		$this->description	= get_post_meta($wp_post_id, 'ngcp_description', true);
 		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true); //|| $this->options['language'];
 		$this->tags			= $this->import_tags($wp_post_id);
 		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
+		
+		if($this->description == '') {
+			$this->description = $wp_post->post_excerpt;
+		}
 	}
 	
 	function import_tags($wp_post_id) {
