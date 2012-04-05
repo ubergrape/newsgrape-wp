@@ -164,6 +164,8 @@ function ngcp_plugin_actions($links) {
 // Display the options page
 function ngcp_display_options() {
 ?>
+
+<? include_once 'options-head.php';  ?>
 <div class="wrap">
 	<form method="post" id="ngcp" action="options.php">
 		<?php
