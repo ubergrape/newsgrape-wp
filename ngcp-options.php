@@ -153,12 +153,11 @@ function ngcp_add_menu() {
 	ngcp_add_fe_page();
 }
 
-
 // Add link to options page from plugin list
 add_action('plugin_action_links_' . plugin_basename(__FILE__), 'ngcp_plugin_actions');
 function ngcp_plugin_actions($links) {
 	$new_links = array();
-	$new_links[] = '<a href="options-general.php?page=ngcp-options.php">' . __('Settings', 'ngcp') . '</a>';
+	$new_links[] = '<a href="admin.php?page=newsgrape">' . __('Settings', 'ngcp') . '</a>';
 	return array_merge($new_links, $links);
 }
 
