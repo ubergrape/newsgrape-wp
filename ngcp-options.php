@@ -139,7 +139,7 @@ function ngcp_validate_options($input) {
 
 function ngcp_add_menu() {
 	$pg = add_utility_page(
-		__('Newsgrape Syncer Options','ngcp'),
+		__('Newsgrape Sync Options','ngcp'),
 		__('Newsgrape','ngcp'),
 		'manage_options',
 		'newsgrape',
@@ -173,7 +173,7 @@ function ngcp_display_options() {
 		settings_errors( 'ngcp' );
 		$options = ngcp_get_options();
 		?>
-		<h2><?php _e('Newsgrape Syncer Options', 'ngcp'); ?></h2>
+		<h2><?php _e('Newsgrape Sync Options', 'ngcp'); ?></h2>
 		
 		<img id="ngcp_header_img" src="<?php echo ngcp_plugin_dir_url(); ?>header.jpeg" />
 		

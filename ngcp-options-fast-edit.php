@@ -57,7 +57,7 @@ function ngcp_display_fast_edit() {
 		$posts = query_posts('posts_per_page=-1');
 		?>
 		
-		<h2><?php _e('Newsgrape Syncer Fast Edit Articles', 'ngcp'); ?></h2>
+		<h2><?php _e('Newsgrape Sync Fast Edit Articles', 'ngcp'); ?></h2>
 		
 		<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "Opinion", what is a "Creative Article"?', 'ngcp'); ?></a>
 
