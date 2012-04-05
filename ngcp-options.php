@@ -138,11 +138,18 @@ function ngcp_validate_options($input) {
 // ---- Options Page -----
 
 function ngcp_add_menu() {
-	$pg = add_utility_page(__('Newsgrape Syncer Options','ngcp'),__('Newsgrape','ngcp'), 'manage_options', 'newsgrape', 'ngcp_display_options', plugins_url('newsgrape-sync/menu_icon.png'));
+	$pg = add_utility_page(
+		__('Newsgrape Syncer Options','ngcp'),
+		__('Newsgrape','ngcp'),
+		'manage_options',
+		'newsgrape',
+		'ngcp_display_options',
+		ngcp_plugin_dir_url().'menu_icon.png'
+	);
 	add_action("admin_head-$pg", 'ngcp_settings_css');
 	// register setting
 	add_action('admin_init', 'register_ngcp_settings');
-	
+
 	ngcp_add_fe_page();
 }
 
@@ -168,7 +175,7 @@ function ngcp_display_options() {
 		?>
 		<h2><?php _e('Newsgrape Syncer Options', 'ngcp'); ?></h2>
 		
-		<img id="ngcp_header_img" src="<?php echo plugin_dir_url(__FILE__); ?>header.jpeg" />
+		<img id="ngcp_header_img" src="<?php echo ngcp_plugin_dir_url(); ?>header.jpeg" />
 		
 		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
 		

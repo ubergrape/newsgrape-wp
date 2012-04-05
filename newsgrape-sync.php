@@ -11,6 +11,9 @@ define('NGCP_DEBUG', false);
 define('NGCP_DEBUG_FILE', true);
 define('NGCP_DEV', false);
 
+/* Set this to the plugin dir name if you have symlink problems */
+//define('NGCP_PLUGIN_DIR','newsgrape-sync');
+
 $ngcp_dir = dirname(__FILE__);
 
 @require_once "$ngcp_dir/api.php";
@@ -692,6 +695,19 @@ function ngcp_random($len) {
         $return.=chr($rand); 
     } 
     return $return; 
+}
+
+/* Returns the url for the plugin directory (with trailing slash)
+ * Workaround for symlinked plugin directories
+ * see:
+ * http://core.trac.wordpress.org/ticket/16953
+ * https://bugs.php.net/bug.php?id=46260
+ */
+function ngcp_plugin_dir_url() {
+	if (defined('NGCP_PLUGIN_DIR')) {
+		return plugins_url(NGCP_PLUGIN_DIR) . '/';
+	}
+	return plugins_url(basename(dirname(__FILE__))) . '/';
 }
 
 function ngcp_log_http($data = '', $log_type = '', $extra = '') {
