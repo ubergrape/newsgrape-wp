@@ -617,6 +617,12 @@ function ngcp_print_notices() {
 	update_option('ngcp_error_notice', ''); // turn off the message
 }
 
+function ngcp_print_login_notice() {
+	echo "\n<div class='error'><p>";
+	_e('<strong>Newsgrape:</strong> Enter your Newsgrape username and password to start syncing to Newsgrape: <a href="admin.php?page=newsgrape">go to Newsgrape Settings</a>', 'ngcp');
+	echo "</p></div>";
+}
+
 function ngcp_rel_canonical() {
 	global $posts;
 	
@@ -745,6 +751,14 @@ remove_action('wp_head', 'rel_canonical');
 add_action('wp_head', 'ngcp_rel_canonical');
 add_filter('the_content', 'ngcp_add_description_to_content', 30);
 
+
+
+// Inform user that he needs to enter his newsgrape credentials
+$ngcp_options = ngcp_get_options();
+
+if(!array_key_exists('api_key', $ngcp_options) || "" == $ngcp_options['api_key']) {
+	add_action('admin_notices', 'ngcp_print_login_notice');
+}
 
 // enable http logging
 if(NGCP_DEBUG) {
