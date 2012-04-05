@@ -48,7 +48,7 @@ function ngcp_validate_options($input) {
 			$msg[] .= __('Sucessfully connected to Newsgrape!', 'ngcp');
 			$msgtype = 'updated';
 		} else {
-			$msg[] .= __('Newsgrape Username or Password wrong. Sorry, please try again.', 'ngcp');
+			$msg[] .= __('Could not connect to Newsgrape: '.$ngcp_error, 'ngcp');
 		}
 	}
 	

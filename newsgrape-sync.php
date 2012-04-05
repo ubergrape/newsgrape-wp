@@ -526,6 +526,10 @@ function ngcp_settings_css() { ?>
 			max-width: 100%;
 			height: auto;
 		}
+		#setting-error-ngcp pre {
+			font-weight: normal;
+			font-size: 10px;
+		}
 	</style>
 <?php
 }

@@ -29,8 +29,44 @@ class NGCP_API {
 			$this->api_key = $api_key;
 		}
 	}
-	
+		
+	function decode_json_response($response, $function_name, $array_key1=null, $array_key2=null) {
+		if (is_wp_error($response)) {
+			$this->error($function_name, __('Request failed: ').$response->get_error_message());
+			return False;
+		}
+		
+		$response_decoded = json_decode($response['body'],true);
+		
+		if (204 == $response['response']['code']) {
+			return $response_decoded;
+		}
+		
+		if ($response_decoded == null || empty($response_decoded)) {
+			$this->error($function_name,__('The Newsgrape server sent an unexpected answer.<br/>This looks like your hoster is using a proxy server which blocks requests to newsgrape.com. Please contact your hoster.<br/><br/><a href="#" onclick="jQuery(\'#setting-error-ngcp pre\').show()">Show first 2000 characters of response</a>', 'ngcp').'<pre style="display:none">'.esc_html(substr($response['body'],0,2000)).'</pre>');
+			return False;
+		}
+		
+		if ( (null == $array_key1 || !array_key_exists($array_key1, $response_decoded))
+			&& (null == $array_key2 || !array_key_exists($array_key1, $response_decoded))
+			&& ($array_key1 != $array_key2)){
+				
+			if ($this->is_ngcp_error($response) && array_key_exists('message',$response_decoded)) {
+				$this->error($function_name, __($response_decoded['message'], 'ngcp'));
+				return False;
+			} else {
+				$this->error(__FUNCTION__,__('The Newsgrape server sent an unexpected answer. Is your Newsgrape Sync plugin up to date? <a href="update-core.php">Update Plugins</a> ', 'ngcp'));
+				ngcp_debug("Array keys ($array_key1 $array_key2 message) not found in JSON response : " . substr($response['body'],0,500));
+				return False;
+			}
+		}
+		
+		return $response_decoded;
+	}
+
 	function fetch_new_key($username, $password) {
+		$this->report(__FUNCTION__);
+		
 		$url = $this->api_url . "key/";
 		$args = array(
 			'body' => array( 'username' => $username, 'password' => $password )
@@ -38,15 +74,9 @@ class NGCP_API {
 		
 		$response = wp_remote_post($url,$args);
 		
-		if (is_wp_error($response)) {
-			$this->error(__FUNCTION__,__('API key request failed: '.$response->get_error_message()),'key_fetch_fail');
-			return False;
-		}
-		
-		$response_decoded = json_decode($response['body'],true);
-		if ($response_decoded == NULL || !array_key_exists("key",$response_decoded)) {
-			$this->error(__FUNCTION__,__($username.":".$password.'Something went wrong while decoding json answer: '.substr($response['body'],0,300)),'key_fetch_fail');
-			echo "<pre>"; print_r($response); echo "</pre>";
+		$response_decoded = $this->decode_json_response($response,__FUNCTION__,'key');
+
+		if (!$response_decoded) {
 			return False;
 		}
 		
@@ -70,18 +100,9 @@ class NGCP_API {
 		$response = wp_remote_post($url,$args);
 		$this->report(__FUNCTION__,"POST ".$url." [".$args["body"]."]");
 		
-		if (is_wp_error($response)) {
-			$this->error(__FUNCTION__,'Something went wrong with the article creation: '.$response->get_error_message());
-			return False;
-		}
-		
-		$response_decoded = json_decode($response['body'],true);
-		if ($response_decoded == NULL || !array_key_exists("id", $response_decoded) || !array_key_exists("display_url",$response_decoded)) {
-			if ($response_decoded != NULL && array_key_exists("message", $response_decoded)) {
-				$this->error(__FUNCTION__,'Article creation failed: '.$response_decoded['message']);
-			} else {
-				$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
-			}
+		$response_decoded = $this->decode_json_response($response,__FUNCTION__,'id','display_url');
+
+		if (!$response_decoded) {
 			return False;
 		}
 		
@@ -118,24 +139,9 @@ class NGCP_API {
 		
 		$response = wp_remote_post($url,$args);
 
-		if (is_wp_error($response)) {
-			$this->error(__FUNCTION__,'Something went wrong with the article creation: '.$response->get_error_message());
-			return False;
-		}
-		
-		$response_decoded = json_decode($response['body'],true);
-		if ($response_decoded == NULL) {
-			$this->error(__FUNCTION__,'Something went wrong while decoding JSON answer: '.substr($response['body'],0,300));
-			return False;
-		}
-		
-		if ($this->is_ngcp_error($response) && array_key_exists("message",$response_decoded)) {
-			$this->error(__FUNCTION__,'Could not update article: '.$response_decoded['message']);
-			return False;
-		}
-		
-		if ($response_decoded == NULL || !array_key_exists("id",$response_decoded) || !array_key_exists("display_url",$response_decoded)) {
-			$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
+		$response_decoded = $this->decode_json_response($response,__FUNCTION__,'id','display_url');
+
+		if (!$response_decoded) {
 			return False;
 		}
 		
@@ -158,13 +164,14 @@ class NGCP_API {
 		
 		$response = wp_remote_post($url,$args);
 		
-		if (is_wp_error($response)) {
-			$this->error(__FUNCTION__,'Something went wrong deleting the article: '.$response->get_error_message());
+		if (204 != $response['response']['code']) {
+			$this->error(__FUNCTION__,'Article could not be deleted.');
 			return False;
 		}
 		
-		if (204 != $response['response']['code']) {
-			$this->error(__FUNCTION__,'Article could not be deleted.');
+		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
+
+		if (!$response_decoded) {
 			return False;
 		}
 		
@@ -225,13 +232,9 @@ class NGCP_API {
 			return False;
 		}
 		
-		$response_decoded = json_decode($response['body'],true);
-		if ($response_decoded == NULL || empty($response_decoded)) {
-			$this->error(__FUNCTION__,'Something went wrong while decoding json answer: '.substr($response['body'],0,300));
-			echo "<pre>"; print_r($response); echo "</pre>";
-			return False;
-		} else if(array_key_exists("message",$response_decoded)) {
-			$this->error(__FUNCTION__,'Something went wrong fetching '.$url.': '.$response_decoded['message']);
+		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
+
+		if (!$response_decoded) {
 			return False;
 		}
 		
@@ -260,12 +263,30 @@ class NGCP_API {
 	private function report($function_name, $message="start") {
 		ngcp_debug("NGCP API ($function_name): $message");
 	}
+	
+	function get_error_header($function_name) {
+		$error_headers = array(
+			'fetch_new_key' => __('Could not login to Newsgrape. ', 'ngcp'),
+			'create' => __('Could not create an article. ', 'ngcp'),
+			'update' => __('Could not update article. ', 'ngcp'),
+			'delete' => __('Could not delete article. ', 'ngcp'),
+		);
+		
+		if (array_key_exists($function_name, $error_headers)) {
+			return $error_headers[$function_name];
+		}
+		
+		return '';
+	}
 
 	private function error($function_name, $message="", $id=null) {
+		global $ngcp_error;
+		$ngcp_error = $message;
+		
 		if($id) {
-			$this->errors[$id] = __($message, 'ngcp');
+			$this->errors[$id] = $this->get_error_header($function_name) . __($message, 'ngcp');
 		} else {
-			$this->errors[$function_name] = __($message, 'ngcp');
+			$this->errors[$function_name] = $this->get_error_header($function_name) . __($message, 'ngcp');
 		}
 		$this->handle_errors();
 		ngcp_debug("NGCP API ($function_name) ERROR: $message ($id)");
