@@ -5,21 +5,42 @@ Requires at least: 3.2
 Tested up to: 3.3
 Stable tag: 3.0.2.1
 
-Syncs your WP articles to newsgrape.com
+Syncs your Wordpress articles to Newsgrape.com
 
 == Description ==
 
-The Newsgrape Crosstposts automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
+Newsgrape Sync automatically syncs WordPress articles to your Newsgrape account. Editing or deleting a post will be replicated as well. You can also crosspost all of your existing posts to Newsgrape.
 
-= Thanks = 
+This plugin also integrates the Newsgrape comment system inside your WordPress posts.
+
+== Features ==
+
+=== Article Editing ===
+* Automatic syncing: create/edit/delete articles
+* Choose Language, License, Article Type for each article
+* Enter Newsgrape intro text for each article (this is also shown in your WordPress article)
+
+=== Article Management ===
+* Exclude certain categories from syncing
+* Set Newsgrape options for multiple posts at once
+* Publish or delete multiple posts at once
+
+=== Comments ===
+* Show Newsgrape's comment system inside your WordPress posts
+* No need to edit your theme
+
+=== More features ===
+* Recognizes your blog after a domainname change
+
+== Thanks ==
 
 Thanks to the great [Newsgrape team](http://www.newsgrape.com/p/about-us/) for collaborating and providing its API.
 
-Thanks to creators of [LiveJournal Syncer](http://wordpress.org/extend/plugins/lj-xp/): [sillybean](http://profiles.wordpress.org/users/sillybean/), [CorneliousJD](http://profiles.wordpress.org/users/CorneliousJD/), [freeatnet](http://profiles.wordpress.org/users/freeatnet/), Evan Broder - parts of their code has been used in the Newsgrape Sync Plugin
+Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plugins/lj-xp/): [sillybean](http://profiles.wordpress.org/users/sillybean/), [CorneliousJD](http://profiles.wordpress.org/users/CorneliousJD/), [freeatnet](http://profiles.wordpress.org/users/freeatnet/), Evan Broder - parts of their code has been used in the Newsgrape Sync Plugin
 
-== Installation ==
+== Manuall Installation ==
 
 1. Upload the "newsgrape-sync" directory to your "/wp-content/plugins/" directory
-1. Activate the plugin through the "Plugins" menu in WordPress
-1. Go to Settings &rarr; Newsgrape and configure your settings.
+1. Activate the plugin through the "Plugins" menu in WordPress Admin
+1. Click "Newsgrape" in the WordPress Admin menu and configure your settings.
 
