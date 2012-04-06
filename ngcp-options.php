@@ -261,7 +261,7 @@ function ngcp_display_options() {
 			<?php if (0 == $options['published_old']): ?>
 				<div id="ngcp-fast-edit">
 					<span class="info"><?php _e('Some Types for your Articles have not been set yet.'); ?></span>
-					<a href="options-general.php?page=ngcp-options-fast-edit.php" id="ngcp-fast-edit-button" class="button-primary"><?php _e('Fast-Edit Articles', 'ngcp'); ?></a>
+					<a href="admin.php?page=ngcp-options-fast-edit.php" id="ngcp-fast-edit-button" class="button-primary"><?php _e('Fast-Edit Articles', 'ngcp'); ?></a>
 					<br />
 					<br />
 					<span class="description"><?php _e('Opinions are News-Related and get tagged automatically, Creative articles are anything non-news related and have to be categorized.'); ?></span>
