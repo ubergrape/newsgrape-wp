@@ -164,14 +164,14 @@ class NGCP_API {
 		
 		$response = wp_remote_post($url,$args);
 		
-		if (204 != $response['response']['code']) {
-			$this->error(__FUNCTION__,'Article could not be deleted.');
-			return False;
-		}
-		
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
 
 		if (!$response_decoded) {
+			return False;
+		}
+		
+		if (204 != $response['response']['code']) {
+			$this->error(__FUNCTION__,'Article could not be deleted.');
 			return False;
 		}
 		
