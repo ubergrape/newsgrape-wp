@@ -8,27 +8,57 @@ function ngcp_validate_fe_options($input) {
 	
 	$options = ngcp_get_options();
 	
-	foreach ($input['sync'] as $post_id => $value) {
-		update_post_meta($post_id, 'ngcp_sync', $value);
+	$updated_articles = array();
+	
+	foreach ($input['sync_hidden'] as $post_id => $old_value) {
+		if ($input['sync'][$post_id] != $old_value) {
+			update_post_meta($post_id, 'ngcp_sync', $input['sync'][$post_id]);
+			$updated_articles[] = $post_id;
+		}
 	}
 	
-	foreach ($input['type'] as $post_id => $value) {
-		update_post_meta($post_id, 'ngcp_type', $value);
+	foreach ($input['type_hidden'] as $post_id => $old_value) {
+		if ($input['type'][$post_id] != $old_value) {
+			update_post_meta($post_id, 'ngcp_type', $input['type'][$post_id]);
+			$updated_articles[] = $post_id;
+		}
 	}
 	
-	foreach ($input['category'] as $post_id => $value) {
-		update_post_meta($post_id, 'ngcp_category', $value);
+	foreach ($input['category_hidden'] as $post_id => $old_value) {
+		if ($input['category'][$post_id] != $old_value) {
+			update_post_meta($post_id, 'ngcp_category', $input['category'][$post_id]);
+			$updated_articles[] = $post_id;
+		}
+	}
+	
+	$updated_articles = array_unique($updated_articles);
+	
+	$unsynced_articles = array();
+	
+	foreach ($input['id_hidden'][$post_id] as $ng_id) {
+		if (empty($ng_id) && 1 == $input['sync'][$post_id]) {
+			$unsynced_articles[] = $post_id;
+		}
+	}
+	
+	$articles_to_sync = array_merge($updated_articles, $unsynced_articles);
+	ngcp_debug('Articles to sync: '.sizeof($articles_to_sync));
+
+	// Sync articles with newsgrape
+	foreach ($articles_to_sync as $post_id) {
+		ngcp_debug('Syncing article with ID '.$post_id);
+		NGCP_Core_Controller::edit($post_id);
 	}
 
 	// Send custom updated message
 	$msg = implode('<br />', $msg);
 	
 	if (empty($msg)) {
-		$msg = __('Settings saved.', 'ngcp');
+		$msg = __('Settings saved.<br/><span style="font-weight:normal">'.sizeof($updated_articles).' articles have been updated.<br/>'.sizeof($articles_to_sync).' articles have been synced</span>', 'ngcp');
 		$msgtype = 'updated';
 	}
 	
-	add_settings_error( 'ngcp', 'ngcp', $msg, $msgtype );
+	add_settings_error( 'ngcp_fe', 'ngcp_fe', $msg, $msgtype );
 	
 	// Nothing to save to options db
 	unset($input);
@@ -106,6 +136,11 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 			?>
 			
 			<tr class="<?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
+				<input type="hidden" name="ngcp_fe[id_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_id'][0]; ?>">
+				<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]; ?>">
+				<input type="hidden" name="ngcp_fe[type_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_type'][0]; ?>">
+				<input type="hidden" name="ngcp_fe[category_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_category'][0]; ?>">
+				
 				<td>
 					<a href="<?php the_permalink(); ?>" class="ngcp-the-title"><?php the_title(); ?></a>
 					<span class="ngcp-the-date"><?php the_time(get_option('date_format')); ?></span>
