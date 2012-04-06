@@ -87,7 +87,6 @@ class NGCP_Core_Controller {
 		);
 		
 		foreach ($meta_keys as $meta_key) {
-			$meta_value = 0;
 			if (isset($_POST[$meta_key])) {
 				$meta_value = $_POST[$meta_key];
 				if ('on' == $meta_value) { $meta_value = 1; }
