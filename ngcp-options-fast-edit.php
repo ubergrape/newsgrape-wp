@@ -103,66 +103,71 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 		</div>
 		
 		
-		<table class="ngcp-all-articles">
-			<tr class="ngcp-edit-all">
-				<td>Edit All</td>
-				<td>
-					<label>
-						<input name="ngcp-sync-all" id="ngcp-sync-all" type="checkbox" value="1" />
-						<?php _e('Sync all', 'ngcp'); ?>
-					</label>
-				</td>
-				<td>
-					<select name="ngcp-type-all" id="ngcp-type-all">
-						<option value="" selected="selected"><?php _e('Type','ngcp'); ?></option>
-						<option value="opinion"><?php _e('as opinion','ngcp'); ?></option>
-						<option value="creative"><?php _e('as creative article','ngcp'); ?></option>		
-					</select>
-					<select name="ngcp-cat-all" id="ngcp-cat-all">
-						<option value=""><?php _e('Category','ngcp'); ?></option>
-						<?php foreach ($categories as $cat_id => $cat_name): ?>
-							<option value="<?php echo $cat_id; ?>"><?php _e($cat_name,'ngcp'); ?></option>
-						<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
-				
-			<?php while ( have_posts() ) : the_post(); ?>
+		<table class="widefat ngcp-all-articles">
+			<thead>
+				<tr class="ngcp-edit-all">
+					<th>Edit All</th>
+					<th>
+						<label>
+							<input name="ngcp-sync-all" id="ngcp-sync-all" type="checkbox" value="1" />
+							<?php _e('Sync all', 'ngcp'); ?>
+						</label>
+					</th>
+					<th>
+						<select name="ngcp-type-all" id="ngcp-type-all">
+							<option value="" selected="selected"><?php _e('Type','ngcp'); ?></option>
+							<option value="opinion"><?php _e('as opinion','ngcp'); ?></option>
+							<option value="creative"><?php _e('as creative article','ngcp'); ?></option>		
+						</select>
+						<select name="ngcp-cat-all" id="ngcp-cat-all">
+							<option value=""><?php _e('Category','ngcp'); ?></option>
+							<?php foreach ($categories as $cat_id => $cat_name): ?>
+								<option value="<?php echo $cat_id; ?>"><?php _e($cat_name,'ngcp'); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</th>
+				</tr>
+			</thead>
 			
-			<?php
-				setup_postdata($post);
-				$post_meta = get_post_custom($post->ID);
-				$has_type = !empty($post_meta['ngcp_type']);
-			?>
-			
-			<tr class="<?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
-				<input type="hidden" name="ngcp_fe[id_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_id'][0]; ?>">
-				<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]; ?>">
-				<input type="hidden" name="ngcp_fe[type_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_type'][0]; ?>">
-				<input type="hidden" name="ngcp_fe[category_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_category'][0]; ?>">
+			<tbody>
+				<?php while ( have_posts() ) : the_post(); ?>
 				
-				<td>
-					<a href="<?php the_permalink(); ?>" class="ngcp-the-title"><?php the_title(); ?></a>
-					<span class="ngcp-the-date"><?php the_time(get_option('date_format')); ?></span>
-				<td>
-					<label>
-						<input class="ngcp-sync" name="ngcp_fe[sync][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_sync'][0], 1); ?> />
-						<?php _e('Sync with Newsgrape', 'ngcp'); ?>
-					</label>
-				</td>
-				<td>
-					<select class="ngcp-select-type" name="ngcp_fe[type][<?php the_id(); ?>]">
-						<option value="opinion" <?php selected($post_meta['ngcp_type'][0], 'opinion'); ?>><?php _e('as opinion','ngcp'); ?></option>
-						<option value="creative" <?php selected($post_meta['ngcp_type'][0], 'creative'); ?>><?php _e('as creative article','ngcp'); ?></option>		
-					</select>
-					<select class="ngcp-select-cat <?php if(!$has_type || $post_meta['ngcp_type'][0]!="creative") { echo "hide-if-js"; } ?>" name="ngcp_fe[category][<?php the_id(); ?>]">
-						<?php foreach ($categories as $cat_id => $cat_name): ?>
-							<option value="<?php echo $cat_id; ?>" <?php selected($post_meta['ngcp_category'][0], $cat_id); ?>><?php _e($cat_name,'ngcp'); ?></option>
-						<?php endforeach; ?>
-					</select>
-				</td>
-			</tr>
-			<?php endwhile; ?>
+				<?php
+					setup_postdata($post);
+					$post_meta = get_post_custom($post->ID);
+					$has_type = !empty($post_meta['ngcp_type']);
+				?>
+				
+				<tr class="<?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
+					<input type="hidden" name="ngcp_fe[id_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_id'][0]; ?>">
+					<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]; ?>">
+					<input type="hidden" name="ngcp_fe[type_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_type'][0]; ?>">
+					<input type="hidden" name="ngcp_fe[category_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_category'][0]; ?>">
+					
+					<td>
+						<a href="<?php the_permalink(); ?>" class="ngcp-the-title"><?php the_title(); ?></a>
+						<?php edit_post_link(); ?>
+						<span class="ngcp-the-date"><?php the_time(get_option('date_format')); ?></span>
+					<td>
+						<label>
+							<input class="ngcp-sync" name="ngcp_fe[sync][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_sync'][0], 1); ?> />
+							<?php _e('Sync with Newsgrape', 'ngcp'); ?>
+						</label>
+					</td>
+					<td>
+						<select class="ngcp-select-type" name="ngcp_fe[type][<?php the_id(); ?>]">
+							<option value="opinion" <?php selected($post_meta['ngcp_type'][0], 'opinion'); ?>><?php _e('as opinion','ngcp'); ?></option>
+							<option value="creative" <?php selected($post_meta['ngcp_type'][0], 'creative'); ?>><?php _e('as creative article','ngcp'); ?></option>		
+						</select>
+						<select class="ngcp-select-cat <?php if(!$has_type || $post_meta['ngcp_type'][0]!="creative") { echo "hide-if-js"; } ?>" name="ngcp_fe[category][<?php the_id(); ?>]">
+							<?php foreach ($categories as $cat_id => $cat_name): ?>
+								<option value="<?php echo $cat_id; ?>" <?php selected($post_meta['ngcp_category'][0], $cat_id); ?>><?php _e($cat_name,'ngcp'); ?></option>
+							<?php endforeach; ?>
+						</select>
+					</td>
+				</tr>
+				<?php endwhile; ?>
+			</tbody>
 		</table>
 		
 		<p class="submit">

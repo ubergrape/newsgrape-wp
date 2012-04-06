@@ -489,24 +489,29 @@ function ngcp_settings_css() { ?>
 		#ngcp-fast-edit-button {
 			float: right;
 		}
-		.ngcp-the-date{
-			border-left: 1px solid #8f8f8f;
-			padding-left: 8px;
-			padding-right: 12px;
-			color: #8f8f8f;
-			font-size: 10px;
-		}
-		.ngcp-the-title {
-			padding-right: 8px;
-		}
-		.ngcp-has-no-type {
-			background: #f8f8f8;
-		}
 		.ngcp-all-articles {
 			margin-top: 20px;
 		}
 		.ngcp-all-articles td{
 			padding: 6px;
+		}
+		.ngcp-all-articles .post-edit-link {
+			border-left: 1px solid #8F8F8F;
+			border-right: 1px solid #8f8f8f;
+			padding-left: 8px;
+			padding-right: 12px;
+		}
+		.ngcp-all-articles .ngcp-the-date {
+			padding-left: 8px;
+			padding-right: 5px;
+			color: #8f8f8f;
+			font-size: 10px;
+		}
+		.ngcp-all-articles .ngcp-the-title {
+			padding-right: 8px;
+		}
+		.ngcp-all-articles .ngcp-has-no-type {
+			background: #f8f8f8;
 		}
 		.ngcp-edit-all {
 			color: #fff;
