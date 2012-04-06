@@ -46,12 +46,15 @@ function ngcp_add_fe_page() {
 // Display the options page
 function ngcp_display_fast_edit() {
 ?>
+
+<? include_once 'options-head.php';  ?>
+
 <div class="wrap">
-	<form method="post" id="ngcp" action="options.php">
+	<form method="post" id="ngcp_fe" action="options.php">
 		<?php 
-		settings_fields('ngcp');
-		get_settings_errors('ngcp');	
-		settings_errors('ngcp');
+		settings_fields('ngcp_fe');
+		get_settings_errors('ngcp_fe');	
+		settings_errors('ngcp_fe');
 		$options = ngcp_get_options();
 		$categories = $options['categories'];
 		$posts = query_posts('posts_per_page=-1');
@@ -117,7 +120,7 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 						<option value="opinion" <?php selected($post_meta['ngcp_type'][0], 'opinion'); ?>><?php _e('as opinion','ngcp'); ?></option>
 						<option value="creative" <?php selected($post_meta['ngcp_type'][0], 'creative'); ?>><?php _e('as creative article','ngcp'); ?></option>		
 					</select>
-					<select class="ngcp-select-cat <?php if(!$has_type || $post_meta['ngcp_type'][0]=="opinion") { echo "hide-if-js"; } ?>" name="ngcp_fe[category][<?php the_id(); ?>]">
+					<select class="ngcp-select-cat <?php if(!$has_type || $post_meta['ngcp_type'][0]!="creative") { echo "hide-if-js"; } ?>" name="ngcp_fe[category][<?php the_id(); ?>]">
 						<?php foreach ($categories as $cat_id => $cat_name): ?>
 							<option value="<?php echo $cat_id; ?>" <?php selected($post_meta['ngcp_category'][0], $cat_id); ?>><?php _e($cat_name,'ngcp'); ?></option>
 						<?php endforeach; ?>
