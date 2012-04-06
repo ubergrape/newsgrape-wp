@@ -106,14 +106,14 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 		<table class="widefat ngcp-all-articles">
 			<thead>
 				<tr class="ngcp-edit-all">
-					<th>Edit All</th>
-					<th>
+					<th class="title">Edit All</th>
+					<th class="sync">
 						<label>
 							<input name="ngcp-sync-all" id="ngcp-sync-all" type="checkbox" value="1" />
 							<?php _e('Sync all', 'ngcp'); ?>
 						</label>
 					</th>
-					<th>
+					<th class='type'>
 						<select name="ngcp-type-all" id="ngcp-type-all">
 							<option value="" selected="selected"><?php _e('Type','ngcp'); ?></option>
 							<option value="opinion"><?php _e('as opinion','ngcp'); ?></option>
@@ -136,9 +136,10 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 					setup_postdata($post);
 					$post_meta = get_post_custom($post->ID);
 					$has_type = !empty($post_meta['ngcp_type']);
+					$is_synced = isset($post_meta['ngcp_id']) && $post_meta['ngcp_id'][0] != 0;
 				?>
 				
-				<tr class="<?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
+				<tr class="<?php if($is_synced) echo 'ngcp-synced'; ?> <?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
 					<input type="hidden" name="ngcp_fe[id_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_id'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[type_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_type'][0]; ?>">
@@ -153,6 +154,14 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 							<input class="ngcp-sync" name="ngcp_fe[sync][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_sync'][0], 1); ?> />
 							<?php _e('Sync with Newsgrape', 'ngcp'); ?>
 						</label>
+						<br />
+						<span class="ngcp-sync-state <?php if($is_synced) echo 'ngcp-synced'; ?>">
+							<?php if($is_synced) {
+								_e('synced', 'ngcp');
+							} else {
+								_e('not synced yet', 'ngcp');
+							} ?>
+						</span>
 					</td>
 					<td>
 						<select class="ngcp-select-type" name="ngcp_fe[type][<?php the_id(); ?>]">
