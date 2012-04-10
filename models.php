@@ -55,6 +55,7 @@ class NGCP_Post {
 		$this->description	= get_post_meta($wp_post_id, 'ngcp_description', true);
 		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true); //|| $this->options['language'];
 		$this->tags			= $this->import_tags($wp_post_id);
+		//$this->tags			= $this->import_tags($wp_post_id);
 		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
 		
 		if($this->description == '') {
@@ -98,6 +99,7 @@ class NGCP_Post {
 			'language'			=> $this->language,
 			'text'				=> $this->content,
 			'tags'				=> json_encode($this->tags),
+			//'tags'				=> json_encode($this->tags),
 			'external_post_id'	=> $this->wp_id, // has to be unique in combination with the X-EXTERNAL-ID header
 			'external_post_url'	=> get_permalink($this->wp_id),
 			'is_creative'		=> $this->is_creative,
