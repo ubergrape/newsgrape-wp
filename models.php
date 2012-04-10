@@ -97,7 +97,6 @@ class NGCP_Post {
 			'description'		=> $this->description,
 			'language'			=> $this->language,
 			'text'				=> $this->content,
-			'tags'				=> json_encode($this->tags),
 			//'tags'				=> json_encode($this->tags),
 			'external_post_id'	=> $this->wp_id, // has to be unique in combination with the X-EXTERNAL-ID header
 			'external_post_url'	=> get_permalink($this->wp_id),
