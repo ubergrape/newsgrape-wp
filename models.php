@@ -54,7 +54,6 @@ class NGCP_Post {
 		$this->content		= $the_content;
 		$this->description	= get_post_meta($wp_post_id, 'ngcp_description', true);
 		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true); //|| $this->options['language'];
-		$this->tags			= $this->import_tags($wp_post_id);
 		//$this->tags			= $this->import_tags($wp_post_id);
 		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
 		
