@@ -42,7 +42,7 @@ class NGCP_API {
 			return $response_decoded;
 		}
 		
-		if ($response_decoded == null || empty($response_decoded)) {
+		if ($response_decoded == null) {
 			$this->error($function_name,__('The Newsgrape server sent an unexpected answer.<br/>This looks like your hoster is using a proxy server which blocks requests to newsgrape.com. Please contact your hoster.<br/><br/><a href="#" onclick="jQuery(\'#setting-error-ngcp pre\').show()">Show first 2000 characters of response</a>', 'ngcp').'<pre style="display:none">'.esc_html(substr($response['body'],0,2000)).'</pre>');
 			return False;
 		}
@@ -76,7 +76,8 @@ class NGCP_API {
 		
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__,'key');
 
-		if (!$response_decoded) {
+		// The response can be empty but should not be False
+		if (False === $response_decoded) {
 			return False;
 		}
 		
@@ -102,13 +103,14 @@ class NGCP_API {
 		
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__,'id','display_url');
 
-		if (!$response_decoded) {
+		if (False === $response_decoded) {
 			return False;
 		}
 		
 		update_post_meta($post->wp_id, 'ngcp_id', $response_decoded['id']);
 		update_post_meta($post->wp_id, 'ngcp_display_url', $response_decoded['display_url']);
 		update_post_meta($post->wp_id, 'ngcp_sync', time());
+		delete_post_meta($post->wp_id, 'ngcp_deleted');
 		
 		$this->report(__FUNCTION__,'done');
 		
@@ -139,13 +141,14 @@ class NGCP_API {
 		
 		$response = wp_remote_post($url,$args);
 
-		$response_decoded = $this->decode_json_response($response,__FUNCTION__,'id','display_url');
+		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
 
-		if (!$response_decoded) {
+		if (False === $response_decoded) {
 			return False;
 		}
 		
 		update_post_meta($post->wp_id, 'ngcp_sync', time());
+		delete_post_meta($post->wp_id, 'ngcp_deleted');
 		
 		$this->report(__FUNCTION__,'done');
 		
@@ -166,14 +169,18 @@ class NGCP_API {
 		
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
 
-		if (!$response_decoded) {
+		if (False === $response_decoded) {
 			return False;
 		}
 		
-		if (204 != $response['response']['code']) {
+		if (404 == $response['response']['code']) {
+			ngcp_debug('Article not found on Newsgrape, this means it has been deleted before.');
+		} elseif (204 != $response['response']['code']) {
 			$this->error(__FUNCTION__,'Article could not be deleted.');
 			return False;
 		}
+		
+		update_post_meta($post->wp_id, 'ngcp_deleted', True);
 		
 		$this->report(__FUNCTION__,'done');
 		

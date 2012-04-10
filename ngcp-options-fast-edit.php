@@ -8,11 +8,14 @@ function ngcp_validate_fe_options($input) {
 	
 	$options = ngcp_get_options();
 	
+	
+	
 	$updated_articles = array();
 	
 	foreach ($input['sync_hidden'] as $post_id => $old_value) {
 		if ($input['sync'][$post_id] != $old_value) {
 			update_post_meta($post_id, 'ngcp_sync', $input['sync'][$post_id]);
+			ngcp_debug('sync '.$post_id.' changed to '.$input['sync'][$post_id]);
 			$updated_articles[] = $post_id;
 		}
 	}
@@ -20,6 +23,7 @@ function ngcp_validate_fe_options($input) {
 	foreach ($input['type_hidden'] as $post_id => $old_value) {
 		if ($input['type'][$post_id] != $old_value) {
 			update_post_meta($post_id, 'ngcp_type', $input['type'][$post_id]);
+			ngcp_debug('type '.$post_id.' changed to '.$input['type'][$post_id]);
 			$updated_articles[] = $post_id;
 		}
 	}
@@ -27,6 +31,7 @@ function ngcp_validate_fe_options($input) {
 	foreach ($input['category_hidden'] as $post_id => $old_value) {
 		if ($input['category'][$post_id] != $old_value) {
 			update_post_meta($post_id, 'ngcp_category', $input['category'][$post_id]);
+			ngcp_debug('category '.$post_id.' changed to '.$input['category'][$post_id]);
 			$updated_articles[] = $post_id;
 		}
 	}
@@ -35,13 +40,19 @@ function ngcp_validate_fe_options($input) {
 	
 	$unsynced_articles = array();
 	
-	foreach ($input['id_hidden'][$post_id] as $ng_id) {
-		if (empty($ng_id) && 1 == $input['sync'][$post_id]) {
+	foreach ($input['is_synced_hidden'] as $post_id => $is_synced) {
+		// has not been synced but sync is now checked
+		if (False == $is_synced && 1 == $input['sync'][$post_id]) {
 			$unsynced_articles[] = $post_id;
+			ngcp_debug('unsynced '.$post_id);
+		// has been synced but sync is now unchecked
+		} else if (True == $is_synced && (!array_key_exists($post_id,$input['sync']) || 0 == $input['sync'][$post_id])){
+			$unsynced_articles[] = $post_id;
+			ngcp_debug('unsynced '.$post_id);
 		}
 	}
 	
-	$articles_to_sync = array_merge($updated_articles, $unsynced_articles);
+	$articles_to_sync = array_unique(array_merge($updated_articles, $unsynced_articles));
 	ngcp_debug('Articles to sync: '.sizeof($articles_to_sync));
 
 	// Sync articles with newsgrape
@@ -79,8 +90,14 @@ function ngcp_display_fast_edit() {
 
 <? include_once 'options-head.php';  ?>
 
+<script>
+function deletion_check(form) {
+		return true;
+}
+</script>
+
 <div class="wrap">
-	<form method="post" id="ngcp_fe" action="options.php">
+	<form method="post" id="ngcp_fe" action="options.php" onsubmit="deletion_check(this)">
 		<?php 
 		settings_fields('ngcp_fe');
 		get_settings_errors('ngcp_fe');	
@@ -136,11 +153,11 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 					setup_postdata($post);
 					$post_meta = get_post_custom($post->ID);
 					$has_type = !empty($post_meta['ngcp_type']);
-					$is_synced = isset($post_meta['ngcp_id']) && $post_meta['ngcp_id'][0] != 0;
+					$is_synced = isset($post_meta['ngcp_id']) && $post_meta['ngcp_id'][0] != 0 && (!isset($post_meta['ngcp_deleted']) || False == $post_meta['ngcp_deleted']);
 				?>
 				
 				<tr class="<?php if($is_synced) echo 'ngcp-synced'; ?> <?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
-					<input type="hidden" name="ngcp_fe[id_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_id'][0]; ?>">
+					<input type="hidden" name="ngcp_fe[is_synced_hidden][<?php the_id(); ?>]" value="<?php echo $is_synced; ?>">
 					<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[type_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_type'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[category_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_category'][0]; ?>">
@@ -151,7 +168,7 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 						<span class="ngcp-the-date"><?php the_time(get_option('date_format')); ?></span>
 					<td>
 						<label>
-							<input class="ngcp-sync" name="ngcp_fe[sync][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_sync'][0], 1); ?> />
+							<input class="ngcp-sync" name="ngcp_fe[sync][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_sync'][0]!=0 && $post_meta['ngcp_sync'][0]!=''); ?> />
 							<?php _e('Sync with Newsgrape', 'ngcp'); ?>
 						</label>
 						<br />

@@ -89,6 +89,8 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_id = (array_key_exists("ngcp_id",$post_meta)) ? $post_meta['ngcp_id'][0] : false;
 	$ngcp_category = (array_key_exists("ngcp_category",$post_meta)) ? $post_meta['ngcp_category'][0] : false;
 	$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
+	$is_synced = isset($post_meta['ngcp_id']) && $post_meta['ngcp_id'][0] != 0 && (!isset($post_meta['ngcp_deleted']) || False == $post_meta['ngcp_deleted']);
+	$has_been_deleted = array_key_exists("ngcp_deleted",$post_meta) && True == $post_meta['ngcp_deleted'][0];
 	
 	if (!array_key_exists("ngcp_sync",$post_meta)) {
 		if('published' != get_post_status($post->ID) && 'auto-draft' != get_post_status($post->ID) && !$ngcp_id) {
@@ -114,18 +116,20 @@ function ngcp_inner_meta_box($post) {
 
 	<?php wp_nonce_field( 'ngcp_metabox', 'ngcp_nonce' ); ?>
 	
-    <div class="misc-pub-section ngcp-info <?php if($ngcp_display_url) { echo "synced"; } ?>">    	
-		<?php if($ngcp_display_url): ?>
+    <div class="misc-pub-section ngcp-info <?php if($is_synced) { echo "synced"; } ?>">    	
+		<?php if($is_synced): ?>
 		    <p><strong class="on-newsgrape">On Newsgrape: </strong><a href="<?php echo $ngcp_display_url?>"><?php echo substr($ngcp_display_url,7); ?></a></p>
 		    <?php if(NGCP_DEBUG) { echo "<p>NG ID: $ngcp_id</p>"; }?>
+		<?php elseif($has_been_deleted): ?>
+		    <em><?php _e('Not synced anymore. (has been deleted)', 'ngcp');?></em>
 		<?php else: ?>
-		    <em><?php _e('Not synced yet.', 'ngcp');?></em>
+			<em><?php _e('Not synced yet.', 'ngcp');?></em>
 		<?php endif; ?>
 	</div>
 	
 	<div class="misc-pub-section">
 		<div class="ngcp-setting">
-            <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync, '1'); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?></label>
+            <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync!=0); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?></label>
 		</div>
     </div>
     
