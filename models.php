@@ -25,10 +25,10 @@ class NGCP_Post {
 	public $options = array();
 	
 	function __construct($wp_post_id = NULL) {
+		$this->options = ngcp_get_options();
 		if (NULL != $wp_post_id) {
 			$this->import_wp_object($wp_post_id);
 		}
-		$this->options = ngcp_get_options();
 	}
 	
 	function __toString() {
@@ -53,11 +53,15 @@ class NGCP_Post {
 		$this->title_plain	= strip_tags(@$this->title);
 		$this->content		= $the_content;
 		$this->description	= get_post_meta($wp_post_id, 'ngcp_description', true);
-		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true); //|| $this->options['language'];
+		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true);
 		//$this->tags			= $this->import_tags($wp_post_id);
 		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
 		
-		if($this->description == '') {
+		if('' == $this->language || 0 == $this->language) {
+			$this->language = $this->options['language'];
+		}
+				
+		if('' == $this->description) {
 			$this->description = $wp_post->post_excerpt;
 		}
 	}
