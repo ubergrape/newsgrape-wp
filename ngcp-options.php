@@ -302,16 +302,16 @@ function ngcp_display_options() {
 						</ td>
 					</tr>
 					<tr valign="top">
-						<th scope="row"><?php _e('Excerpt', 'ngcp'); ?></th>
+						<th scope="row"><?php _e('Intro', 'ngcp'); ?></th>
 						<td>
 						<label>
 							<input name="ngcp[excerpt]" type="checkbox" value="1" <?php checked($options['excerpt'], 1); ?>/>
-							<?php _e('Move excpert box to the top', 'ngcp'); ?>
+							<?php _e('Show intro field below title', 'ngcp'); ?>
 						</label>
 						<br />
 						<span class="description">
 						<?php
-						_e('Move the standard WordPres excerpt input box to the top when editing an article.<br />This is alsow used as the description in your newsgrape article.', 'ngcp');
+						_e('When editing an article you can write an intro.<br/>The intro will be highlighted on Newsgrape and also be shown on your blog.', 'ngcp');
 						?>
 						</span>
 						</ td>
