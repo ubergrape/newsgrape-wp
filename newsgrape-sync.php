@@ -214,7 +214,7 @@ function ngcp_add_description_to_content($content) {
 	return $content;
 }
 
-function ngcp_can_replace() {
+function ngcp_can_replace_comments() {
 	global $id, $post;
 	
 	$options = ngcp_get_options();
@@ -328,7 +328,7 @@ function ngcp_comments($file) {
         return;
     }*/
 
-    if ( !ngcp_can_replace() ) {
+    if ( !ngcp_can_replace_comments() ) {
         return $file;
     }
     
