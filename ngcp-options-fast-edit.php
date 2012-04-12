@@ -92,12 +92,27 @@ function ngcp_display_fast_edit() {
 
 <script>
 function deletion_check(form) {
-		return true;
+	delete_count = 0;
+	
+	jQuery(".ngcp-all-articles tbody tr").each(function(){
+		var old_checked = jQuery(this).find("input[name^='ngcp_fe[sync_hidden]']")[0].value != "";
+		var new_checked = jQuery(this).find("input[name^='ngcp_fe[sync]']")[0].checked;
+		if(old_checked == true && new_checked == false) {
+			delete_count++;
+		}
+	});
+	
+	if(delete_count > 0) {
+		var text = delete_count > 1 ? "<?php _e('Do you really want to unpublish {count} articles? They will be deleted on Newsgrape'); ?>" : "<?php _e('Do you really want to unpublish {count} article? It will be deleted on Newsgrape.'); ?>";
+		return confirm(text.replace('{count}', delete_count));
+	}
+	
+	return true;
 }
 </script>
 
 <div class="wrap">
-	<form method="post" id="ngcp_fe" action="options.php" onsubmit="deletion_check(this)">
+	<form method="post" id="ngcp_fe" action="options.php" onsubmit="return deletion_check(this)">
 		<?php 
 		settings_fields('ngcp_fe');
 		get_settings_errors('ngcp_fe');	
