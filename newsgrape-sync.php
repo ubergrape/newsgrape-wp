@@ -173,7 +173,7 @@ function ngcp_settings_css() { ?>
 			font-size: 10px;
 		}
 		.ngcp-all-articles tr.ngcp-synced {
-			background: #E6FFCC;
+			background: #E7F7D3;
 		}
 		.ngcp-sync-state.ngcp-synced {
 			color: green;
