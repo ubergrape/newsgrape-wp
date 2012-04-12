@@ -23,27 +23,27 @@ $ngcp_dir = dirname(__FILE__);
 @require_once "$ngcp_dir/ngcp-options.php";
 @require_once "$ngcp_dir/ngcp-options-fast-edit.php";
 
-// set default options 
+/* Set default options */
 function ngcp_set_defaults() {
 	$options = ngcp_get_options();
 	add_option( 'ngcp', $options, '', 'no' );
 }
 register_activation_hook(__FILE__, 'ngcp_set_defaults');
 
-//register our settings
+/* Register settings */
 function register_ngcp_settings() {
 	register_setting( 'ngcp', 'ngcp', 'ngcp_validate_options');
 	register_setting( 'ngcp_fe', 'ngcp_fe', 'ngcp_validate_fe_options');
 }
 
-// when uninstalled, remove option
+/* When uninstalled, remove option */
 function ngcp_remove_options() {
 	delete_option('ngcp');
 	delete_option('ngcp_error_notice');
 }
 register_uninstall_hook( __FILE__, 'ngcp_remove_options' );
 
-// ---- Style -----
+/* Metabox Style */
 function ngcp_css() { ?>
 	<style type="text/css">
 		.ngcp-section:first-child {
@@ -117,6 +117,7 @@ function ngcp_css() { ?>
 <?php 
 }
 
+/* Admin options page style */
 function ngcp_settings_css() { ?>
 	<style type="text/css">
 		table.editform th { text-align: left; }
@@ -203,6 +204,7 @@ function ngcp_settings_css() { ?>
 <?php
 }
 
+/* Adds optional description/intro text to the post content */
 function ngcp_add_description_to_content($content) {
 	global $id, $post;
 	
@@ -214,6 +216,11 @@ function ngcp_add_description_to_content($content) {
 	return $content;
 }
 
+/* Determines if the Newsgrape plugin should replace the default
+ * WordPress comment system.
+ * The Newsgrape comment system can be (de)activated globally on the
+ * options page or individually in the metabox
+ */
 function ngcp_can_replace_comments() {
 	global $id, $post;
 	
@@ -296,6 +303,9 @@ function ngcp_print_login_notice() {
 	echo "</p></div>";
 }
 
+/* Prints out a <link rel='canonical'> pointing to the corresponing
+ * Newsgrape article
+ */
 function ngcp_rel_canonical() {
 	global $posts;
 	
@@ -323,6 +333,7 @@ function ngcp_rel_canonical() {
 	rel_canonical();
 }
 
+/* Newsgrape comment sysem */
 function ngcp_comments($file) {
 	/*if ( !( is_singular() && ( have_comments() || 'open' == $post->comment_status ) ) ) {
         return;
@@ -336,6 +347,9 @@ function ngcp_comments($file) {
     return $file;
 }
 
+/* Log Newsgrape debug messages if NGCP_DEBUG is set.
+ * Writes to debug.log in plugin directory if NGCP_DEBUG_FILE is set
+ */
 function ngcp_debug($message) {
 	if(NGCP_DEBUG) {
 		if(NGCP_DEBUG_FILE) {
@@ -350,6 +364,10 @@ function ngcp_debug($message) {
 	}
 }
 
+/* Generates a random string, containing upper- and lowercase
+ * characters, numbers, "." and "-".
+ * This is used to generate the unique blog id
+ */
 function ngcp_random($len) { 
     if (@is_readable('/dev/urandom')) { 
         $f=fopen('/dev/urandom', 'r'); 
