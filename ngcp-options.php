@@ -16,7 +16,6 @@ function ngcp_get_options() {
 			'skip_cats'			=> array(),
 			'type'				=> array(),
 			'header_loc'		=> 0,		// 0 means top, 1 means bottom
-			'cut_text'			=> __('Read the rest of this entry &raquo;', 'ngcp'),
 			'languages'			=> array(),
 			'language'			=> substr(get_bloginfo('language'),0,2),
 			'licenses'			=> array(),

@@ -75,8 +75,6 @@ function ngcp_css() { ?>
 		div.ngcp-radio-column ul li { list-style: none; padding: 0; text-indent: 0; margin-left: 0; }
 		div#post-body-content div.ngcp-radio-column, div#post-body-content p.ngcp-userpics { float: left; width: 22%; margin-right: 2%; }
 		div#side-info-column div.ngcp-radio-column ul { margin: 1em; }
-		p.ngcp-cut-text { clear: both; }
-		input#ngcp_cut_text { width: 90%; }
 		#ngcp_license {
 			max-width: 100%;
 		}
