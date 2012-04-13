@@ -5,7 +5,7 @@ function ngcp_get_options() {
 	$defaults = array(
 			'username'			=> '',
 			'api_key'			=> '',
-			'sync'			=> 1,
+			'sync'				=> 1,
 			'published_old'		=> 0,
 			'privacy'			=> 'public',
 			'privacy_private'	=> 'ngcp_no',
@@ -21,8 +21,7 @@ function ngcp_get_options() {
 			'licenses'			=> array(),
 			'categories'		=> array(),
 			'ng_category'		=> array(),
-			'license'			=> '1'
-			
+			'license'			=> '1',
 	);
 	
 	$options = get_option('ngcp');
@@ -269,7 +268,7 @@ function ngcp_display_options() {
 			
 			<fieldset class="options">
 				<legend><h3><?php _e('Main Options', 'ngcp'); ?></h3></legend>
-				<table class="form-table ui-tabs-panel">
+				<table class="form-table">
 					<tr valign="top">
 						<th scope="row"><?php _e('Sync', 'ngcp'); ?></th>
 						<td>
@@ -322,7 +321,7 @@ function ngcp_display_options() {
 			<div id="ngcp-advanced-options">
 				<fieldset class="options">
 					<!--<legend><h3><?php _e('Post Privacy', 'ngcp'); ?></h3></legend>
-					<table class="form-table ui-tabs-panel">
+					<table class="form-table">
 						<tr valign="top">
 							<th scope="row"><?php _e('Newsgrape privacy level for all published WordPress posts', 'ngcp'); ?></th>
 							<td>
@@ -361,7 +360,7 @@ function ngcp_display_options() {
 				
 				<!--<fieldset class="options">
 					<legend><h3><?php _e('Newsgrape Tags', 'ngcp'); ?></h3></legend>
-					<table class="form-table ui-tabs-panel">
+					<table class="form-table">
 						<tr valign="top">
 							<th scope="row"><?php _e('Tag entries on Newsgrape?', 'ngcp'); ?></th>
 							<td>
@@ -391,7 +390,7 @@ function ngcp_display_options() {
 				
 				<fieldset class="options">
 					<legend><h3><?php _e('Category Selection', 'ngcp'); ?></h3></legend>
-					<table class="form-table ui-tabs-panel">
+					<table class="form-table">
 						<tr valign="top">
 							<th scope="row"><?php _e('Select which of your Categories should be posted to Newsgrape and which default type should be used', 'ngcp'); ?></th>
 							<td>
@@ -422,7 +421,7 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 				
 				<!--<fieldset class="options">
 					<legend><h3><?php _e('Sync or delete all entries', 'ngcp'); ?></h3></legend>
-					<table class="form-table ui-tabs-panel">
+					<table class="form-table">
 						<tr valign="top">
 							<th scope="row"> </th>
 							<td>
