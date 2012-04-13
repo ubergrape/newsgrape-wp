@@ -546,10 +546,10 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 	jQuery(document).ready(function($){
 		$(function () {
 			$('#ngcp-help').click(function(event) {
-					event.preventDefault();
-					$('#ngcp-help-text').slideDown('fast');
-					$(this).hide();
-				});
+				event.preventDefault();
+				$('#ngcp-help-text').slideDown('fast');
+				$(this).hide();
+			});
 			$('.checkall').click(function () {
 				$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
 			});
