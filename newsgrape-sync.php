@@ -436,6 +436,28 @@ function ngcp_log_http($data = '', $log_type = '', $extra = '') {
 	return $data;
 }
 
+/* Finds out if current user is connected.
+ * returns 'multi' if multiuser is activated and current user is connected
+ * returns 'single' if multiuser is deactiveated and user is connected
+ * returns False if newsgrape is not connected
+ */
+function ngcp_is_current_user_connected() {
+	$options = ngcp_get_options();
+	if('multi' == $options['multiuser']) {
+		require_once(ABSPATH . WPINC . '/pluggable.php');
+		global $current_user;
+		get_currentuserinfo();
+		$user = get_user_meta($current_user->ID, 'ngcp', True);
+		if ($user && array_key_exists('api_key',$user)) {
+			return 'multi';
+		}
+	} elseif (isset($options['api_key']) && '' != $options['api_key']) {
+		return 'single';
+	}
+	
+	return False;
+}
+
 
 $class = 'NGCP_Core_Controller';
 
@@ -465,9 +487,7 @@ add_filter('the_content', 'ngcp_add_description_to_content', 30);
 
 
 // Inform user that he needs to enter his newsgrape credentials
-$ngcp_options = ngcp_get_options();
-
-if(!array_key_exists('api_key', $ngcp_options) || "" == $ngcp_options['api_key']) {
+if(!ngcp_is_current_user_connected()) {
 	add_action('admin_notices', 'ngcp_print_login_notice');
 }
 
