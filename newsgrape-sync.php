@@ -122,7 +122,19 @@ function ngcp_settings_css() { ?>
 		dl { margin-right: 2%; margin-top: 1em; color: #666; }
 		dt { font-weight: bold; }
 		#ngcp dd { font-style: italic; }
-		ul#category-children { list-style: none; height: 15em; width: 30em; overflow-y: scroll; border: 1px solid #dfdfdf; padding: 0 1em; background: #fff; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+		ul#category-children {
+			list-style: none;
+			height: 15em;
+			width: 38em;
+			overflow-y: scroll;
+			border: 1px solid #dfdfdf;
+			padding: 0 1em;
+			background: #fff;
+			border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; 
+		}
+		#category-children li {
+			clear: both;
+		}
 		ul.children { margin-left: 1.5em; }
 		tr#scary-buttons { display: none; }
 		#delete_all { font-weight: bold; color: #c00; }
