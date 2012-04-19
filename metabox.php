@@ -69,6 +69,12 @@ function ngcp_inner_meta_box($post) {
 			$ngcp_type = $post_meta['ngcp_type'][0];
 	}
 	
+	$multiuser = ('multi' == $options['multiuser']);
+	
+	if ($multiuser) {	
+		$user_meta = ngcp_user_meta();
+	}
+	
 ?>
 
 	<?php wp_nonce_field( 'ngcp_metabox', 'ngcp_nonce' ); ?>
@@ -86,7 +92,7 @@ function ngcp_inner_meta_box($post) {
 	
 	<div class="misc-pub-section">
 		<div class="ngcp-setting">
-            <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync!=0); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?></label>
+            <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync!=0); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?> <?php if($multiuser) printf(__('(as %1$s)', 'ngcp'), $user_meta['username']); ?></label>
 		</div>
     </div>
     
