@@ -49,7 +49,11 @@ class NGCP_API {
 		}
 		
 		if ($response_decoded == null) {
-			$this->error($function_name,__('The Newsgrape server sent an unexpected answer.<br/>This looks like your hoster is using a proxy server which blocks requests to newsgrape.com. Please contact your hoster.<br/><br/><a href="#" onclick="jQuery(\'#setting-error-ngcp pre\').show()">Show first 2000 characters of response</a>', 'ngcp').'<pre style="display:none">'.esc_html(substr($response['body'],0,2000)).'</pre>');
+			if($this->is_ngcp_error($response)) {
+				$this->error($function_name,__('You are not authorized.<br/>Possible reasons:<ul><li>- Your API key has been invalidated. Reconnect with Newsgrape</li><li>- A user has synced this article to Newsgrape in multiuser mode but his WordPress account was disconnected from Newsgrape later.</li></ul>'));
+			} else {
+				$this->error($function_name,__('The Newsgrape server sent an unexpected answer.<br/>This looks like your hoster is using a proxy server which blocks requests to newsgrape.com. Please contact your hoster.<br/><br/><a href="#" onclick="jQuery(\'#setting-error-ngcp pre\').show()">Show first 2000 characters of response</a>', 'ngcp').'<pre style="display:none">'.esc_html(substr($response['body'],0,2000)).'</pre>');
+			}
 			return False;
 		}
 		

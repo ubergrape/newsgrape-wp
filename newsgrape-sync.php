@@ -304,15 +304,15 @@ function ngcp_print_notices() {
 					$msg .= sprintf(__('Could not sync. Please got to the <a href="%s">Newsgrape options screen</a> and enter enter your Newsgrape username and password.', 'ngcp'), 'options-general.php?page=ngcp-options.php');
 					$class = 'error';
 					break;
-				case 'create' : 
-					$msg .= sprintf(__('Could not sync. (Error: %s)', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
+				case 'create' :
+					$msg .= sprintf(__('Could not sync. Error: %s', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
 					$class = 'error';
 					break;
-				case 'update' : 
-					$msg .= sprintf(__('Could not sync the updated entry. (Error: %s)', 'ngcp'), $error );
+				case 'update' :
+					$msg .= sprintf(__('Could not sync the updated entry. Error: %s', 'ngcp'), $error );
 					$class = 'error';
 					break;
-				default: 
+				default:
 					$msg .= sprintf(__('Error (%s): %s', 'ngcp'), $code, $error );
 					$class = 'error';
 					break;
