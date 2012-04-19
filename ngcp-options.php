@@ -151,9 +151,16 @@ function ngcp_validate_options($input) {
 		}
 		
 	} // if updated
+	
+	// do not save in options db
 	unset($input['delete_all']);
 	unset($input['sync_all']);
 	unset($input['update_ngcp_options']);
+	unset($input['delete_options']);
+	unset($input['delete_multiuser']);
+	unset($input['multiuser_username']);
+	unset($input['multiuser_password']);
+	unset($input['multiuser_id']);
 		
 	// Send custom updated message
 	$msg = implode('<br />', $msg);
