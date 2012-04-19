@@ -106,7 +106,7 @@ function ngcp_validate_options($input) {
 	if (isset($input['logout'])) {
 		$input['api_key'] = "";
 		
-		$msg[] .=  __('Disconnected from Newsgrape...'.$input['api_key'], 'ngcp');
+		$msg[] .=  __('Disconnected from Newsgrape...', 'ngcp');
 		$msgtype = 'updated';
 	}
 
