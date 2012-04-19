@@ -2,8 +2,10 @@
 
 class NGCP_Core_Controller {
 	static function post($post_ID) {
-		if (!NGCP_Core_Controller::check_nonce() || !NGCP_Core_Controller::has_api_key()) {
-			return $post_ID;
+		global $ngcp_synced;
+		
+		if ($post_ID == $ngcp_synced || !NGCP_Core_Controller::check_nonce() || !NGCP_Core_Controller::has_api_key()) {
+			return $post_ID; // nothing to do here
 		}
 		
 		$post = new NGCP_Post($post_ID);
@@ -25,13 +27,16 @@ class NGCP_Core_Controller {
 		
 		$api = new NGCP_API();
 		$api->create($post);
+		$ngcp_synced = $post_ID;
 		
 		return $post_ID;
 	}
 	
 	static function edit($post_ID) {
-		if (!NGCP_Core_Controller::check_nonce() || !NGCP_Core_Controller::has_api_key()) {
-			return $post_ID;
+		global $ngcp_synced;
+		
+		if ($post_ID == $ngcp_synced || !NGCP_Core_Controller::check_nonce() || !NGCP_Core_Controller::has_api_key()) {
+			return $post_ID; // nothing to do here
 		}
 
 		$post = new NGCP_Post($post_ID);
@@ -48,6 +53,7 @@ class NGCP_Core_Controller {
 		
 		$api = new NGCP_API();
 		$api->update($post);
+		$ngcp_synced = $post_ID;
 		
 		return $post_ID;
 	}
