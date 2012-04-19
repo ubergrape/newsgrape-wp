@@ -490,7 +490,7 @@ add_filter('the_content', 'ngcp_add_description_to_content', 30);
 
 
 // Inform user that he needs to enter his newsgrape credentials
-if(!ngcp_is_current_user_connected()) {
+if(!ngcp_is_current_user_connected() && current_user_can('manage_options')) {
 	add_action('admin_notices', 'ngcp_print_login_notice');
 }
 
