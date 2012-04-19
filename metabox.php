@@ -3,7 +3,7 @@
 function ngcp_add_meta_box() {
 	/* only show meta box when connected to newsgrape */
 	$options = ngcp_get_options();
-	if (empty($options['api_key'])) {
+	if (!ngcp_is_current_user_connected()) {
 		return;
 	}
 	

@@ -100,10 +100,8 @@ class NGCP_Core_Controller {
 		return $post_ID;
 	}
 	
-	static function has_api_key() {
-		$options = ngcp_get_options();
-		
-		if ("" == $options['api_key']) {
+	static function has_api_key() {		
+		if (!ngcp_is_current_user_connected()) {
 			update_option('ngcp_error_notice', array("no_api_key" => "No API key set."));
 			ngcp_debug("controller: NO API KEY");
 			return False;
