@@ -71,8 +71,12 @@ function ngcp_validate_fe_options($input) {
 	
 	add_settings_error( 'ngcp_fe', 'ngcp_fe', $msg, $msgtype );
 	
-	// Nothing to save to options db
+	// Nothing to save to options db ...
 	unset($input);
+	
+	// ... except 'published_old', so the info box in the options page disappears
+	$options['published_old'] = 1;
+	update_option('ngcp',$options);
 	
 	return $input;
 }
