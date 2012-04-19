@@ -123,4 +123,9 @@ jQuery(function(){
 	
 	/* Move newsgrape description box above article body editor*/
 	jQuery('#newsgrape_description').appendTo('#titlediv');
+	
+	/* Fix tab indices */
+	jQuery('#titlediv input')[0].tabIndex = 100; // title
+	jQuery('#newsgrape_description_inner input')[0].tabIndex = 101; // newsgrape description
+	jQuery('#postdivrich textarea')[0].tabIndex = 102; // main text
 });
