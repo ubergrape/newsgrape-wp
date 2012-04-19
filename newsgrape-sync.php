@@ -63,6 +63,10 @@ function ngcp_css() { ?>
 		#ngcp-promotional-info {
 			display: none;
 		}
+		.ngcp-info p {
+			margin-top: 3px;
+			margin-bottom: 3px;
+		}
 		.ngcp-info a {
 			word-break: break-word;
 		}
