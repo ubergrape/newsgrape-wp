@@ -145,16 +145,21 @@ function ngcp_settings_css() { ?>
 		#ngcp-logout { margin-bottom: 30px; }
 		#ngcp-advanced-options { /*display: none;*/ }
 		#category-children select { float: right; }
-		#ngcp-fast-edit {
+		.ngcp-box {
 			width: 450px;
 			background: #fafafa;
 			padding: 18px;
 			margin-bottom: 20px;
 			margin-top: 20px;
 		}
-		
 		#ngcp-fast-edit-button {
 			float: right;
+		}
+		#ngcp-multiuser-add-div {
+			width: 610px;
+		}
+		#ngcp-multiuser-add-div h3 {
+			margin: 0;
 		}
 		.ngcp-all-articles {
 			margin-top: 20px;

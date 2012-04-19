@@ -347,38 +347,42 @@ function ngcp_display_options() {
 					<? endif; ?>
 				</table>
 				
-				<h3><?php _e('Add new user', 'ngcp'); ?></h3>
-				<table class="form-table" id="ngcp-multiuser-add">
-					<tr valign="top">
-						<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
-						<td><input name="ngcp[multiuser_username]" type="text" id="multiuser-username" value="<?php esc_attr_e($input['multiuser_username']); ?>" size="40" /></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row"><?php _e('Newsgrape Password', 'ngcp'); ?></th>
-						<td><input name="ngcp[multiuser_password]" type="password" id="multiuser-password" size="40" />
-							<a href="http://www.newsgrape.com/accounts/password/reset/" style="margin-left: 20px"><?php _e('Forgot Password', 'ngcp'); ?></a>
-							<br />
-							<span class="description"><?php
-							_e('Your password will not be saved. It is needed only once to connect your WordPress with Newsgrape', 'ngcp');
-							?></span>
-						</td>
-					</tr>
-					<tr valign="top">
-						<th scope="row"><?php _e('Sync with Wordpress Account', 'ngcp'); ?></th>
-						<td><?php wp_dropdown_users( array('id' => 'ngcp-multi-user', 'name' => 'ngcp[multiuser_id]') ); ?></td>
-					</tr>
-					<tr valign="top">
-						<td>
-							<input type="submit" name="ngcp[login]" id="ngcp-login" value="<?php esc_attr_e('Connect with Newsgrape', 'ngcp'); ?>" class="button-primary" /> 
-						</td>
-					</tr>
-				</table>
+				<a href="#" class="button-secondary" id="ngcp-multiuser-add-button">Add user</a>
+				
+				<div class="ngcp-box hide-if-js" id="ngcp-multiuser-add-div">
+					<h3><?php _e('Add new user', 'ngcp'); ?></h3>
+					<table class="form-table" id="ngcp-multiuser-add">
+						<tr valign="top">
+							<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
+							<td><input name="ngcp[multiuser_username]" type="text" id="multiuser-username" value="<?php esc_attr_e($input['multiuser_username']); ?>" size="40" /></td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Newsgrape Password', 'ngcp'); ?></th>
+							<td><input name="ngcp[multiuser_password]" type="password" id="multiuser-password" size="40" />
+								<a href="http://www.newsgrape.com/accounts/password/reset/" style="margin-left: 20px"><?php _e('Forgot Password', 'ngcp'); ?></a>
+								<br />
+								<span class="description"><?php
+								_e('Your password will not be saved. It is needed only once to connect your WordPress with Newsgrape', 'ngcp');
+								?></span>
+							</td>
+						</tr>
+						<tr valign="top">
+							<th scope="row"><?php _e('Sync with Wordpress Account', 'ngcp'); ?></th>
+							<td><?php wp_dropdown_users( array('id' => 'ngcp-multi-user', 'name' => 'ngcp[multiuser_id]') ); ?></td>
+						</tr>
+						<tr valign="top">
+							<td>
+								<input type="submit" name="ngcp[login]" id="ngcp-multiuser-login-button" value="<?php esc_attr_e('Connect with Newsgrape', 'ngcp'); ?>" class="button-primary" /> 
+							</td>
+						</tr>
+					</table>
+				</div>
 			</div>
 			
 		<div id="ngcp-settings" style="<?php if('multi' != ngcp_is_current_user_connected()) echo 'display: none';?>">
 			
 			<?php if (0 == $options['published_old']): ?>
-				<div id="ngcp-fast-edit">
+				<div class="ngcp-box" id="ngcp-fast-edit">
 					<span class="info"><?php _e('Some Types for your Articles have not been set yet.'); ?></span>
 					<a href="admin.php?page=ngcp-options-fast-edit.php" id="ngcp-fast-edit-button" class="button-primary"><?php _e('Fast-Edit Articles', 'ngcp'); ?></a>
 					<br />
@@ -583,6 +587,10 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 				event.preventDefault();
 				$('#ngcp-help-text').slideDown('fast');
 				$(this).hide();
+			});
+			$('#ngcp-multiuser-add-button').click(function(event) {
+				event.preventDefault();
+				$('#ngcp-multiuser-add-div').show();
 			});
 			$('.checkall').click(function () {
 				$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
