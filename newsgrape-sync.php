@@ -326,9 +326,11 @@ function ngcp_print_notices() {
 }
 
 function ngcp_print_login_notice() {
-	echo "\n<div class='error'><p>";
-	_e('<strong>Newsgrape:</strong> Enter your Newsgrape username and password to start syncing to Newsgrape: <a href="admin.php?page=newsgrape">go to Newsgrape Settings</a>', 'ngcp');
-	echo "</p></div>";
+	if(!ngcp_is_current_user_connected() && current_user_can('manage_options')) {
+		echo "\n<div class='error'><p>";
+		_e('<strong>Newsgrape:</strong> Enter your Newsgrape username and password to start syncing to Newsgrape: <a href="admin.php?page=newsgrape">go to Newsgrape Settings</a>', 'ngcp');
+		echo "</p></div>";
+	}
 }
 
 /* Prints out a <link rel='canonical'> pointing to the corresponing
@@ -505,9 +507,7 @@ add_filter('the_content', 'ngcp_add_description_to_content', 30);
 
 
 // Inform user that he needs to enter his newsgrape credentials
-if(!ngcp_is_current_user_connected() && current_user_can('manage_options')) {
-	add_action('admin_notices', 'ngcp_print_login_notice');
-}
+add_action('admin_notices', 'ngcp_print_login_notice');
 
 // enable http logging
 if(NGCP_DEBUG) {
