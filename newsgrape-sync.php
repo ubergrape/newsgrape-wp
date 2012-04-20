@@ -7,8 +7,21 @@ Author: Newsgrape.com, Stefan Kröner
 Author URI: http://www.kanen.at/
 */
 
+/* NGCP_DEBUG true enables:
+ * - Various Debug messages in logfile
+ * - Raw dump of options and blog id on options page
+ * - Buttons to delete options and blog id on options page
+ * - Display multiuser API keys on options page
+ * - Raw dump of article meta in metabox
+ */
 define('NGCP_DEBUG', false);
+
+/* NGCP_DEBUG_FILE enables logging to "debug.log" in plugin folder
+ * if this is set to false, debug messages go to the webservers error log
+ */
 define('NGCP_DEBUG_FILE', true);
+
+/* NGCP_DEV enables the staging server for API and comments system*/
 define('NGCP_DEV', false);
 
 /* Set this to the plugin dir name if you have symlink problems */
