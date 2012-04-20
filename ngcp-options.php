@@ -156,7 +156,7 @@ function ngcp_validate_options($input) {
 	} // if updated
 	
 	// Send custom updated message
-	if( isset($input['logout']) || isset($input['delete_all']) || isset($input['sync_all']) ||
+	if( isset($input['login']) || isset($input['logout']) || isset($input['delete_all']) || isset($input['sync_all']) ||
 		isset($input['update_ngcp_options']) || isset($input['delete_options']) || isset($input['delete_multiuser'])) {
 		$msg = implode('<br />', $msg);
 		
@@ -216,7 +216,7 @@ function ngcp_display_options() {
 	<form method="post" id="ngcp" action="options.php">
 		<?php
 		settings_fields('ngcp');
-		settings_errors('ngcp');
+		//settings_errors('ngcp');
 		$options = ngcp_get_options();
 		?>
 		<h2><?php _e('Newsgrape Sync Options', 'ngcp'); ?></h2>
