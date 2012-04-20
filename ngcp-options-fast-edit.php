@@ -15,7 +15,7 @@ function ngcp_validate_fe_options($input) {
 	foreach ($input['sync_hidden'] as $post_id => $old_value) {
 		if ($input['sync'][$post_id] != $old_value) {
 			update_post_meta($post_id, 'ngcp_sync', $input['sync'][$post_id]);
-			ngcp_debug('sync '.$post_id.' changed to '.$input['sync'][$post_id]);
+			ngcp_debug(sprintf('sync %d changed from "%s" to "%s"', $post_id, $input['sync_hidden'][$post_id], $input['sync'][$post_id]));
 			$updated_articles[] = $post_id;
 		}
 	}
@@ -23,7 +23,7 @@ function ngcp_validate_fe_options($input) {
 	foreach ($input['type_hidden'] as $post_id => $old_value) {
 		if ($input['type'][$post_id] != $old_value) {
 			update_post_meta($post_id, 'ngcp_type', $input['type'][$post_id]);
-			ngcp_debug('type '.$post_id.' changed to '.$input['type'][$post_id]);
+			ngcp_debug(sprintf('type %d changed from "%s" to "%s"', $post_id, $input['type_hidden'][$post_id], $input['type'][$post_id]));
 			$updated_articles[] = $post_id;
 		}
 	}
@@ -31,7 +31,7 @@ function ngcp_validate_fe_options($input) {
 	foreach ($input['category_hidden'] as $post_id => $old_value) {
 		if ($input['category'][$post_id] != $old_value) {
 			update_post_meta($post_id, 'ngcp_category', $input['category'][$post_id]);
-			ngcp_debug('category '.$post_id.' changed to '.$input['category'][$post_id]);
+			ngcp_debug(sprintf('category %d changed from "%s" to "%s"', $post_id, $input['category_hidden'][$post_id], $input['category'][$post_id]));
 			$updated_articles[] = $post_id;
 		}
 	}
@@ -65,7 +65,11 @@ function ngcp_validate_fe_options($input) {
 	$msg = implode('<br />', $msg);
 	
 	if (empty($msg)) {
-		$msg = __('Settings saved.<br/><span style="font-weight:normal">'.sizeof($updated_articles).' articles have been updated.<br/>'.sizeof($articles_to_sync).' articles have been synced</span>', 'ngcp');
+		if (0 == sizeof($updated_articles) && 0 == sizeof($articles_to_sync)) {
+			$msg = __('Nothing has changed.', 'ngcp');
+		} else {
+			$msg = __('Settings saved.<br/><span style="font-weight:normal">'.sizeof($updated_articles).' articles have been updated.<br/>'.sizeof($articles_to_sync).' articles have been synced</span>', 'ngcp');
+		}
 		$msgtype = 'updated';
 	}
 	
@@ -116,11 +120,10 @@ function deletion_check(form) {
 </script>
 
 <div class="wrap">
-	<form method="post" id="ngcp_fe" action="options.php" onsubmit="return deletion_check(this)">
+	<form method="post" id="ngcp_fe" name ="ngcp_fe" action="options.php" onsubmit="return deletion_check(this)">
 		<?php 
 		settings_fields('ngcp_fe');
-		get_settings_errors('ngcp_fe');	
-		settings_errors('ngcp_fe');
+		//settings_errors('ngcp_fe');
 		$options = ngcp_get_options();
 		$categories = $options['categories'];
 		$posts = query_posts('posts_per_page=-1');
@@ -171,8 +174,8 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 				<?php
 					setup_postdata($post);
 					$post_meta = get_post_custom($post->ID);
-					$has_type = !empty($post_meta['ngcp_type']);
-					$is_synced = isset($post_meta['ngcp_id']) && $post_meta['ngcp_id'][0] != 0 && (!isset($post_meta['ngcp_deleted']) || False == $post_meta['ngcp_deleted']);
+					$has_type = array_key_exists('ngcp_type', $post_meta) && !empty($post_meta['ngcp_type']);
+					$is_synced = array_key_exists('ngcp_id', $post_meta) && $post_meta['ngcp_id'][0] != 0 && (!array_key_exists('ngcp_deleted', $post_meta) || False == $post_meta['ngcp_deleted']);
 				?>
 				
 				<tr class="<?php if($is_synced) echo 'ngcp-synced'; ?> <?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">

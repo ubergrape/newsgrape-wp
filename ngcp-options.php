@@ -36,12 +36,15 @@ function ngcp_get_options() {
 function ngcp_validate_options($input) {
 	global $ngcp_error;
 	$msg = array();
-	$linkmsg = '';
 	$msgtype = 'error';
-	$api = new NGCP_API();
+	
+	// if we handle a login we need an API
+	if (isset($input['login'])) {
+		$api = new NGCP_API();
+	}
 	
 	// API key
-	if ('single' == $input['multiuser'] && isset($input['login']) && isset($input['password']) && !empty($input['password'])) {
+	if (isset($input['login']) && 'single' == $input['multiuser'] && isset($input['password']) && !empty($input['password'])) {
 		$key = $api->fetch_new_key($input['username'],$input['password']);
 		if ($key) {
 			$input['api_key'] = $key;
@@ -53,7 +56,7 @@ function ngcp_validate_options($input) {
 	}
 	
 	// Multiuser API Key
-	if ('multi' == $input['multiuser'] && isset($input['login']) && isset($input['multiuser_password']) && !empty($input['multiuser_password'])) {
+	if (isset($input['login']) && 'multi' == $input['multiuser'] && isset($input['multiuser_password']) && !empty($input['multiuser_password'])) {
 		$key = $api->fetch_new_key($input['multiuser_username'],$input['multiuser_password']);
 		if ($key) {
 			$userdata = get_userdata($input['multiuser_id']);
@@ -95,7 +98,7 @@ function ngcp_validate_options($input) {
 	$options = ngcp_get_options();
 	
 	// Do not lose settings
-	$fields = array('languages', 'licenses', 'categories', 'api_key');
+	$fields = array('languages', 'licenses', 'categories', 'api_key', 'published_old');
 	foreach ($fields as $field) {
 		if(empty($input[$field])) {
 			$input[$field] = $options[$field];
@@ -152,6 +155,19 @@ function ngcp_validate_options($input) {
 		
 	} // if updated
 	
+	// Send custom updated message
+	if( isset($input['logout']) || isset($input['delete_all']) || isset($input['sync_all']) ||
+		isset($input['update_ngcp_options']) || isset($input['delete_options']) || isset($input['delete_multiuser'])) {
+		$msg = implode('<br />', $msg);
+		
+		if (empty($msg)) {
+			$msg = __('Settings saved.', 'ngcp');
+			$msgtype = 'updated';
+		}
+		
+		add_settings_error( 'ngcp', 'ngcp', $msg, $msgtype );
+	}
+	
 	// do not save in options db
 	unset($input['delete_all']);
 	unset($input['sync_all']);
@@ -161,16 +177,7 @@ function ngcp_validate_options($input) {
 	unset($input['multiuser_username']);
 	unset($input['multiuser_password']);
 	unset($input['multiuser_id']);
-		
-	// Send custom updated message
-	$msg = implode('<br />', $msg);
 	
-	if (empty($msg)) {
-		$msg = __('Settings saved.', 'ngcp');
-		$msgtype = 'updated';
-	}
-	
-	add_settings_error( 'ngcp', 'ngcp', $msg, $msgtype );
 	return $input;
 }
 
@@ -209,8 +216,7 @@ function ngcp_display_options() {
 	<form method="post" id="ngcp" action="options.php">
 		<?php
 		settings_fields('ngcp');
-		get_settings_errors( 'ngcp' );	
-		settings_errors( 'ngcp' );
+		settings_errors('ngcp');
 		$options = ngcp_get_options();
 		?>
 		<h2><?php _e('Newsgrape Sync Options', 'ngcp'); ?></h2>
@@ -269,7 +275,7 @@ function ngcp_display_options() {
 		
 			<h3><?php _('Login to Newsgrape', 'ngcp'); ?></h3>
 			<script>var ngcp_is_connected = false;</script>
-			<table class="form-table ngcp-single-user" style="<?php if('multi' == $options['multiuser']) echo 'display:none;';?>>
+			<table class="form-table ngcp-single-user" style="<?php if('multi' == $options['multiuser']) echo 'display:none;';?>">
 				<tr valign="top">
 					<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
 					<td>
@@ -386,8 +392,7 @@ function ngcp_display_options() {
 				</div>
 			</div>
 			
-		<div id="ngcp-settings" style="<?php if('multi' != ngcp_is_current_user_connected()) echo 'display: none';?>">
-			
+		<div id="ngcp-settings" style="<?php if(False == ngcp_is_current_user_connected()) echo 'display: none';?>">
 			<?php if (0 == $options['published_old']): ?>
 				<div class="ngcp-box" id="ngcp-fast-edit">
 					<span class="info"><?php _e('Some Types for your Articles have not been set yet.'); ?></span>
@@ -414,7 +419,7 @@ function ngcp_display_options() {
 						_e('You can enable/disable syncing for individual posts.', 'ngcp');
 						?>
 						</span>
-						</ td>
+						</td>
 					</tr>
 					<tr valign="top">
 						<th scope="row"><?php _e('Comments', 'ngcp'); ?></th>
@@ -429,7 +434,7 @@ function ngcp_display_options() {
 						_e('Show Newsgrape comment system instead of WordPress comments', 'ngcp');
 						?>
 						</span>
-						</ td>
+						</td>
 					</tr>
 					<tr valign="top">
 						<th scope="row"><?php _e('Intro', 'ngcp'); ?></th>
@@ -444,132 +449,131 @@ function ngcp_display_options() {
 						_e('When editing an article you can write an intro.<br/>The intro will be highlighted on Newsgrape and also be shown on your blog.', 'ngcp');
 						?>
 						</span>
-						</ td>
+						</td>
 					</tr>
 				</table>
 			</fieldset>
-			<!--<a href="#" onclick="javascript: jQuery('#ngcp-advanced-options').show('fast');"><?php _e('Show advanced options', 'ngcp'); ?></a>
-			<br />-->
-			<div id="ngcp-advanced-options">
-				<fieldset class="options">
-					<!--<legend><h3><?php _e('Post Privacy', 'ngcp'); ?></h3></legend>
-					<table class="form-table">
-						<tr valign="top">
-							<th scope="row"><?php _e('Newsgrape privacy level for all published WordPress posts', 'ngcp'); ?></th>
-							<td>
-								<label>
-									<input name="ngcp[privacy]" type="radio" value="public" <?php checked($options['privacy'], 'public'); ?>/>
-									<?php _e('Public', 'ngcp'); ?>
-								</label>
-								<br />
-								<label>
-									<input name="ngcp[privacy]" type="radio" value="private" <?php checked($options['privacy'], 'private'); ?> />
-									<?php _e('Private', 'ngcp'); ?>
-								</label>
-							</td>
-						</tr>
-						<tr valign="top">
-							<th scope="row"><?php _e('Newsgrape privacy level for all private WordPress posts', 'ngcp'); ?></th>
-							<td>
-								<label>
-									<input name="ngcp[privacy_private]" type="radio" value="public" <?php checked($options['privacy_private'], 'public'); ?>/>
-									<?php _e('Public', 'ngcp'); ?>
-								</label>
-								<br />
-								<label>
-									<input name="ngcp[privacy_private]" type="radio" value="private" <?php checked($options['privacy_private'], 'private'); ?> />
-									<?php _e('Private', 'ngcp'); ?>
-								</label>
-								<br />
-								<label>
-									<input name="ngcp[privacy_private]" type="radio" value="ngcp_no" <?php checked($options['privacy_private'], 'ngcp_no'); ?>/>
-									<?php _e('Do not sync at all', 'ngcp'); ?>
-								</label>
-							</td>
-						</tr>
-					</table>
-				</fieldset>-->
-				
-				<!--<fieldset class="options">
-					<legend><h3><?php _e('Newsgrape Tags', 'ngcp'); ?></h3></legend>
-					<table class="form-table">
-						<tr valign="top">
-							<th scope="row"><?php _e('Tag entries on Newsgrape?', 'ngcp'); ?></th>
-							<td>
-								<label>
-									<input name="ngcp[tag]" type="radio" value="1" <?php checked($options['tag'], 2); ?>/>
-									<?php _e('Tag Newsgrape entries with WordPress tags only', 'ngcp'); ?>
-								</label>
-								<br />
-								<label>
-									<input name="ngcp[tag]" type="radio" value="2" <?php checked($options['tag'], 2); ?>/>
-									<?php _e('Tag Newsgrape entries with WordPress categories only', 'ngcp'); ?>
-								</label>
-								<br />
-								<label>
-									<input name="ngcp[tag]" type="radio" value="3" <?php checked($options['tag'], 3); ?>/>
-									<?php _e('Tag Newsgrape entries with WordPress categories and tags', 'ngcp'); ?>
-								</label>
-								<br />
-								<label>
-									<input name="ngcp[tag]" type="radio" value="0" <?php checked($options['tag'], 0); ?>/>
-									<?php _e('Do not tag Newsgrape entries', 'ngcp'); ?>
-								</label>
-							</td>
-						</tr>
-					</table>
-				</fieldset>-->
-				
-				<fieldset class="options">
-					<legend><h3><?php _e('Category Selection', 'ngcp'); ?></h3></legend>
-					<table class="form-table">
-						<tr valign="top">
-							<th scope="row"><?php _e('Select which of your Categories should be posted to Newsgrape and which default type should be used', 'ngcp'); ?></th>
-							<td>
-								<ul id="category-children">
-									<li><label class="selectit"><input type="checkbox" class="checkall"> 
-										<em><?php _e("Check all", 'ngcp'); ?></em></label></li>
-									<?php
-									if (!is_array($options['skip_cats'])) $options['skip_cats'] = (array)$options['skip_cats'];
-									$selected = array_diff(get_all_category_ids(), $options['skip_cats']);
-									wp_category_checklist(0, 0, $selected, false, $walker = new ngcp_Walker_Category_Checklist, false, $options = $options);
-									?>
-								</ul>
-							<span class="description">
-							<?php _e('Any post that has <em>at least one</em> of the above categories selected will be synced.'); ?><br />
-							</span>
-							<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "Opinion", what is a "Creative Article"?', 'ngcp'); ?></a>
-							<div id="ngcp-help-text" class="hide-if-js">
-								<?php _e('What is "Opinion"?<br />
+
+			<!--<fieldset class="options">
+				<legend><h3><?php _e('Post Privacy', 'ngcp'); ?></h3></legend>
+				<table class="form-table">
+					<tr valign="top">
+						<th scope="row"><?php _e('Newsgrape privacy level for all published WordPress posts', 'ngcp'); ?></th>
+						<td>
+							<label>
+								<input name="ngcp[privacy]" type="radio" value="public" <?php checked($options['privacy'], 'public'); ?>/>
+								<?php _e('Public', 'ngcp'); ?>
+							</label>
+							<br />
+							<label>
+								<input name="ngcp[privacy]" type="radio" value="private" <?php checked($options['privacy'], 'private'); ?> />
+								<?php _e('Private', 'ngcp'); ?>
+							</label>
+						</td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><?php _e('Newsgrape privacy level for all private WordPress posts', 'ngcp'); ?></th>
+						<td>
+							<label>
+								<input name="ngcp[privacy_private]" type="radio" value="public" <?php checked($options['privacy_private'], 'public'); ?>/>
+								<?php _e('Public', 'ngcp'); ?>
+							</label>
+							<br />
+							<label>
+								<input name="ngcp[privacy_private]" type="radio" value="private" <?php checked($options['privacy_private'], 'private'); ?> />
+								<?php _e('Private', 'ngcp'); ?>
+							</label>
+							<br />
+							<label>
+								<input name="ngcp[privacy_private]" type="radio" value="ngcp_no" <?php checked($options['privacy_private'], 'ngcp_no'); ?>/>
+								<?php _e('Do not sync at all', 'ngcp'); ?>
+							</label>
+						</td>
+					</tr>
+				</table>
+			</fieldset>-->
+			
+			<!--<fieldset class="options">
+				<legend><h3><?php _e('Newsgrape Tags', 'ngcp'); ?></h3></legend>
+				<table class="form-table">
+					<tr valign="top">
+						<th scope="row"><?php _e('Tag entries on Newsgrape?', 'ngcp'); ?></th>
+						<td>
+							<label>
+								<input name="ngcp[tag]" type="radio" value="1" <?php checked($options['tag'], 2); ?>/>
+								<?php _e('Tag Newsgrape entries with WordPress tags only', 'ngcp'); ?>
+							</label>
+							<br />
+							<label>
+								<input name="ngcp[tag]" type="radio" value="2" <?php checked($options['tag'], 2); ?>/>
+								<?php _e('Tag Newsgrape entries with WordPress categories only', 'ngcp'); ?>
+							</label>
+							<br />
+							<label>
+								<input name="ngcp[tag]" type="radio" value="3" <?php checked($options['tag'], 3); ?>/>
+								<?php _e('Tag Newsgrape entries with WordPress categories and tags', 'ngcp'); ?>
+							</label>
+							<br />
+							<label>
+								<input name="ngcp[tag]" type="radio" value="0" <?php checked($options['tag'], 0); ?>/>
+								<?php _e('Do not tag Newsgrape entries', 'ngcp'); ?>
+							</label>
+						</td>
+					</tr>
+				</table>
+			</fieldset>-->
+			
+			<fieldset class="options">
+				<legend><h3><?php _e('Category Selection', 'ngcp'); ?></h3></legend>
+				<table class="form-table">
+					<tr valign="top">
+						<th scope="row"><?php _e('Select which of your Categories should be posted to Newsgrape and which default type should be used', 'ngcp'); ?></th>
+						<td>
+							<ul id="category-children">
+								<li><label class="selectit"><input type="checkbox" class="checkall"> 
+									<em><?php _e("Check all", 'ngcp'); ?></em></label></li>
+								<?php
+								if (!is_array($options['skip_cats'])) $options['skip_cats'] = (array)$options['skip_cats'];
+								$selected = array_diff(get_all_category_ids(), $options['skip_cats']);
+								wp_category_checklist(0, 0, $selected, false, $walker = new ngcp_Walker_Category_Checklist, false, $options = $options);
+								?>
+							</ul>
+						<span class="description">
+						<?php _e('Any post that has <em>at least one</em> of the above categories selected will be synced.'); ?><br />
+						</span>
+						<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "Opinion", what is a "Creative Article"?', 'ngcp'); ?></a>
+						<div id="ngcp-help-text" class="hide-if-js">
+							<?php _e('What is "Opinion"?<br />
 In school you write "opinion essays" - an "Opinion" is basically the same thing. It expresses your personal point of view on some controversial topic. It might be in relation to a certain article or comment. However you could also just share your thoughts about something you heard about. The main difference to „Creative“ is that you cannot just make things up – an „Opinion“ is non-fictional so you should keep the facts straight.<br />
 <br />
 What is "Creative"?<br />
 A „Creative“ is any text that you just make up in your mind. When writing a "Creative" you can let your mind wander – it is fictional and you can write about whatever you want. It is usually not related to a certain article or comment. It might be a short story, parody or a poem.', 'ngcp'); ?>
-							</div>
-							</td>
-						</tr>
-					</table>
-				</fieldset>
-				
-				<!--<fieldset class="options">
-					<legend><h3><?php _e('Sync or delete all entries', 'ngcp'); ?></h3></legend>
-					<table class="form-table">
-						<tr valign="top">
-							<th scope="row"> </th>
-							<td>
-							<?php printf(__('If you have changed your username, you might want to sync all your entries, or delete all the old ones from your journal. These buttons are hidden so you don\'t press them by accident. <a href="%s" %s>Show the buttons.</a>', 'ngcp'), '#scary-buttons', 'onclick="javascript: jQuery(\'#scary-buttons\').show(\'fast\');"'); ?>
-							</td>
-						</tr>
-						<tr valign="top" id="scary-buttons">
-							<th scope="row"> </th>
-							<td>
-							<input type="submit" name="ngcp[sync_all]" id="sync_all" value="<?php esc_attr_e('Update options and sync all WordPress entries', 'ngcp'); ?>" class="button-secondary" />
-							<input type="submit" name="ngcp[delete_all]" id="delete_all" value="<?php esc_attr_e('Update options and delete all journal entries', 'ngcp'); ?>" class="button-secondary" />
-							</td>
-						</tr>
-					</table>
-				</fieldset>
-			</div>-->
+						</div>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+			
+			<!--<fieldset class="options">
+				<legend><h3><?php _e('Sync or delete all entries', 'ngcp'); ?></h3></legend>
+				<table class="form-table">
+					<tr valign="top">
+						<th scope="row"> </th>
+						<td>
+						<?php printf(__('If you have changed your username, you might want to sync all your entries, or delete all the old ones from your journal. These buttons are hidden so you don\'t press them by accident. <a href="%s" %s>Show the buttons.</a>', 'ngcp'), '#scary-buttons', 'onclick="javascript: jQuery(\'#scary-buttons\').show(\'fast\');"'); ?>
+						</td>
+					</tr>
+					<tr valign="top" id="scary-buttons">
+						<th scope="row"> </th>
+						<td>
+						<input type="submit" name="ngcp[sync_all]" id="sync_all" value="<?php esc_attr_e('Update options and sync all WordPress entries', 'ngcp'); ?>" class="button-secondary" />
+						<input type="submit" name="ngcp[delete_all]" id="delete_all" value="<?php esc_attr_e('Update options and delete all journal entries', 'ngcp'); ?>" class="button-secondary" />
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</div>-->
+
 			<p class="submit">
 				<input type="submit" name="ngcp[update_ngcp_options]" value="<?php esc_attr_e('Update Options'); ?>" class="button-primary" />
 			</p>

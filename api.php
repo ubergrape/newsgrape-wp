@@ -119,7 +119,7 @@ class NGCP_API {
 		
 		update_post_meta($post->wp_id, 'ngcp_id', $response_decoded['id']);
 		update_post_meta($post->wp_id, 'ngcp_display_url', $response_decoded['display_url']);
-		update_post_meta($post->wp_id, 'ngcp_sync', time());
+		update_post_meta($post->wp_id, 'ngcp_synced', time());
 		delete_post_meta($post->wp_id, 'ngcp_deleted');
 		
 		$this->report(__FUNCTION__,'done');
@@ -157,7 +157,7 @@ class NGCP_API {
 			return False;
 		}
 		
-		update_post_meta($post->wp_id, 'ngcp_sync', time());
+		update_post_meta($post->wp_id, 'ngcp_synced', time());
 		delete_post_meta($post->wp_id, 'ngcp_deleted');
 		
 		$this->report(__FUNCTION__,'done');
@@ -184,7 +184,7 @@ class NGCP_API {
 		}
 		
 		if (404 == $response['response']['code']) {
-			ngcp_debug('Article not found on Newsgrape, this means it has been deleted before.');
+			$this->error(__FUNCTION__,'Article not found on Newsgrape, this means it has been deleted before.');
 		} elseif (204 != $response['response']['code']) {
 			$this->error(__FUNCTION__,'Article could not be deleted.');
 			return False;
