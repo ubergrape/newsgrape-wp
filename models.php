@@ -27,6 +27,7 @@ class NGCP_Post {
 	// for multiuser functionality
 	public $username = "";
 	public $api_key = "";
+	public $username_synced = "";
 	
 	function __construct($wp_post_id = NULL) {
 		$this->options = ngcp_get_options();
@@ -70,9 +71,22 @@ class NGCP_Post {
 		}
 		
 		if('multi' == $this->options['multiuser']) {
-			$user = get_user_meta($this->wp_post->post_author, 'ngcp', True);
-			$this->username = $user['username'];
-			$this->api_key = $user['api_key'];
+			$username = get_post_meta($wp_post_id, 'ngcp_username', true);
+			
+			if ('' != $username) {
+				$wp_user_query = new NGCP_User_Query($username);
+				$authors = $wp_user_query->get_results();
+			}
+			
+			if (0 != sizeof($authors)) {
+				$author = $authors[0]->ID;
+			} else {
+				$author = $this->wp_post->post_author;
+			}
+
+			$this->username_synced = get_post_meta($wp_post_id, 'ngcp_username_synced', true);
+			$this->username = get_user_meta($author, 'ngcp_username', True);
+			$this->api_key = get_user_meta($author, 'ngcp_api_key', True);
 		}
 	}
 	
@@ -177,6 +191,10 @@ class NGCP_Post {
 		}
 
 		return False;
+	}
+	
+	function username_changed() {
+		return $this->username_synced != $this->username;
 	}
 	
 	function was_synced() {

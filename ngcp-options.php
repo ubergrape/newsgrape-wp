@@ -60,7 +60,8 @@ function ngcp_validate_options($input) {
 		$key = $api->fetch_new_key($input['multiuser_username'],$input['multiuser_password']);
 		if ($key) {
 			$userdata = get_userdata($input['multiuser_id']);
-			update_user_meta($input['multiuser_id'], 'ngcp', array('username' => $input['multiuser_username'], 'api_key' => $key));
+			update_user_meta($input['multiuser_id'], 'ngcp_username', $input['multiuser_username']);
+			update_user_meta($input['multiuser_id'], 'ngcp_api_key', $key);
 			$msg[] .= sprintf(__('Sucessfully connected Newsgrape user %1$s to %2$s\'s WordPress Account!', 'ngcp'), $input['multiuser_username'], $userdata->user_login);
 			$msgtype = 'updated';
 		} else {
@@ -331,27 +332,18 @@ function ngcp_display_options() {
 						<th><?php _e('Action', 'ngcp'); ?></th>
 					</tr>
 					<?php
-					$args = array(
-						'orderby' => 'display_name',
-						'meta_query' => array(
-							array(
-								'key' => 'ngcp',
-								'value' => '',
-								'compare' => '!=',
-							),
-						),
-					);
-					$wp_user_query = new WP_User_Query($args);
+					$wp_user_query = new NGCP_User_Query();
 					$authors = $wp_user_query->get_results();
 					if (!empty($authors)):
 						echo '<script>var ngcp_has_users = true;</script>';
 						foreach ($authors as $author):
 							$author_info = get_userdata($author->ID);
-							$author_ngcp = get_user_meta($author->ID, 'ngcp', True);  ?>
+							$author_ngcp_username = get_user_meta($author->ID, 'ngcp_username', True);
+							$author_ngcp_api_key = get_user_meta($author->ID, 'ngcp_api_key', True);  ?>
 							<tr>
-								<td><?php echo $author_ngcp['username']; ?></td>
+								<td><?php echo $author_ngcp_username; ?></td>
 								<td><?php echo $author_info->user_login; ?></td>
-								<?php if(NGCP_DEBUG) { ?><td><? echo $author_ngcp['api_key']; ?></td><?php } ?>
+								<?php if(NGCP_DEBUG) { ?><td><? echo $author_ngcp_api_key; ?></td><?php } ?>
 								<td><input type="submit" name="ngcp[delete_multiuser][<? echo $author->ID; ?>]" class="button-secondary" value="<?php _e('delete'); ?>" /></td>
 							</tr>
 					<?	endforeach;

@@ -492,6 +492,24 @@ function ngcp_user_meta($post = null) {
 	return get_user_meta($user_id, 'ngcp', True);
 }
 
+class NGCP_User_Query extends WP_User_Query {
+	public function __construct($username = '') {
+		$compare = ('' == $username) ? '!=' : '=';
+		
+		$args = array(
+			'orderby' => 'display_name',
+			'meta_query' => array(
+				array(
+					'key' => 'ngcp_username',
+					'value' => $username,
+					'compare' => $compare,
+				),
+			),
+		);
+        parent::__construct($args);
+	}
+}
+
 $class = 'NGCP_Core_Controller';
 
 add_action('admin_menu', 'ngcp_add_menu'); // Add menu to admin
