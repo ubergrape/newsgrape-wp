@@ -453,75 +453,6 @@ function ngcp_display_options() {
 					</tr>
 				</table>
 			</fieldset>
-
-			<!--<fieldset class="options">
-				<legend><h3><?php _e('Post Privacy', 'ngcp'); ?></h3></legend>
-				<table class="form-table">
-					<tr valign="top">
-						<th scope="row"><?php _e('Newsgrape privacy level for all published WordPress posts', 'ngcp'); ?></th>
-						<td>
-							<label>
-								<input name="ngcp[privacy]" type="radio" value="public" <?php checked($options['privacy'], 'public'); ?>/>
-								<?php _e('Public', 'ngcp'); ?>
-							</label>
-							<br />
-							<label>
-								<input name="ngcp[privacy]" type="radio" value="private" <?php checked($options['privacy'], 'private'); ?> />
-								<?php _e('Private', 'ngcp'); ?>
-							</label>
-						</td>
-					</tr>
-					<tr valign="top">
-						<th scope="row"><?php _e('Newsgrape privacy level for all private WordPress posts', 'ngcp'); ?></th>
-						<td>
-							<label>
-								<input name="ngcp[privacy_private]" type="radio" value="public" <?php checked($options['privacy_private'], 'public'); ?>/>
-								<?php _e('Public', 'ngcp'); ?>
-							</label>
-							<br />
-							<label>
-								<input name="ngcp[privacy_private]" type="radio" value="private" <?php checked($options['privacy_private'], 'private'); ?> />
-								<?php _e('Private', 'ngcp'); ?>
-							</label>
-							<br />
-							<label>
-								<input name="ngcp[privacy_private]" type="radio" value="ngcp_no" <?php checked($options['privacy_private'], 'ngcp_no'); ?>/>
-								<?php _e('Do not sync at all', 'ngcp'); ?>
-							</label>
-						</td>
-					</tr>
-				</table>
-			</fieldset>-->
-			
-			<!--<fieldset class="options">
-				<legend><h3><?php _e('Newsgrape Tags', 'ngcp'); ?></h3></legend>
-				<table class="form-table">
-					<tr valign="top">
-						<th scope="row"><?php _e('Tag entries on Newsgrape?', 'ngcp'); ?></th>
-						<td>
-							<label>
-								<input name="ngcp[tag]" type="radio" value="1" <?php checked($options['tag'], 2); ?>/>
-								<?php _e('Tag Newsgrape entries with WordPress tags only', 'ngcp'); ?>
-							</label>
-							<br />
-							<label>
-								<input name="ngcp[tag]" type="radio" value="2" <?php checked($options['tag'], 2); ?>/>
-								<?php _e('Tag Newsgrape entries with WordPress categories only', 'ngcp'); ?>
-							</label>
-							<br />
-							<label>
-								<input name="ngcp[tag]" type="radio" value="3" <?php checked($options['tag'], 3); ?>/>
-								<?php _e('Tag Newsgrape entries with WordPress categories and tags', 'ngcp'); ?>
-							</label>
-							<br />
-							<label>
-								<input name="ngcp[tag]" type="radio" value="0" <?php checked($options['tag'], 0); ?>/>
-								<?php _e('Do not tag Newsgrape entries', 'ngcp'); ?>
-							</label>
-						</td>
-					</tr>
-				</table>
-			</fieldset>-->
 			
 			<fieldset class="options">
 				<legend><h3><?php _e('Category Selection', 'ngcp'); ?></h3></legend>
@@ -553,26 +484,6 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 					</tr>
 				</table>
 			</fieldset>
-			
-			<!--<fieldset class="options">
-				<legend><h3><?php _e('Sync or delete all entries', 'ngcp'); ?></h3></legend>
-				<table class="form-table">
-					<tr valign="top">
-						<th scope="row"> </th>
-						<td>
-						<?php printf(__('If you have changed your username, you might want to sync all your entries, or delete all the old ones from your journal. These buttons are hidden so you don\'t press them by accident. <a href="%s" %s>Show the buttons.</a>', 'ngcp'), '#scary-buttons', 'onclick="javascript: jQuery(\'#scary-buttons\').show(\'fast\');"'); ?>
-						</td>
-					</tr>
-					<tr valign="top" id="scary-buttons">
-						<th scope="row"> </th>
-						<td>
-						<input type="submit" name="ngcp[sync_all]" id="sync_all" value="<?php esc_attr_e('Update options and sync all WordPress entries', 'ngcp'); ?>" class="button-secondary" />
-						<input type="submit" name="ngcp[delete_all]" id="delete_all" value="<?php esc_attr_e('Update options and delete all journal entries', 'ngcp'); ?>" class="button-secondary" />
-						</td>
-					</tr>
-				</table>
-			</fieldset>
-		</div>-->
 
 			<p class="submit">
 				<input type="submit" name="ngcp[update_ngcp_options]" value="<?php esc_attr_e('Update Options'); ?>" class="button-primary" />
