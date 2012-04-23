@@ -474,17 +474,11 @@ function ngcp_is_current_user_connected() {
 	return False;
 }
 
-function ngcp_user_meta($post = null) {
-	if (null == $post) {
-		require_once(ABSPATH . WPINC . '/pluggable.php');
-		global $current_user;
-		get_currentuserinfo();
-		$user_id = $current_user->ID;
-	} else {
-		$user_id = $post->post_author;
-	}
-	
-	return get_user_meta($user_id, 'ngcp', True);
+function ngcp_user_meta() {
+	require_once(ABSPATH . WPINC . '/pluggable.php');
+	global $current_user;
+	get_currentuserinfo();
+	return get_user_meta($current_user->ID, 'ngcp', True);
 }
 
 $class = 'NGCP_Core_Controller';

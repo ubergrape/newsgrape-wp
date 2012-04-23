@@ -72,7 +72,7 @@ function ngcp_inner_meta_box($post) {
 	$multiuser = ('multi' == $options['multiuser']);
 	
 	if ($multiuser) {	
-		$user_meta = ngcp_user_meta($post);
+		$user_meta = ngcp_user_meta();
 	}
 	
 ?>
