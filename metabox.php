@@ -42,7 +42,6 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_promotional = (array_key_exists("ngcp_promotional",$post_meta)) ? $post_meta['ngcp_promotional'][0] : false;
 	$ngcp_language = (array_key_exists("ngcp_language",$post_meta)) ? $post_meta['ngcp_language'][0] : $options['language'];
 	$ngcp_license = (array_key_exists("ngcp_license",$post_meta)) ? $post_meta['ngcp_license'][0] : $options['license'];
-	$ngcp_username = (array_key_exists("ngcp_username",$post_meta)) ? $post_meta['ngcp_username'][0] : $options['username'];
 	$ngcp_comments = (array_key_exists("ngcp_comments",$post_meta)) ? $post_meta['ngcp_comments'][0] : $options['comments'];
 	$ngcp_id = (array_key_exists("ngcp_id",$post_meta)) ? $post_meta['ngcp_id'][0] : false;
 	$ngcp_category = (array_key_exists("ngcp_category",$post_meta)) ? $post_meta['ngcp_category'][0] : false;
@@ -74,18 +73,6 @@ function ngcp_inner_meta_box($post) {
 	
 	if ($multiuser) {	
 		$user_meta = ngcp_user_meta($post);
-		$users = array();
-		
-		$wp_user_query = new NGCP_User_Query();
-		$authors = $wp_user_query->get_results();
-		
-		if (!empty($authors)) {
-			foreach ($authors as $author){
-				$author_info = get_userdata($author->ID);
-				$author_ngcp = get_user_meta($author->ID, 'ngcp', True);
-				$users[$author_info->user_login] = $author_ngcp['username'];
-			}
-		}	
 	}
 	
 ?>
@@ -105,10 +92,7 @@ function ngcp_inner_meta_box($post) {
 	
 	<div class="misc-pub-section">
 		<div class="ngcp-setting">
-            <label>
-				<input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync!=0); ?>/>
-				<?php _e('Sync with Newsgrape', 'ngcp'); ?> <?php if($multiuser) printf(__('(as <span id="ngcp-username-sync">%1$s</span>)', 'ngcp'), $ngcp_username); ?>
-			</label>
+            <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync!=0); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?> <?php if($multiuser) printf(__('(as %1$s)', 'ngcp'), $user_meta['username']); ?></label>
 		</div>
     </div>
     
@@ -218,28 +202,6 @@ Under the following conditions:<br/>
 		<a href="#ngcp_license" class="cancel-ngcp-license hide-if-no-js"><?php _e('Cancel'); ?></a>
 		</div>
 	</div>
-	
-	<?php if (current_user_can('manage_options')): ?>
-	
-		<div class="misc-pub-section"><label for="ngcp-username"><?php _e(' User:', 'ngcp'); ?></label>
-			<span id="ngcp-username-display" style="font-weight: bold;"><?php echo $ngcp_username ?></span>
-			<a href="#ngcp_username" class="edit-ngcp-username hide-if-no-js"><?php _e('Edit') ?></a>
-
-			<div id="ngcp-username-select" class="hide-if-js">
-			<input type="hidden" name="hidden_ngcp_username" id="hidden_ngcp_username" value="<?php echo $ngcp_username; ?>" />
-			<select name='ngcp_username' id='ngcp_username'>
-				<?php foreach($users as $user_wp_username => $user_ng_username): ?>
-						<option value="<?php echo $user_ng_username?>" <?php selected($ngcp_username, $user_ng_username); ?>>
-							<?php echo $user_ng_username . ' (' . $user_wp_username . ')' ?>
-						</option>
-				<?php endforeach; ?>
-			</select>
-			<a href="#ngcp_username" class="save-ngcp-username hide-if-no-js button"><?php _e('OK'); ?></a>
-			<a href="#ngcp_username" class="cancel-ngcp-username hide-if-no-js"><?php _e('Cancel'); ?></a>
-			</div>
-		</div>
-	
-	<?php endif; ?>
 	
     <div class="misc-pub-section  misc-pub-section-last">
 		<a href="#" id="ngcp_more" class="hide-if-no-js"><?php _e('More Settings', 'ngcp'); ?></a>

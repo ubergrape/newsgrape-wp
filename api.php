@@ -120,7 +120,6 @@ class NGCP_API {
 		update_post_meta($post->wp_id, 'ngcp_id', $response_decoded['id']);
 		update_post_meta($post->wp_id, 'ngcp_display_url', $response_decoded['display_url']);
 		update_post_meta($post->wp_id, 'ngcp_synced', time());
-		update_post_meta($post->wp_id, 'ngcp_username_synced', $this->username);
 		delete_post_meta($post->wp_id, 'ngcp_deleted');
 		
 		$this->report(__FUNCTION__,'done');

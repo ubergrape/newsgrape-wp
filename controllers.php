@@ -20,7 +20,7 @@ class NGCP_Core_Controller {
 			return NGCP_Core_Controller::delete($post_ID);
 		}
 		
-		if ($post->was_synced() && !$post->username_changed()) {
+		if ($post->was_synced()) {
 			ngcp_debug("controller: post -> edit (was synced before)");
 			return NGCP_Core_Controller::edit($post_ID);
 		}
@@ -43,11 +43,6 @@ class NGCP_Core_Controller {
 		
 		if (!$post->was_synced()) {
 			ngcp_debug("controller: edit -> post (was never synced before)");
-			return NGCP_Core_Controller::post($post_ID);
-		}
-		
-		if ($post->username_changed()) {
-			ngcp_debug("controller: edit -> post (username changed)");
 			return NGCP_Core_Controller::post($post_ID);
 		}
 		
@@ -95,7 +90,6 @@ class NGCP_Core_Controller {
 			'ngcp_sync',
 			'ngcp_category',
 			'ngcp_description',
-			'ngcp_username',
 		);
 		
 		foreach ($meta_keys as $meta_key) {

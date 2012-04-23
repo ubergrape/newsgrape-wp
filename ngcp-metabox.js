@@ -2,8 +2,6 @@ jQuery(function(){
 	function ngcpUpdateText() {
 		jQuery('#ngcp-language-display').html(jQuery('#ngcp_language option:selected').text());
 		jQuery('#ngcp-license-display').html(jQuery('#ngcp_license option:selected').text());
-		jQuery('#ngcp-username-display').html(jQuery('#ngcp_username option:selected')[0].value);
-		jQuery('#ngcp-username-sync').html(jQuery('#ngcp_username option:selected')[0].value);
 		jQuery('#ngcp-type-display').html(jQuery('input[name=ngcp_type]:checked').parent().text());
 	}
 	
@@ -26,29 +24,6 @@ jQuery(function(){
 		jQuery('#ngcp-language-select').slideUp('fast');
 		jQuery('#ngcp_language').val(jQuery('#hidden_ngcp_language').val());
 		jQuery('#ngcp-language-select').siblings('a.edit-ngcp-language').show();
-		ngcpUpdateText();
-		return false;
-	});
-	
-	jQuery('#ngcp-username-select').siblings('a.edit-ngcp-username').click(function() {
-		if (jQuery('#ngcp-username-select').is(":hidden")) {
-			jQuery('#ngcp-username-select').slideDown('fast');
-			jQuery(this).hide();
-		}
-		return false;
-	});
-	
-	jQuery('.save-ngcp-username', '#ngcp-username-select').click(function() {
-		jQuery('#ngcp-username-select').slideUp('fast');
-		jQuery('#ngcp-username-select').siblings('a.edit-ngcp-username').show();
-		ngcpUpdateText();
-		return false;
-	});
-
-	jQuery('.cancel-ngcp-username', '#ngcp-username-select').click(function() {
-		jQuery('#ngcp-username-select').slideUp('fast');
-		jQuery('#ngcp_username').val(jQuery('#hidden_ngcp_username').val());
-		jQuery('#ngcp-username-select').siblings('a.edit-ngcp-username').show();
 		ngcpUpdateText();
 		return false;
 	});
