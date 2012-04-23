@@ -24,10 +24,6 @@ class NGCP_Post {
 	public $is_creative = False;
 	public $options = array();
 	
-	// for multiuser functionality
-	public $username = "";
-	public $api_key = "";
-	
 	function __construct($wp_post_id = NULL) {
 		$this->options = ngcp_get_options();
 		if (NULL != $wp_post_id) {
@@ -67,12 +63,6 @@ class NGCP_Post {
 				
 		if('' == $this->description) {
 			$this->description = $wp_post->post_excerpt;
-		}
-		
-		if('multi' == $this->options['multiuser']) {
-			$user = get_user_meta($this->wp_post->post_author, 'ngcp', True);
-			$this->username = $user['username'];
-			$this->api_key = $user['api_key'];
 		}
 	}
 	

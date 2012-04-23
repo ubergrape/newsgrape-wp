@@ -20,16 +20,10 @@ class NGCP_API {
 		/* Blog Name */
 		$this->external_name = get_bloginfo('name');
 		
-		$this->multiuser = False;
-		
 		if (null==$username) {
 			$options = ngcp_get_options();
-			if('multi' == $options['multiuser']) {
-				$this->multiuser = True;
-			} else {
-				$this->username = $options['username'];
-				$this->api_key = $options['api_key'];
-			}
+			$this->username = $options['username'];
+			$this->api_key = $options['api_key'];
 		} else {
 			$this->username = $username;
 			$this->api_key = $api_key;
@@ -104,7 +98,7 @@ class NGCP_API {
 		$url = $this->api_url.'articles/';
 		
 		$args = array(
-			'headers' => $this->get_headers($post),
+			'headers' => $this->get_headers(),
 			'body' => $post->urlencoded()
 		);
 		
@@ -131,7 +125,7 @@ class NGCP_API {
 		$url = $this->api_url.'articles/';
 		
 		$args = array(
-			'headers' => $this->get_headers($post),
+			'headers' => $this->get_headers(),
 			'body' => $post_urlencoded
 		);
 		
@@ -145,7 +139,7 @@ class NGCP_API {
 		
 		$args = array(
 			'method' => 'PUT',
-			'headers' => $this->get_headers($post),
+			'headers' => $this->get_headers(),
 			'body' => $post->urlencoded()
 		);
 		
@@ -172,7 +166,7 @@ class NGCP_API {
 		
 		$args = array(
 			'method' => 'DELETE',
-			'headers' => $this->get_headers($post),
+			'headers' => $this->get_headers(),
 		);
 		
 		$response = wp_remote_post($url,$args);
@@ -260,11 +254,7 @@ class NGCP_API {
 		return $response_decoded;
 	}
 
-	private function get_headers($post=null) {
-		if(True == $this->multiuser && null != $post) {
-			$this->username  = $post->username;
-			$this->api_key = $post->api_key;
-		}
+	private function get_headers() {
 		$headers = array(
 			'X-NEWSGRAPE-USER' => $this->username, 
 			'X-NEWSGRAPE-KEY' => $this->api_key,
