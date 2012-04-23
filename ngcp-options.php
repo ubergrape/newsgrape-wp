@@ -11,6 +11,7 @@ function ngcp_get_options() {
 			'privacy_private'	=> 'ngcp_no',
 			'comments'			=> 1,
 			'excerpt'			=> 1,
+			'canonical'			=> 1,
 			'tag'				=> '2',
 			'more'				=> 'link',
 			'skip_cats'			=> array(),
@@ -96,7 +97,23 @@ function ngcp_validate_options($input) {
 		if (!isset($input['excerpt'])) {
 			$input['excerpt'] = '0';
 		}
-				
+		
+		if (!isset($input['canonical'])) {
+			$input['canonical'] = '0';
+		}
+		
+		// canonical option has been changed?
+		if ($input['canonical'] != $options['canonical']) {
+		    $api = new NGCP_API();
+		    $result = $api->change_settings($canonical=$input['canonical']);
+			if ($result) {
+				$msg[] .= __('Synced settings to Newsgrape', 'ngcp');
+				$msgtype = 'updated';
+			} else {
+				$msg[] .= __('Could not sync settings to Newsgrape. ', 'ngcp') . $ngcp_error;
+			}
+		}
+		
 		if (isset($input['delete_all'])) {
 			// If we need to delete all, grab a list of all entries that have been synced
 			$beenposted = get_posts(array('meta_key' => 'ngcp_id', 'post_type' => 'any', 'post_status' => 'any', 'numberposts' => '-1'));
@@ -358,6 +375,29 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 					</tr>
 				</table>
 			</fieldset>
+			
+			<a id="ngcp-show-advanced-options" class="hide-if-no-js"href="#">show advanced options</a>
+			
+			<fieldset class="options hide-if-js" id="ngcp-advanced-options">
+				<legend><h3><?php _e('Advanced Options', 'ngcp'); ?></h3></legend>
+				<table class="form-table">
+					<tr valign="top">
+						<th scope="row"><?php _e('Link Rel Canonical', 'ngcp'); ?></th>
+						<td>
+						<label>
+							<input name="ngcp[canonical]" type="checkbox" value="1" <?php checked($options['canonical'], 1); ?>/>
+							<?php _e('Resolve duplicate content problems', 'ngcp'); ?>
+						</label>
+						<br />
+						<span class="description">
+						<?php
+						_e('Automatically adds &lt;link rel=&quot;canonical&quot; ...&gt; to every synced post', 'ngcp');
+						?>
+						</span>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
 
 			<p class="submit">
 				<input type="submit" name="ngcp[update_ngcp_options]" value="<?php esc_attr_e('Update Options'); ?>" class="button-primary" />
@@ -392,6 +432,11 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 				} else {
 					$(this).siblings('.ngcp-select-cat').css('visibility','hidden');
 				}
+			});
+			$('#ngcp-show-advanced-options').click(function(event) {
+				event.preventDefault();
+				$('#ngcp-advanced-options').slideDown('fast');
+				$(this).hide();
 			});
 		});
 		

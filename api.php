@@ -92,6 +92,23 @@ class NGCP_API {
 		return $key;
 	}
 	
+	function change_settings($canonical) {
+		$this->report(__FUNCTION__);
+		
+		$url = $this->api_url . "xxxx/";
+		$args = array(
+			'body' => array( 'canonical' => $canonical )
+		);
+		
+		// $response = wp_remote_post($url,$args);
+		
+		//TODO: parse/check response
+		
+		$this->report(__FUNCTION__,'settings changed');
+		
+		return True;
+	}
+	
 	function create($post) {
 		$this->report(__FUNCTION__,$post);
 			

@@ -346,14 +346,16 @@ function ngcp_rel_canonical() {
 		if (NGCP_DEBUG) {
 			echo "\n<!-- Newsgrape Sync Debug Information";
 			echo "\nGlobal Sync: ".$options['sync'];
+			echo "\nCanonical: ".$options['canonical'];
 			echo "\nArticle Sync: ".get_post_meta($id, 'ngcp_sync',true)==1;
 			echo "\nNewsgrape URL: ".$ngcp_display_url;
-			echo "-->";
+			echo "\n-->\n";
 		}
 		if( 1==$options['sync'] &&
+			1==$options['canonical'] &&
 		    0!==get_post_meta($id, 'ngcp_sync',true) &&
 		    ""!=$ngcp_display_url &&
-		    NULL!=$ngcp_display_url ){
+		    NULL!=$ngcp_display_url){
 				echo "\n<link rel='canonical' href='$ngcp_display_url'><!-- Newsgrape Sync-->\n";
 				return;
 		}
