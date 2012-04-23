@@ -451,6 +451,8 @@ function ngcp_log_http($data = '', $log_type = '', $extra = '') {
  * returns False if newsgrape is not connected
  */
 function ngcp_is_current_user_connected() {
+	$options = ngcp_get_options();
+	
 	if (isset($options['api_key']) && '' != $options['api_key']) {
 		return True;
 	}
