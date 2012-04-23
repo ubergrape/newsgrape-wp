@@ -455,28 +455,6 @@ function ngcp_log_http($data = '', $log_type = '', $extra = '') {
 	return $data;
 }
 
-/* Finds out if current user is connected.
- * returns 'multi' if multiuser is activated and current user is connected
- * returns 'single' if multiuser is deactiveated and user is connected
- * returns False if newsgrape is not connected
- */
-function ngcp_is_current_user_connected() {
-	$options = ngcp_get_options();
-	if('multi' == $options['multiuser']) {
-		require_once(ABSPATH . WPINC . '/pluggable.php');
-		global $current_user;
-		get_currentuserinfo();
-		$user = get_user_meta($current_user->ID, 'ngcp', True);
-		if ($user && array_key_exists('api_key',$user)) {
-			return 'multi';
-		}
-	} elseif (isset($options['api_key']) && '' != $options['api_key']) {
-		return 'single';
-	}
-	
-	return False;
-}
-
 
 $class = 'NGCP_Core_Controller';
 

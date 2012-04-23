@@ -43,7 +43,7 @@ function ngcp_validate_options($input) {
 	}
 	
 	// API key
-	if (isset($input['login']) && 'single' == $input['multiuser'] && isset($input['password']) && !empty($input['password'])) {
+	if ('single' == $input['multiuser'] && isset($input['password']) && !empty($input['password'])) {
 		$key = $api->fetch_new_key($input['username'],$input['password']);
 		if ($key) {
 			$input['api_key'] = $key;
@@ -55,7 +55,7 @@ function ngcp_validate_options($input) {
 	}
 	
 	// Multiuser API Key
-	if (isset($input['login']) && 'multi' == $input['multiuser'] && isset($input['multiuser_password']) && !empty($input['multiuser_password'])) {
+	if ('multi' == $input['multiuser'] && isset($input['multiuser_password']) && !empty($input['multiuser_password'])) {
 		$key = $api->fetch_new_key($input['multiuser_username'],$input['multiuser_password']);
 		if ($key) {
 			$userdata = get_userdata($input['multiuser_id']);
@@ -68,29 +68,10 @@ function ngcp_validate_options($input) {
 	}
 	
 	
-	// Delete Multiuser
-	if (isset($input['delete_multiuser'])) {
-		foreach ($input['delete_multiuser'] as $key => $value) {
-			$wp_username = get_userdata($author->ID)->user_login;
-			$ngcp_meta = get_user_meta($author->ID, 'ngcp', True);
-			if (array_key_exists('username',$ngcp_meta) {
-				$ng_username = $ngcp_meta['username'];
-			} else [
-				$ng_username = '';
-			}
-			ngcp_debug('deleting user '.$key);
-			delete_user_meta($key, 'ngcp');
-			$msg[] .= sprintf(__('Disconnected %1$s\'s Newsgrape account (%2$s)!', 'ngcp'), $input['multiuser_username'], $userdata->user_login);
-			$msgtype = 'updated';
-		}
-	}
-	
-	// Delete all options (only available in debug mode)
 	if (isset($input['delete_options'])) {
 		delete_option('ngcp');
 	}
 	
-	// Delete blog id (only available in debug mode)
 	if (isset($input['delete_blog_id'])) {
 		delete_option('ngcp_blog_id');
 	}
@@ -229,49 +210,41 @@ function ngcp_display_options() {
 			</tr>
 		</table>
 		
-		<?php
-
-		?>
-      
+		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
+		
+			<?php
+				/* Fill database with fresh values:
+				 * - Generate unique blog id;
+				 * - Fetch languages, licenses and creative categories via API
+				 */
 				
-		
-		<?php if (!ngcp_is_current_user_connected()) : ?>
-		
-		
-		<?
-			/* Fill database with fresh values:
-			 * - Generate unique blog id;
-			 * - Fetch languages, licenses and creative categories via API
-			 */
-			
-			if(!get_option('ngcp_blog_id')) {
-				update_option('ngcp_blog_id',ngcp_random(24));
-			}
-			 
-			$api = new NGCP_API();
-			$update = False;
-			
-			if (empty($options['languages']) && ($languages = $api->get_languages())) {
-				$options['languages'] = $languages;
-				$update = True;
-			}
-			if (empty($options['licenses']) && ($licenses =$api->get_licenses())) {
-				$options['licenses'] = $licenses;
-				$options['license'] = $licenses[0]['code'];
-				$update = True;
-			}
-			if (empty($options['categories']) && ($categories = $api->get_creative_categories())) {
-				$options['categories'] = $categories;
-				$update = True;
-			}
-			if ($update) {
-				update_option('ngcp',$options);
-			}
-		?>
+				if(!get_option('ngcp_blog_id')) {
+					update_option('ngcp_blog_id',ngcp_random(24));
+				}
+				 
+				$api = new NGCP_API();
+				$update = False;
+				
+				if (empty($options['languages']) && ($languages = $api->get_languages())) {
+					$options['languages'] = $languages;
+					$update = True;
+				}
+				if (empty($options['licenses']) && ($licenses =$api->get_licenses())) {
+					$options['licenses'] = $licenses;
+					$options['license'] = $licenses[0]['code'];
+					$update = True;
+				}
+				if (empty($options['categories']) && ($categories = $api->get_creative_categories())) {
+					$options['categories'] = $categories;
+					$update = True;
+				}
+				if ($update) {
+					update_option('ngcp',$options);
+				}
+			?>
 		
 			<h3><?php _('Login to Newsgrape', 'ngcp'); ?></h3>
-			<script>var ngcp_is_connected = false;</script>
-			<table class="form-table ngcp-single-user" style="<?php if('multi' == $options['multiuser']) echo 'display:none;';?>">
+			<table class="form-table ngcp-single-user" style="<?php if('multi' == $options['multiuser']) echo 'display:none;';?>>
 				<tr valign="top">
 					<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
 					<td>
@@ -296,8 +269,8 @@ function ngcp_display_options() {
 				</tr>
 			</table>
 			
-		<? else: ?>
-			<script>var ngcp_is_connected = true;</script>
+		<?php else: ?>
+		
 			<table class="form-table ngcp-single-user"  style="<?php if('multi' == $options['multiuser']) echo 'display:none;';?>>
 				<tr valign="top">
 					<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
@@ -314,7 +287,6 @@ function ngcp_display_options() {
 					</td>
 				</tr>
 			</table>
-		<? endif; ?>
 			
 			<div id="ngcp-user-management" style="<?php if('multi' != $options['multiuser']) echo 'display:none;';?>">
 			
@@ -323,7 +295,6 @@ function ngcp_display_options() {
 					<tr valign="top">
 						<th><?php _e('Newsgrape Username', 'ngcp'); ?></th>
 						<th><?php _e('Wordpress Username', 'ngcp'); ?></th>
-						<?php if(NGCP_DEBUG) { ?><th><?php _e('API key', 'ngcp'); ?></th><?php } ?>
 						<th><?php _e('Action', 'ngcp'); ?></th>
 					</tr>
 					<?php
@@ -340,15 +311,13 @@ function ngcp_display_options() {
 					$wp_user_query = new WP_User_Query($args);
 					$authors = $wp_user_query->get_results();
 					if (!empty($authors)):
-						echo '<script>var ngcp_has_users = true;</script>';
 						foreach ($authors as $author):
 							$author_info = get_userdata($author->ID);
 							$author_ngcp = get_user_meta($author->ID, 'ngcp', True);  ?>
 							<tr>
 								<td><?php echo $author_ngcp['username']; ?></td>
 								<td><?php echo $author_info->user_login; ?></td>
-								<?php if(NGCP_DEBUG) { ?><td><? echo $author_ngcp['api_key']; ?></td><?php } ?>
-								<td><input type="submit" name="ngcp[delete_multiuser][<? echo $author->ID; ?>]" class="button-secondary" value="<?php _e('delete'); ?>" /></td>
+								<td><a class="button-secondary" href="#"><?php _e('delete'); ?></a></td>
 							</tr>
 					<?	endforeach;
 					else : ?>
@@ -384,7 +353,6 @@ function ngcp_display_options() {
 				</table>
 			</div>
 			
-		<div id="ngcp-settings" style="<?php if(False == ngcp_is_current_user_connected()) echo 'display: none';?>">
 			<?php if (0 == $options['published_old']): ?>
 				<div id="ngcp-fast-edit">
 					<span class="info"><?php _e('Some Types for your Articles have not been set yet.'); ?></span>
@@ -480,13 +448,12 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 			<p class="submit">
 				<input type="submit" name="ngcp[update_ngcp_options]" value="<?php esc_attr_e('Update Options'); ?>" class="button-primary" />
 			</p>
-		</div>
+		<?php endif; ?>
 		
 		<?php if(NGCP_DEBUG): ?>
 			<h3>Options Debug Output</h3>
 			<pre><?php print_r($options); ?></pre>
 			<pre>ngcp_blog_id: <?php print_r(get_option('ngcp_blog_id','No NGCP Blog ID')); ?></pre>
-			<pre>current user connected: <?php print_r(ngcp_is_current_user_connected()); ?></pre>
 			<input type="submit" name="ngcp[delete_options]" id="ngcp-delete-options" value="<?php esc_attr_e('Delete all options', 'ngcp'); ?>" class="button-primary" /> 
 			<span class="description">This forces the plugin to fetch a list of languages and licenses again</span><br/><br/>
 			<input type="submit" name="ngcp[delete_blog_id]" id="ngcp-delete-blog-id" value="<?php esc_attr_e('Delete blog id', 'ngcp'); ?>" class="button-primary" /> 
@@ -516,15 +483,9 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 				if($('input:radio:checked').val()=='multi') {
 					$('#ngcp-user-management').show();
 					$('.ngcp-single-user').hide();
-					if(ngcp_has_users) {
-						$('#ngcp-settings').show();
-					}
 				} else {
 					$('#ngcp-user-management').hide();
 					$('.ngcp-single-user').show();
-					if(!ngcp_is_connected) {
-						$('#ngcp-settings').hide();
-					}
 				}
 			});			
 		});
