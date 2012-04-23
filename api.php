@@ -94,21 +94,22 @@ class NGCP_API {
 		return $key;
 	}
 	
-	function change_settings($canonical) {
+	function change_site_settings($canonical_link=1) {
 		$this->report(__FUNCTION__);
 		
-		$url = $this->api_url . "xxxx/";
+		$url = $this->api_url . "sites/";
 		$args = array(
-			'body' => array( 'canonical' => $canonical )
+			'headers' => $this->get_headers(),
+			'body' => array( 'canonical_link' => $canonical_link )
 		);
 		
-		// $response = wp_remote_post($url,$args);
+		$response = wp_remote_post($url,$args);
 		
-		//TODO: parse/check response
-		
+		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
+				
 		$this->report(__FUNCTION__,'settings changed');
 		
-		return True;
+		return ("canonical_link setting updated" == $response_decoded)
 	}
 	
 	function create($post) {

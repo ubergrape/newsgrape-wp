@@ -105,7 +105,7 @@ function ngcp_validate_options($input) {
 		// canonical option has been changed?
 		if ($input['canonical'] != $options['canonical']) {
 		    $api = new NGCP_API();
-		    $result = $api->change_settings($canonical=$input['canonical']);
+		    $result = $api->change_site_settings($canonical=$input['canonical']);
 			if ($result) {
 				$msg[] .= __('Synced settings to Newsgrape', 'ngcp');
 				$msgtype = 'updated';
