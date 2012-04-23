@@ -446,6 +446,18 @@ function ngcp_log_http($data = '', $log_type = '', $extra = '') {
 	return $data;
 }
 
+/* Finds out if current user is connected.
+ * returns True if user is connected
+ * returns False if newsgrape is not connected
+ */
+function ngcp_is_current_user_connected() {
+	if (isset($options['api_key']) && '' != $options['api_key']) {
+		return True;
+	}
+	
+	return False;
+}
+
 
 $class = 'NGCP_Core_Controller';
 
