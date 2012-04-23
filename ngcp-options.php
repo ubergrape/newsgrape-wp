@@ -33,6 +33,8 @@ function ngcp_get_options() {
 
 // Validation/sanitization. Add errors to $msg[].
 function ngcp_validate_options($input) {
+	global $ngcp_error;
+	
 	$msg = array();
 	$msgtype = 'error';
 	
@@ -49,7 +51,7 @@ function ngcp_validate_options($input) {
 			$msg[] .= __('Sucessfully connected to Newsgrape!', 'ngcp');
 			$msgtype = 'updated';
 		} else {
-			$msg[] .= __('Could not connect to Newsgrape: '.$ngcp_error, 'ngcp');
+			$msg[] .= __('Could not connect to Newsgrape: ', 'ngcp') . $ngcp_error;
 		}
 	}
 	
