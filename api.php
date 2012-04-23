@@ -239,7 +239,7 @@ class NGCP_API {
 		$url = $this->api_url.$url;
 		
 		$args = array(
-			'headers' => $this->get_headers(), //no need to pass a post object, this works without username and api key
+			'headers' => $this->get_headers(),
 		);
 		
 		$response = wp_remote_get($url,$args);
