@@ -43,8 +43,10 @@ class NGCP_API {
 		}
 		
 		if ($response_decoded == null) {
-			if($this->is_ngcp_error($response)) {
-				$this->error($function_name,__('You are not authorized.<br/>Possible reasons:<ul><li>- Your API key has been invalidated. Reconnect with Newsgrape</li><li>- A user has synced this article to Newsgrape in multiuser mode but his WordPress account was disconnected from Newsgrape later.</li></ul>'));
+			if($this->is_unauthorized($response)) {
+				$this->error($function_name,__('You are not authorized.<br/>Possible reasons:<ul><li>- Your API key has been invalidated. Reconnect with Newsgrape</li><li>- This article has been synced initially with another Newsgrape account</li></ul>'));
+			} elseif ($this->is_bad_request($response)) {
+				$this->error($function_name,__('The server rejected your request<br/>Possible reasons:<ul><li>The article hast been deleted on newsgrape but not on Wordpress</li><li>- Your Newsgrape Plugin is out of date - update it!</li><li>- The Newsgrape server has problems</li></ul>'));
 			} else {
 				$this->error($function_name,__('The Newsgrape server sent an unexpected answer.<br/>This looks like your hoster is using a proxy server which blocks requests to newsgrape.com. Please contact your hoster.<br/><br/><a href="#" onclick="jQuery(\'#setting-error-ngcp pre\').show()">Show first 2000 characters of response</a>', 'ngcp').'<pre style="display:none">'.esc_html(substr($response['body'],0,2000)).'</pre>');
 			}
@@ -53,9 +55,9 @@ class NGCP_API {
 		
 		if ( (null == $array_key1 || !array_key_exists($array_key1, $response_decoded))
 			&& (null == $array_key2 || !array_key_exists($array_key1, $response_decoded))
-			&& ($array_key1 != $array_key2)){
+			&& ($array_key1 != $array_key2) 	){
 				
-			if ($this->is_ngcp_error($response) && array_key_exists('message',$response_decoded)) {
+			if ($this->is_unauthorized($response) && array_key_exists('message',$response_decoded)) {
 				$this->error($function_name, __($response_decoded['message'], 'ngcp'));
 				return False;
 			} else {
@@ -284,8 +286,12 @@ class NGCP_API {
 		return $headers;
 	}
 	
-	private function is_ngcp_error($response) {
-		return $response['response']['code'] == '401';
+	private function is_unauthorized($response) {
+		return $response['response']['code'] == '401' ;
+	}
+	
+	private function is_bad_request($response) {
+		return $response['response']['code'] == '400' ;
 	}
 	
 	private function report($function_name, $message="start") {
