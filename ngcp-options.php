@@ -71,15 +71,16 @@ function ngcp_validate_options($input) {
 	// Delete Multiuser
 	if (isset($input['delete_multiuser'])) {
 		foreach ($input['delete_multiuser'] as $key => $value) {
-			$wp_username = get_userdata($key)->user_login;
-			$ngcp_meta = get_user_meta($key, 'ngcp', True);
-			$ng_username = '';
-			if (array_key_exists('username',$ngcp_meta)) {
+			$wp_username = get_userdata($author->ID)->user_login;
+			$ngcp_meta = get_user_meta($author->ID, 'ngcp', True);
+			if (array_key_exists('username',$ngcp_meta) {
 				$ng_username = $ngcp_meta['username'];
+			} else [
+				$ng_username = '';
 			}
 			ngcp_debug('deleting user '.$key);
 			delete_user_meta($key, 'ngcp');
-			$msg[] .= sprintf(__('Disconnected %1$s\'s Newsgrape account (%2$s)!', 'ngcp'), $wp_username, $ng_username);
+			$msg[] .= sprintf(__('Disconnected %1$s\'s Newsgrape account (%2$s)!', 'ngcp'), $input['multiuser_username'], $userdata->user_login);
 			$msgtype = 'updated';
 		}
 	}
