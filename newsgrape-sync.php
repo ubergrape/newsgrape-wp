@@ -163,7 +163,6 @@ function ngcp_settings_css() { ?>
 			background: #fafafa;
 			padding: 18px;
 			margin-bottom: 20px;
-			margin-top: 20px;
 		}
 		
 		#ngcp-fast-edit-button {
@@ -227,14 +226,6 @@ function ngcp_settings_css() { ?>
 		#setting-error-ngcp pre {
 			font-weight: normal;
 			font-size: 10px;
-		}
-		#ngcp-user-table {
-			width: 585px;
-			margin-bottom: 10px;
-			margin-top: 10px;
-		}
-		#ngcp-user-table td {
-			height: 18px;
 		}
 	</style>
 <?php
