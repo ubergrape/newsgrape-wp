@@ -34,7 +34,6 @@ function ngcp_get_options() {
 
 // Validation/sanitization. Add errors to $msg[].
 function ngcp_validate_options($input) {
-	global $ngcp_error;
 	$msg = array();
 	$msgtype = 'error';
 	
@@ -64,7 +63,7 @@ function ngcp_validate_options($input) {
 			$msg[] .= sprintf(__('Sucessfully connected Newsgrape user %1$s to %2$s\'s WordPress Account!', 'ngcp'), $input['multiuser_username'], $userdata->user_login);
 			$msgtype = 'updated';
 		} else {
-			$msg[] .= sprintf(__('Could not connect %1$s to Newsgrape: %2$s', 'ngcp'), $input['multiuser_username'], $ngcp_error);
+			$msg[] .= sprintf(__('Could not connect %1$s to Newsgrape: ', 'ngcp'), $input['multiuser_username']) . $ngcp_error;
 		}
 	}
 	
