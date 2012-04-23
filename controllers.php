@@ -59,7 +59,9 @@ class NGCP_Core_Controller {
 	}
 	
 	static function delete($post_ID) {
-		if (!NGCP_Core_Controller::check_nonce() || !NGCP_Core_Controller::has_api_key()) {
+		global $ngcp_synced;
+		
+		if ($post_ID == $ngcp_synced || !NGCP_Core_Controller::check_nonce() || !NGCP_Core_Controller::has_api_key()) {
 			return $post_ID;
 		}
 
@@ -72,6 +74,7 @@ class NGCP_Core_Controller {
 		
 		$api = new NGCP_API();
 		$api->delete($post);
+		$ngcp_synced = $post_ID;
 		
 		return $post_ID;
 	}
