@@ -174,10 +174,6 @@ function ngcp_validate_options($input) {
 	unset($input['sync_all']);
 	unset($input['update_ngcp_options']);
 	unset($input['delete_options']);
-	unset($input['delete_multiuser']);
-	unset($input['multiuser_username']);
-	unset($input['multiuser_password']);
-	unset($input['multiuser_id']);
 	
 	return $input;
 }
