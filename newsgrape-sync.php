@@ -463,8 +463,11 @@ function ngcp_log_http($data = '', $log_type = '', $extra = '') {
 function ngcp_is_current_user_connected() {
 	$options = ngcp_get_options();
 	if('multi' == $options['multiuser']) {
-		$user_meta = ngcp_user_meta();
-		if ($user_meta && array_key_exists('api_key',$user_meta)) {
+		require_once(ABSPATH . WPINC . '/pluggable.php');
+		global $current_user;
+		get_currentuserinfo();
+		$user = get_user_meta($current_user->ID, 'ngcp', True);
+		if ($user && array_key_exists('api_key',$user)) {
 			return 'multi';
 		}
 	} elseif (isset($options['api_key']) && '' != $options['api_key']) {
@@ -474,12 +477,6 @@ function ngcp_is_current_user_connected() {
 	return False;
 }
 
-function ngcp_user_meta() {
-	require_once(ABSPATH . WPINC . '/pluggable.php');
-	global $current_user;
-	get_currentuserinfo();
-	return get_user_meta($current_user->ID, 'ngcp', True);
-}
 
 $class = 'NGCP_Core_Controller';
 
