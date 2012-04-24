@@ -238,7 +238,7 @@ function ngcp_display_options() {
 			?>
 		
 			<table class="form-table ui-tabs-panel">
-			<h3><?php _('Login to Newsgrape', 'ngcp'); ?></h3>
+			<h3><?php _e('Login to Newsgrape', 'ngcp'); ?></h3>
 				<tr valign="top">
 					<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
 					<td>
