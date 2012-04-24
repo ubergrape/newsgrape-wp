@@ -109,7 +109,7 @@ class NGCP_API {
 				
 		$this->report(__FUNCTION__,'settings changed');
 		
-		return ("canonical_link setting updated" == $response_decoded)
+		return ("canonical_link setting updated" == $response_decoded);
 	}
 	
 	function create($post) {
