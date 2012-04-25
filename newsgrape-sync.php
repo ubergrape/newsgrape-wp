@@ -35,6 +35,7 @@ $ngcp_dir = dirname(__FILE__);
 @require_once "$ngcp_dir/metabox.php";
 @require_once "$ngcp_dir/ngcp-options.php";
 @require_once "$ngcp_dir/ngcp-options-fast-edit.php";
+@require_once "$ngcp_dir/ngcp-help.php";
 
 /* Set default options */
 function ngcp_set_defaults() {

@@ -178,6 +178,7 @@ function ngcp_add_menu() {
 	add_action('admin_init', 'register_ngcp_settings');
 
 	ngcp_add_fe_page();
+	ngcp_add_help_page();
 }
 
 // Add link to options page from plugin list
