@@ -376,23 +376,23 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 					</tr>
 				</table>
 			</fieldset>
-			
-			<a id="ngcp-show-advanced-options" class="hide-if-no-js"href="#">show advanced options</a>
-			
-			<fieldset class="options hide-if-js" id="ngcp-advanced-options">
+	
+			<fieldset class="options" id="ngcp-advanced-options">
 				<legend><h3><?php _e('Advanced Options', 'ngcp'); ?></h3></legend>
 				<table class="form-table">
 					<tr valign="top">
-						<th scope="row"><?php _e('Link Rel Canonical', 'ngcp'); ?></th>
+						<th scope="row"><?php _e('Redirect Search Engines', 'ngcp'); ?></th>
 						<td>
 						<label>
-							<input name="ngcp[canonical]" type="checkbox" value="1" <?php checked($options['canonical'], 1); ?>/>
-							<?php _e('Resolve duplicate content problems', 'ngcp'); ?>
+							<select name="ngcp[canonical]">
+								<option value="1" <?php selected($options['canonical'], '1'); ?>><?php _e('to Newsgrape') ?></option>
+								<option value="0" <?php selected($options['canonical'], '0'); ?>><?php _e('to my blog') ?></option>
+							</select>
 						</label>
 						<br />
 						<span class="description">
 						<?php
-						_e('Automatically adds &lt;link rel=&quot;canonical&quot; ...&gt; to every synced post', 'ngcp');
+						_e('Automatically adds &lt;link rel=&quot;canonical&quot; ...&gt; to every synced post if you select "to my blog"', 'ngcp');
 						?>
 						</span>
 						</td>
