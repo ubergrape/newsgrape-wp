@@ -13,32 +13,36 @@ Newsgrape Sync automatically syncs WordPress articles to your Newsgrape account.
 
 This plugin also integrates the Newsgrape comment system inside your WordPress posts.
 
-== Features ==
+= Features =
 
-=== Article Editing ===
+Article Editing:
+
 * Automatic syncing: create/edit/delete articles
 * Choose Language, License, Article Type for each article
 * Enter Newsgrape intro text for each article (this is also shown in your WordPress article)
 
-=== Article Management ===
+Article Management:
+
 * Exclude certain categories from syncing
 * Set Newsgrape options for multiple posts at once
 * Publish or delete multiple posts at once
 
-=== Comments ===
+Comments:
+
 * Show Newsgrape's comment system inside your WordPress posts
 * No need to edit your theme
 
-=== More features ===
+More features:
+
 * Recognizes your blog after a domainname change
 
-== Thanks ==
+= Thanks =
 
 Thanks to the great [Newsgrape team](http://www.newsgrape.com/p/about-us/) for collaborating and providing its API.
 
 Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plugins/lj-xp/): [sillybean](http://profiles.wordpress.org/users/sillybean/), [CorneliousJD](http://profiles.wordpress.org/users/CorneliousJD/), [freeatnet](http://profiles.wordpress.org/users/freeatnet/), Evan Broder - parts of their code has been used in the Newsgrape Sync Plugin
 
-== Manuall Installation ==
+== Installation ==
 
 1. Upload the "newsgrape-sync" directory to your "/wp-content/plugins/" directory
 1. Activate the plugin through the "Plugins" menu in WordPress Admin
