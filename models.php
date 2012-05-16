@@ -108,8 +108,8 @@ class NGCP_Post {
 		);
 		
 		// Check for post image
-		if(null!=get_post_thumbnail_id($this->wp_id)){
-			$data['image'] = base64_encode_image(get_attached_file(get_post_thumbnail_id($this->wp_id))); //TODO thumbnail size?
+		if($image = $this->find_a_post_image()){
+			$data['image'] = base64_encode_image($image); //TODO thumbnail size?
 		}
 		
 		// If creative add genre
@@ -118,6 +118,56 @@ class NGCP_Post {
 		}
 		
 		return http_build_query($data);
+	}
+	
+	function find_a_post_image() {
+		$image = false;
+		
+		// Check for post image
+		if(null!=get_post_thumbnail_id($this->wp_id)){
+			$image = get_attached_file(get_post_thumbnail_id($this->wp_id));
+			ngcp_debug('post image found');
+		}
+		
+		// use first image in post if only one image
+		if(!$image) {
+			$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $this->wp_post->post_content, $matches, PREG_SET_ORDER);
+			if(1==count($matches) && 2==count($matches[0])) { // only one image in post
+				$image_url = $matches[0][1];
+				
+				ngcp_debug("image tag found in post: $image_url");
+				
+				// find the image in the gallery
+				// hint: there can be images in the gallery which are not in in the post content
+				//       also the post can contain images which are not
+				$args = array(
+					'post_type' => 'attachment',
+					'post_mime_type' => 'image',
+					'numberposts' => null,
+					'post_status' => null,
+					'post_parent' => $this->wp_id
+				);
+				$attachments = get_posts($args);
+				if (0 < count($attachments)) {
+					foreach($attachments as $attachment) {
+						if(wp_get_attachment_url($attachment->ID) == $image_url) {
+							ngcp_debug('image found in post gallery');
+							$image = get_attached_file($attachment->ID);
+						}
+					}
+				}
+				
+				if(!$image) {
+					ngcp_debug('image not found in gallery, ignoring');
+				}
+			}
+		}
+        
+        if(!$image) {
+			ngcp_debug('no usable image found in post');
+		}
+        
+		return $image;
 	}
 	
 	function should_be_synced() {
