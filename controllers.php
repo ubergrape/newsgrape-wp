@@ -95,13 +95,24 @@ class NGCP_Core_Controller {
 			'ngcp_description',
 		);
 		
+		$language = false;
+		
 		foreach ($meta_keys as $meta_key) {
 			if (isset($_POST[$meta_key])) {
 				$meta_value = $_POST[$meta_key];
 				if ('on' == $meta_value) { $meta_value = 1; }
 				if ('off' == $meta_value) { $meta_value = 0; }
+				if ('ngcp_language' == $meta_key) { $language = $meta_value; }
 			}
 			update_post_meta($post_ID, $meta_key, $meta_value);
+		}
+		
+		if($language) {
+			$options = ngcp_get_options();
+			if ($options['language'] != $language) {
+				$options['language'] = $language;
+				update_option('ngcp',$options);
+			}
 		}
 		
 		ngcp_debug("controller: saved post ".$post_ID);
