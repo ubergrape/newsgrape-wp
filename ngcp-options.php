@@ -39,10 +39,7 @@ function ngcp_validate_options($input) {
 	$msg = array();
 	$msgtype = 'error';
 	
-	// if we handle a login we need an API
-	if (isset($input['login'])) {
-		$api = new NGCP_API();
-	}
+	$api = new NGCP_API();
 	
 	// API key
 	if (isset($input['password']) && !empty($input['password'])) {
