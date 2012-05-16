@@ -501,6 +501,12 @@ if(NGCP_DEBUG) {
 	add_action('http_api_debug', 'ngcp_log_http', 10, 3);
 }
 
+// make sure that there is a blog id. we need it for the comment system.
+if(!get_option('ngcp_blog_id')) {
+	ngcp_debug("generate blog id");
+	update_option('ngcp_blog_id',ngcp_random(24));
+}
+
 // Make Plugin Multilingual
 load_plugin_textdomain('ngcp', false, basename($ngcp_dir.'/lang'));
 
