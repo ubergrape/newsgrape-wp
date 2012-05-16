@@ -39,10 +39,9 @@ function ngcp_validate_options($input) {
 	$msg = array();
 	$msgtype = 'error';
 	
-	$api = new NGCP_API();
-	
 	// API key
 	if (isset($input['login']) && isset($input['password']) && !empty($input['password'])) {
+		$api = new NGCP_API();
 		$key = $api->fetch_new_key($input['username'],$input['password']);
 		if ($key) {
 			$input['api_key'] = $key;
@@ -151,10 +150,8 @@ function ngcp_validate_options($input) {
 	}
 	
 	// do not save in options db
-	unset($input['delete_all']);
-	unset($input['sync_all']);
-	unset($input['update_ngcp_options']);
-	unset($input['delete_options']);
+	$do_not_saves = array('login', 'password', 'logout', 'delete_all', 'sync_all', 'update_ngcp_options', 'delete_options');
+	foreach($do_not_saves as $do_not_save) { unset($input[$do_not_save]); }
 	
 	return $input;
 }
