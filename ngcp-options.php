@@ -42,7 +42,7 @@ function ngcp_validate_options($input) {
 	$api = new NGCP_API();
 	
 	// API key
-	if (isset($input['password']) && !empty($input['password'])) {
+	if (isset($input['login']) && isset($input['password']) && !empty($input['password'])) {
 		$key = $api->fetch_new_key($input['username'],$input['password']);
 		if ($key) {
 			$input['api_key'] = $key;
