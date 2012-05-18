@@ -103,6 +103,8 @@ class NGCP_Core_Controller {
 				if ('on' == $meta_value) { $meta_value = 1; }
 				if ('off' == $meta_value) { $meta_value = 0; }
 				if ('ngcp_language' == $meta_key) { $language = $meta_value; }
+			} else {
+			    $meta_value = 0;
 			}
 			update_post_meta($post_ID, $meta_key, $meta_value);
 		}
