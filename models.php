@@ -22,6 +22,7 @@ class NGCP_Post {
 	public $language = "en";
 	public $tags = array();
 	public $is_creative = False;
+	public $is_promotional = False;
 	public $options = array();
 	
 	function __construct($wp_post_id = NULL) {
@@ -56,6 +57,7 @@ class NGCP_Post {
 		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true);
 		//$this->tags			= $this->import_tags($wp_post_id);
 		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
+		$this->is_promotional = get_post_meta($wp_post_id, 'ngcp_promotional', true);
 		
 		if('' == $this->language || 0 == $this->language) {
 			$this->language = $this->options['language'];
@@ -105,6 +107,7 @@ class NGCP_Post {
 			'external_post_id'	=> $this->wp_id, // has to be unique in combination with the X-EXTERNAL-ID header
 			'external_post_url'	=> get_permalink($this->wp_id),
 			'is_creative'		=> $this->is_creative,
+			'is_promotional'	=> $this->is_promotional,
 		);
 		
 		// Check for post image

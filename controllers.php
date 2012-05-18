@@ -93,6 +93,7 @@ class NGCP_Core_Controller {
 			'ngcp_sync',
 			'ngcp_category',
 			'ngcp_description',
+			'ngcp_promotional',
 		);
 		
 		$language = false;
