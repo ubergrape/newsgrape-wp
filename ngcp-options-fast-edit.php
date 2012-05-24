@@ -176,6 +176,7 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 					$post_meta = get_post_custom($post->ID);
 					$has_type = array_key_exists('ngcp_type', $post_meta) && !empty($post_meta['ngcp_type']);
 					$is_synced = array_key_exists('ngcp_id', $post_meta) && $post_meta['ngcp_id'][0] != 0 && (!array_key_exists('ngcp_deleted', $post_meta) || False == $post_meta['ngcp_deleted']);
+					$ng_url = array_key_exists('ngcp_display_url', $post_meta) ? $post_meta['ngcp_display_url'][0] : "";
 				?>
 				
 				<tr class="<?php if($is_synced) echo 'ngcp-synced'; ?> <?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
@@ -187,6 +188,9 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 					<td>
 						<a href="<?php the_permalink(); ?>" class="ngcp-the-title"><?php the_title(); ?></a>
 						<?php edit_post_link(); ?>
+						<?php if($is_synced): ?>
+						    <a href="<?php echo $ng_url; ?>" class="post-ng-link">Show on Newsgrape</a>
+						<?php endif; ?>
 						<span class="ngcp-the-date"><?php the_time(get_option('date_format')); ?></span>
 					<td>
 						<label>

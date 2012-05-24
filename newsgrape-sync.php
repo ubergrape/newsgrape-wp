@@ -175,12 +175,13 @@ function ngcp_settings_css() { ?>
 		.ngcp-all-articles td{
 			padding: 6px;
 		}
-		.ngcp-all-articles .post-edit-link {
+		.ngcp-all-articles .post-edit-link,
+		.ngcp-all-articles .post-ng-link  {
 			border-right: 1px solid #8f8f8f;
 			padding-right: 12px;
+			margin-right: 10px;
 		}
 		.ngcp-all-articles .ngcp-the-date {
-			padding-left: 8px;
 			padding-right: 5px;
 			color: #8f8f8f;
 			font-size: 10px;
