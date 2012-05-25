@@ -176,6 +176,7 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 					$post_meta = get_post_custom($post->ID);
 					$has_type = array_key_exists('ngcp_type', $post_meta) && !empty($post_meta['ngcp_type']);
 					$is_synced = array_key_exists('ngcp_id', $post_meta) && $post_meta['ngcp_id'][0] != 0 && (!array_key_exists('ngcp_deleted', $post_meta) || False == $post_meta['ngcp_deleted']);
+					$has_been_deleted = array_key_exists("ngcp_deleted",$post_meta) && True == $post_meta['ngcp_deleted'][0];
 					$ng_url = array_key_exists('ngcp_display_url', $post_meta) ? $post_meta['ngcp_display_url'][0] : "";
 				?>
 				
@@ -201,6 +202,8 @@ A „Creative“ is any text that you just make up in your mind. When writing a 
 						<span class="ngcp-sync-state <?php if($is_synced) echo 'ngcp-synced'; ?>">
 							<?php if($is_synced) {
 								_e('synced', 'ngcp');
+							} elseif($has_been_deleted){
+								_e('Not synced anymore. (has been deleted)', 'ngcp');
 							} else {
 								_e('not synced yet', 'ngcp');
 							} ?>
