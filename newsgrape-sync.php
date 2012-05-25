@@ -178,8 +178,8 @@ function ngcp_settings_css() { ?>
 		.ngcp-all-articles .post-edit-link,
 		.ngcp-all-articles .post-ng-link  {
 			border-right: 1px solid #8f8f8f;
-			padding-right: 12px;
-			margin-right: 10px;
+			padding-right: 5px;
+			margin-right: 2px;
 		}
 		.ngcp-all-articles .ngcp-the-date {
 			padding-right: 5px;
