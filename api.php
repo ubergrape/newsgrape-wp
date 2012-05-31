@@ -247,6 +247,15 @@ class NGCP_API {
 		return $output;
 	}
 	
+	function get_comment_count() {
+		// THIS IS A DUMMY. not implemented on ng api yet
+		//$response = $this->get_get('comment_count/');
+		return array(12 => 1,// id => comment_count
+					 13 => 892,
+					 16 => 132,
+					 18 => 0);
+	}
+	
 	function get_get($url='languages/') {
 		$this->report(__FUNCTION__,"Get $url");
 		

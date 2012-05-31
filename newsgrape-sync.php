@@ -41,6 +41,7 @@ $ngcp_dir = dirname(__FILE__);
 function ngcp_set_defaults() {
 	$options = ngcp_get_options();
 	add_option( 'ngcp', $options, '', 'no' );
+	wp_schedule_event( current_time( 'timestamp' ), 'hourly', 'sync_newsgrape_comment_count');
 }
 register_activation_hook(__FILE__, 'ngcp_set_defaults');
 
@@ -464,6 +465,17 @@ function ngcp_is_current_user_connected() {
 	return False;
 }
 
+/* Schedule event to update comment count for all articles
+ */
+function ngcp_sync_comment_count() {
+	$api = new NGCP_API();
+	$comment_count = $api->get_comment_count();
+	
+	foreach ($comment_count as $id => $count) {
+		update_post_meta($id, 'ngcp_comment_count', $count);
+	}
+}
+
 
 $class = 'NGCP_Core_Controller';
 
@@ -489,6 +501,11 @@ add_filter('comments_template', 'ngcp_comments');
 remove_action('wp_head', 'rel_canonical');
 add_action('wp_head', 'ngcp_rel_canonical');
 add_filter('the_content', 'ngcp_add_description_to_content', 30);
+add_action('sync_newsgrape_comment_count', 'ngcp_sync_comment_count');
+
+function my_activation() {
+	wp_schedule_event( current_time( 'timestamp' ), 'hourly', 'my_hourly_event');
+}
 
 
 
