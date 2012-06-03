@@ -61,6 +61,15 @@ register_uninstall_hook( __FILE__, 'ngcp_remove_options' );
 /* Metabox Style */
 function ngcp_css() { ?>
 	<style type="text/css">
+		#post-body-content #newsgrape {
+		}
+		#post-body-content #newsgrape .inside {
+			height: 100%;
+		}
+		#post-body-content #newsgrape .inside .misc-pub-section {
+			min-height: 77px;
+			height: 100%;
+		}
 		.ngcp-section:first-child {
 			border-top-width: 0;
 		}
@@ -71,9 +80,53 @@ function ngcp_css() { ?>
 		.ngcp-section-last {
 			border-bottom-width: 0;
 		}
+		#newsgrape {
+			background: #fcfcfa ;
+		}
+		#newsgrape h3 {
+			background: url("<?php echo ngcp_plugin_dir_url(); ?>menu_icon_inverted.png") 5px 6px no-repeat #efefef;
+			font-family: Arial, Helvetica, sans-serif;
+			color: #444;
+			text-shadow: none;
+			font-weight: bold;
+			padding-left: 22px;
+		}
+		#newsgrape h3 em {
+			color: #e53d2e;
+			font-style: normal;
+		}
+		#newsgrape .ngcp-info {
+			background: #fff;
+			color: #a6a6a1;
+			border: none;
+		}
+		#newsgrape .ngcp-info.synced {
+			background: #c5e3b6;
+			color: #444;
+			border-top: 1px solid #fff;
+		}
+		#newsgrape #ng-type-select label {
+			width: 62px;
+			float: left;
+		}
+		#newsgrape #ng-type-select select {
+			width: 192px;
+		}
 		#newsgrape .inside {
 			margin: 0;
 			padding: 0;
+		}
+		#newsgrape #ng-sync-option {
+			background: #e0e0d7;
+		}
+		#newsgrape #ng-sync-option input {
+			margin-right: 5px;
+		}
+		#ng-more-sync-options #ngcp_more_inner {
+			margin-top: 15px;
+		}
+		#ngcp-license {
+			border-top: 1px solid #ddd;
 		}
 		#ngcp-promotional-info {
 			display: none;
@@ -87,9 +140,6 @@ function ngcp_css() { ?>
 		}
 		.ngcp-info .on-newsgrape {
 			display: block;
-		}
-		.ngcp-info synced{
-			background: #F8FFF7;
 		}
 		div.ngcp-radio-column ul li { list-style: none; padding: 0; text-indent: 0; margin-left: 0; }
 		div#post-body-content div.ngcp-radio-column, div#post-body-content p.ngcp-userpics { float: left; width: 22%; margin-right: 2%; }
@@ -137,17 +187,190 @@ function ngcp_css() { ?>
 /* Admin options page style */
 function ngcp_settings_css() { ?>
 	<style type="text/css">
+		#wpwrap {
+			background: url("<?php echo ngcp_plugin_dir_url(); ?>furley_bg.png");
+		}
+		#adminmenuback {
+			z-index: 1;
+		}
+		#adminmenuwrap {
+			z-index:2;
+		}
+		#wpbody-content > .wrap .error {
+			display: none;
+		}
+		#wpbody-content > .wrap {
+			background-color: #fff;
+			padding: 15px;
+			margin: 40px 35px 20px 20px;
+			border-radius: 12px;-moz-border-radius: 12px;-webkit-border-radius: 12px;
+			border: 2px solid #e0e0d7;
+			color: #444;
+		}
+		#wpbody-content > .wrap input[type=text],#wpbody-content > .wrap select,#wpbody-content > .wrap textarea {
+		    margin-bottom: 4px;
+		    padding: 4px;
+		    color: #444;
+		    font-size: 15px;
+		    border: 1px solid #ebebe7;
+		    border-radius: 4px;-moz-border-radius: 4px;-webkit-border-radius: 4px;
+		    background-color: #fcfcfa;
+		    outline: 0;
+		}
+		#wpbody-content > .wrap input[readonly="readyonly"] {
+			background-color: #fcfcfa;
+			color: #a6a6a1;
+		}
+		#wpbody-content > .wrap .button-primary, #wpbody-content > .wrap .button-secondary, #wpbody-content > .wrap .button-quiet {
+		    position: relative;
+		    display: inline-block;
+		    font-size: 14px;
+		    color: #fcfcfa !important;
+		    margin: 0;
+		    padding: 5px 8px 5px;
+		    border: 0 !important;
+		    border-radius: 4px;-moz-border-radius: 4px;-webkit-border-radius: 4px;
+		    text-align: left;
+		    font-weight: bold;
+		    cursor:pointer;
+			text-shadow: none !important;
+			background-image: none;
+		}
+		#wpbody-content > .wrap .button-primary:hover, #wpbody-content > .wrap .button-secondary:hover, #wpbody-content > .wrap .button-quiet:hover {
+			color: 
+			white !important;
+			background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, 
+			#444), color-stop(100%, 
+			#333)) !important;
+			background-image: -webkit-linear-gradient(
+			#444,
+			#333) !important;
+			background-image: -moz-linear-gradient(
+			#444,
+			#333) !important;
+			background-image: -o-linear-gradient(
+			#444,
+			#333) !important;
+			background-image: -ms-linear-gradient(
+			#444,
+			#333) !important;
+			background-image: linear-gradient(
+			#444,
+			#333) !important;
+			background-color: 
+			#444 !important;
+		}
+		#wpbody-content > .wrap .button-secondary {
+			background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, 
+			#3E97C5), color-stop(100%, 
+			#3689B3)) !important;
+			background-image: -webkit-linear-gradient(
+			#3E97C5,
+			#3689B3) !important;
+			background-image: -moz-linear-gradient(
+			#3E97C5,
+			#3689B3) !important;
+			background-image: -o-linear-gradient(
+			#3E97C5,
+			#3689B3) !important;
+			background-image: -ms-linear-gradient(
+			#3E97C5,
+			#3689B3) !important;
+			background-image: linear-gradient(
+			#3E97C5,
+			#3689B3) !important;
+			background-color: 
+			#3689B3 !important;		
+		}
+		#wpbody-content > .wrap .button-primary {
+			background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, 
+			#E85245), color-stop(100%, 
+			#E53D2E)) !important;
+			background-image: -webkit-linear-gradient(
+			#E85245,
+			#E53D2E) !important;
+			background-image: -moz-linear-gradient(
+			#E85245,
+			#E53D2E) !important;
+			background-image: -o-linear-gradient(
+			#E85245,
+			#E53D2E) !important;
+			background-image: -ms-linear-gradient(
+			#E85245,
+			#E53D2E) !important;
+			background-image: linear-gradient(
+			#E85245,
+			#E53D2E) !important;
+			background-color: 
+			#E53D2E !important;
+		}
+		#wpbody-content > .wrap .button-quiet {
+			background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, 
+			#BFBFBB), color-stop(100%, 
+			#B2B2AE)) !important;
+			background-image: -webkit-linear-gradient(
+			#BFBFBB,
+			#B2B2AE) !important;
+			background-image: -moz-linear-gradient(
+			#BFBFBB,
+			#B2B2AE) !important;
+			background-image: -o-linear-gradient(
+			#BFBFBB,
+			#B2B2AE) !important;
+			background-image: -ms-linear-gradient(
+			#BFBFBB,
+			#B2B2AE) !important;
+			background-image: linear-gradient(
+			#BFBFBB,
+			#B2B2AE) !important;
+			background-color: 
+			#B2B2AE !important;		
+		}
+		input[type=submit].ng-button-link {
+			background: none !important;
+			border: none !important;
+			cursor: pointer;
+		}
+		#wpbody-content > .wrap a, .ng-button-link {
+			color: #3689b3 !important;
+		}
+		#wpbody-content > .wrap a:hover, input[type=submit].ng-button-link:hover {
+			color: #444 !important;
+		}
+		.ng-connect-box {
+			background-color: #ebebe7;
+			border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; 
+			margin: 12px 0px;
+		}
+		.ng-small {
+			font-size: 10px !important;
+		}
+		.ng-success-bg {
+			background-color: #c5e3b6 !important;
+		}
+		.toplevel_page_newsgrape {
+			background: #e53d2e !important;
+			text-shadow: 0 !important;
+			border-color: #e53d2e !important;
+			text-shadow: none !important;
+		}
+		#toplevel_page_newsgrape .wp-menu-arrow, #toplevel_page_newsgrape .wp-menu-arrow div  {
+			background: #e53d2e !important;
+		}
+		.wp-menu-arrow {
+		}
 		table.editform th { text-align: left; }
 		dl { margin-right: 2%; margin-top: 1em; color: #666; }
 		dt { font-weight: bold; }
 		#ngcp dd { font-style: italic; }
 		ul#category-children {
 			list-style: none;
-			height: 15em;
+			height: auto;
 			width: 38em;
-			overflow-y: scroll;
-			border: 1px solid #dfdfdf;
-			padding: 0 1em;
+			max-width: 100%;
+			overflow-y: auto;
+			border: 1px solid #e0e0d7;
+			padding: 1em;
 			background: #fff;
 			border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; 
 		}
@@ -160,15 +383,22 @@ function ngcp_settings_css() { ?>
 		#ngcp-logout { margin-bottom: 30px; }
 		#ngcp-advanced-options { /*display: none;*/ }
 		#category-children select { float: right; }
-		#ngcp-fast-edit {
-			width: 450px;
+		.ng-edit-box {
 			background: #fafafa;
 			padding: 18px;
-			margin-bottom: 20px;
+			margin: 0 0 12px 0;
+			border: 1px solid #e0e0d7;
+			border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; 
+		}
+		#ngcp-fast-edit {
 		}
 		
 		#ngcp-fast-edit-button {
 			float: right;
+		}
+		.ng-connected-button {
+			max-width: 620px;
+			margin-bottom: 15px;
 		}
 		.ngcp-all-articles {
 			margin-top: 20px;
@@ -176,13 +406,12 @@ function ngcp_settings_css() { ?>
 		.ngcp-all-articles td{
 			padding: 6px;
 		}
-		.ngcp-all-articles .post-edit-link,
-		.ngcp-all-articles .post-ng-link  {
+		.ngcp-all-articles .post-edit-link {
 			border-right: 1px solid #8f8f8f;
-			padding-right: 5px;
-			margin-right: 2px;
+			padding-right: 12px;
 		}
 		.ngcp-all-articles .ngcp-the-date {
+			padding-left: 8px;
 			padding-right: 5px;
 			color: #8f8f8f;
 			font-size: 10px;

@@ -195,9 +195,9 @@ function ngcp_display_options() {
 		//settings_errors('ngcp');
 		$options = ngcp_get_options();
 		?>
-		<h2><?php _e('Newsgrape Sync Options', 'ngcp'); ?></h2>
+		<h1 style="display: none"><?php _e('Newsgrape Sync Options', 'ngcp'); ?></h1>
 		
-		<img id="ngcp_header_img" src="<?php echo ngcp_plugin_dir_url(); ?>header.jpeg" />
+		<img id="ngcp_header_img" src="<?php echo ngcp_plugin_dir_url(); ?>header.png" />
 		
 		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
 		
@@ -232,8 +232,8 @@ function ngcp_display_options() {
 				}
 			?>
 		
-			<table class="form-table ui-tabs-panel">
-			<h3><?php _e('Login to Newsgrape', 'ngcp'); ?></h3>
+			<table class="form-table ui-tabs-panel ng-connect-box">
+			<h2><?php _e('Login to Newsgrape', 'ngcp'); ?></h2>
 				<tr valign="top">
 					<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
 					<td>
@@ -248,7 +248,7 @@ function ngcp_display_options() {
 					<a href="http://www.newsgrape.com/accounts/password/reset/" style="margin-left: 20px"><?php _e('Forgot Password', 'ngcp'); ?></a>
 					<br />
 					<span  class="description"><?php
-					_e('Your password will not be saved. It is needed only once to connect your WordPress with Newsgrape', 'ngcp');
+					_e('Your password will not be saved. It is needed only once to connect your WordPress Blog with Newsgrape', 'ngcp');
 					?></span>
 					</td>
 				<tr valign="top">
@@ -260,32 +260,33 @@ function ngcp_display_options() {
 			
 		<?php else: ?>
 		
-			<table class="form-table ui-tabs-panel">
+			<table class="form-table ui-tabs-panel ng-connect-box ">
 				<tr valign="top">
-					<th scope="row"><?php _e('Newsgrape Username', 'ngcp'); ?></th>
 					<td>
-						<input name="ngcp[username]" type="text" id="username" value="<?php esc_attr_e($options['username']); ?>" size="40" readonly="readyonly" />
+						<h2><?php _e('Synced with Newsgrape', 'ngcp'); ?> &#x2713;</h2>
+						<input class="" name="ngcp[username]" type="text" id="username" value="<?php esc_attr_e($options['username']); ?>" size="40" readonly="readyonly" />
+						<input type="submit" name="ngcp[logout]" id="ngcp-logout" value="<?php esc_attr_e('Disconnect ', 'ngcp'); ?>" class="button-quiet" />
 						<br />
 						<span  class="description"><?php
-					_e('Your WordPress is connected to Newsgrape', 'ngcp');
+					_e('Wundervoll! Your WordPress Blog is connected to Newsgrape.', 'ngcp');
 					?></span>
+
 					</td>
 				</tr>
 				<tr valign="top">
 					<td>
 						
-						<input type="submit" name="ngcp[logout]" id="ngcp-logout" value="<?php esc_attr_e('Disconnect from Newsgrape', 'ngcp'); ?>" class="button-secondary" />
 					</td>
 				</tr>
 			</table>
 			
 			<?php if (0 == $options['published_old']): ?>
-				<div id="ngcp-fast-edit">
-					<span class="info"><?php _e('Some Types for your Articles have not been set yet.'); ?></span>
-					<a href="admin.php?page=ngcp-options-fast-edit.php" id="ngcp-fast-edit-button" class="button-primary"><?php _e('Fast-Edit Articles', 'ngcp'); ?></a>
-					<br />
-					<br />
-					<span class="description"><?php _e('Opinions are News-Related and get tagged automatically, Creative articles are anything non-news related and have to be categorized.'); ?></span>
+				<div id="ngcp-fast-edit" class="ng-edit-box">
+					<div class="ng-connected-button">
+						<?php _e('Edit your Synced Articles in less than a minute.'); ?>
+						<a href="admin.php?page=ngcp-options-fast-edit.php" id="ngcp-fast-edit-button" class="button-secondary"><?php _e('Fast-Edit Articles', 'ngcp'); ?></a>
+					</div>
+					<span class="description"><?php _e('See all your articles in a list, select which you want to sync and if they are Fiction or News-Related.'); ?></span>
 				</div>
 			<?php endif; ?>
 			
@@ -341,7 +342,7 @@ function ngcp_display_options() {
 			</fieldset>
 			
 			<fieldset class="options">
-				<legend><h3><?php _e('Category Selection', 'ngcp'); ?></h3></legend>
+				<legend><h3><?php _e('Sync your Categories', 'ngcp'); ?></h3></legend>
 				<table class="form-table">
 					<tr valign="top">
 						<th scope="row"><?php _e('Select which of your Categories should be posted to Newsgrape and which default type should be used', 'ngcp'); ?></th>
@@ -358,13 +359,13 @@ function ngcp_display_options() {
 						<span class="description">
 						<?php _e('Any post that has <em>at least one</em> of the above categories selected will be synced.'); ?><br />
 						</span>
-						<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "Opinion", what is a "Creative Article"?', 'ngcp'); ?></a>
+						<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "News-Related", what is "Fiction"?', 'ngcp'); ?></a>
 						<div id="ngcp-help-text" class="hide-if-js">
-							<?php _e('What is "Opinion"?<br />
-In school you write "opinion essays" - an "Opinion" is basically the same thing. It expresses your personal point of view on some controversial topic. It might be in relation to a certain article or comment. However you could also just share your thoughts about something you heard about. The main difference to „Creative“ is that you cannot just make things up – an „Opinion“ is non-fictional so you should keep the facts straight.<br />
+							<strong><?php _e('What is "News-Related"?</strong><br />
+In school you write "opinion essays" - a "News-Related"-Article is basically the same thing. It expresses your personal point of view on some controversial topic. It might be in relation to a certain article or comment. However you could also just share your thoughts about something you heard about. The main difference to „Fiction“ is that you cannot just make things up – a „News-Related“-Article is non-fictional so you should keep the facts straight.<br />
 <br />
-What is "Creative"?<br />
-A „Creative“ is any text that you just make up in your mind. When writing a "Creative" you can let your mind wander – it is fictional and you can write about whatever you want. It is usually not related to a certain article or comment. It might be a short story, parody or a poem.', 'ngcp'); ?>
+<strong>What is "Fiction"?</strong><br />
+A „Fiction“-Article is any text that you just make up in your mind. When writing a "Fiction"-Article you can let your mind wander – it is fictional and you can write about whatever you want. It is usually not related to a certain article or comment. It might be a short story, parody or a poem.', 'ngcp'); ?>
 						</div>
 						</td>
 					</tr>
@@ -492,8 +493,8 @@ class ngcp_Walker_Category_Checklist extends Walker {
 		}
 		$output .= '</select>';
 		$output .= '<select name="ngcp[type][category-'.$category->term_id.']" class="ngcp-select-type">';
-		$output .= '<option value="opinion" '.selected($options['type']['category-'.$category->term_id], 'opinion', false).' >'.__('Opinion','ngcp').'</option>';
-		$output .= '<option value="creative" '.selected($options['type']['category-'.$category->term_id], 'creative', false).' >'.__('Creative','ngcp').'</option>';
+		$output .= '<option value="opinion" '.selected($options['type']['category-'.$category->term_id], 'opinion', false).' >'.__('News-Related','ngcp').'</option>';
+		$output .= '<option value="creative" '.selected($options['type']['category-'.$category->term_id], 'creative', false).' >'.__('Fiction','ngcp').'</option>';
 		$output .= '</select>';
 		$output .= "</li>\n";
      }
