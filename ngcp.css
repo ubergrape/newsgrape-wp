@@ -1,0 +1,118 @@
+#post-body-content #newsgrape {
+}
+#post-body-content #newsgrape .inside {
+	height: 100%;
+}
+#post-body-content #newsgrape .inside .misc-pub-section {
+	min-height: 77px;
+	height: 100%;
+}
+.ngcp-section:first-child {
+	border-top-width: 0;
+}
+.ngcp-section {
+	border-top-color: white;
+	border-bottom-color: #DFDFDF;
+}
+.ngcp-section-last {
+	border-bottom-width: 0;
+}
+#newsgrape {
+	background: #fcfcfa ;
+}
+#newsgrape h3 {
+	background: url("<?php echo ngcp_plugin_dir_url(); ?>menu_icon_inverted.png") 5px 6px no-repeat #efefef;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #444;
+	text-shadow: none;
+	font-weight: bold;
+	padding-left: 22px;
+}
+#newsgrape h3 em {
+	color: #e53d2e;
+	font-style: normal;
+}
+#newsgrape .ngcp-info {
+	background: #fff;
+	color: #a6a6a1;
+	border: none;
+}
+#newsgrape .ngcp-info.synced {
+	background: #c5e3b6;
+	color: #444;
+	border-top: 1px solid #fff;
+}
+#newsgrape #ng-type-select label {
+	width: 62px;
+	float: left;
+}
+#newsgrape #ng-type-select select {
+	width: 192px;
+}
+#newsgrape .inside {
+	margin: 0;
+	padding: 0;
+}
+#newsgrape #ng-sync-option {
+	background: #e0e0d7;
+}
+#newsgrape #ng-sync-option input {
+	margin-right: 5px;
+}
+#ng-more-sync-options #ngcp_more_inner {
+	margin-top: 15px;
+}
+#ngcp-license {
+	border-top: 1px solid #ddd;
+}
+#ngcp-promotional-info {
+	display: none;
+}
+.ngcp-info p {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+.ngcp-info a {
+	word-break: break-word;
+}
+.ngcp-info .on-newsgrape {
+	display: block;
+}
+div.ngcp-radio-column ul li { list-style: none; padding: 0; text-indent: 0; margin-left: 0; }
+div#post-body-content div.ngcp-radio-column, div#post-body-content p.ngcp-userpics { float: left; width: 22%; margin-right: 2%; }
+div#side-info-column div.ngcp-radio-column ul { margin: 1em; }
+#ngcp_license {
+	max-width: 100%;
+}
+
+#newsgrape_description {
+	border: none;
+	background: none;
+	margin-top: 16px;
+}
+#newsgrape_description .inside {
+	padding: 0;
+}
+
+#newsgrape_description h3, #newsgrape_description .handlediv {
+	display: none;
+}
+
+#ngcp_description {
+	border-color: #CCC;
+	background-color: white;
+	padding: 3px 8px;
+	font-size: 1.7em;
+	line-height: 100%;
+	width: 100%;
+	outline: none;
+}
+
+#ngcp_description-prompt-text {
+	color: #BBB;
+	position: absolute;
+	font-size: 1.7em;
+	padding: 8px 10px;
+	cursor: text;
+	vertical-align: middle;
+}
