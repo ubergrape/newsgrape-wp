@@ -57,7 +57,7 @@ class NGCP_Post {
 		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true);
 		//$this->tags			= $this->import_tags($wp_post_id);
 		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
-		$this->is_promotional = get_post_meta($wp_post_id, 'ngcp_promotional', true);
+		$this->is_promotional = get_post_meta($wp_post_id, 'ngcp_promotional', true) || false;
 		
 		if('' == $this->language || 0 == $this->language) {
 			$this->language = $this->options['language'];
