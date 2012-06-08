@@ -422,13 +422,6 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 			$('.checkall').click(function () {
 				$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
 			});
-			$('.ngcp-select-type').change(function () {
-				if ("creative" == this.value) {
-					$(this).siblings('.ngcp-select-cat').css('visibility','visible');
-				} else {
-					$(this).siblings('.ngcp-select-cat').css('visibility','hidden');
-				}
-			});
 			$('#ngcp-show-advanced-options').click(function(event) {
 				event.preventDefault();
 				$('#ngcp-advanced-options').slideDown('fast');
@@ -482,16 +475,6 @@ class ngcp_Walker_Category_Checklist extends Walker {
  
  	function end_el(&$output, $category, $depth, $args) {
 		$options = ngcp_get_options();
-		$output .= '<select name="ngcp[ng_category][category-'.$category->term_id.']" ';
-		if ("creative" == $options['type']['category-'.$category->term_id]) {
-			$output .= 'class="ngcp-select-cat">';
-		} else {
-			$output .= 'class="ngcp-select-cat ngcp-hidden">';
-		}
-		foreach ($options['categories'] as $cat_id => $cat_name) {
-			$output .= '<option value="'.$cat_id.'" '.selected($options['ng_category']['category-'.$category->term_id], $cat_id, false).' >'.__($cat_name,'ngcp').'</option>';
-		}
-		$output .= '</select>';
 		$output .= '<select name="ngcp[type][category-'.$category->term_id.']" class="ngcp-select-type">';
 		$output .= '<option value="opinion" '.selected($options['type']['category-'.$category->term_id], 'opinion', false).' >'.__('News-Related','ngcp').'</option>';
 		$output .= '<option value="creative" '.selected($options['type']['category-'.$category->term_id], 'creative', false).' >'.__('Fiction','ngcp').'</option>';

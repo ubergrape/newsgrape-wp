@@ -51,22 +51,8 @@ jQuery(function(){
 		return false;
 	});
 	
-
-	jQuery('#ngcp_type').click(function() {
-		if (jQuery('#ngcp_type')[0].value == "creative") {
-			if (jQuery('#ngcp-type-select').is(":hidden")) {
-				jQuery('#ngcp-type-select').slideDown('fast');
-			}
-		} else {
-			jQuery('#ngcp-type-select').slideUp('fast');
-		}
-		return false;
-	});
-
-	jQuery('.cancel-ngcp-type', '#ngcp-type-select').click(function() {
-		jQuery('#ngcp-type-select').slideUp('fast');
+	jQuery('.cancel-ngcp-type').click(function() {
 		jQuery('#ngcp_type_' + jQuery('#hidden_ngcp_type').val()).prop('checked', true);
-		jQuery('#ngcp-type-select').siblings('a.edit-ngcp-type').show();
 		ngcpUpdateText();
 		return false;
 	});
@@ -82,15 +68,6 @@ jQuery(function(){
 		jQuery(this).hide();
 		jQuery('#ngcp_more').show();
 		return false;
-	});
-	
-	
-	jQuery('input[name=ngcp_type]').change(function() {
-		if ('creative' == this.value) {
-			jQuery('#ngcp-cat-select').slideDown('fast');
-		} else {
-			jQuery('#ngcp-cat-select').slideUp('fast');
-		}
 	});
 	
 	/* hide/show ngcp_description-prompt-text */

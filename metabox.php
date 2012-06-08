@@ -116,14 +116,6 @@ function ngcp_inner_meta_box($post) {
 			<option value='creative' <?php selected($ngcp_type, 'creative'); ?>><?php _e('Fiction', 'ngcp'); ?></option>
 		</select>
 
-		<div id="ngcp-type-select" class="<?php if($ngcp_type=="opinion") { echo "hide-if-js"; } ?>">
-        <label for="ngcp-cat-select">Category:</label> <select id="ngcp-cat-select" name="ngcp_category">
-			<?php foreach ($categories as $cat_id => $cat_name): ?>
-				<option value="<?php echo $cat_id; ?>" <?php selected($ngcp_category, $cat_id); ?>><?php _e($cat_name,'ngcp'); ?></option>
-			<?php endforeach; ?>
-		</select>
-		</div>
-
 		<p class="description">
 			<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "News-Related", what is "Fiction"?', 'ngcp'); ?></a>
 		</p>

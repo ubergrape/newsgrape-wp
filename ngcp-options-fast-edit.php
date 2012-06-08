@@ -28,14 +28,6 @@ function ngcp_validate_fe_options($input) {
 		}
 	}
 	
-	foreach ($input['category_hidden'] as $post_id => $old_value) {
-		if ($input['category'][$post_id] != $old_value) {
-			update_post_meta($post_id, 'ngcp_category', $input['category'][$post_id]);
-			ngcp_debug(sprintf('category %d changed from "%s" to "%s"', $post_id, $input['category_hidden'][$post_id], $input['category'][$post_id]));
-			$updated_articles[] = $post_id;
-		}
-	}
-	
 	$updated_articles = array_unique($updated_articles);
 	
 	$unsynced_articles = array();
@@ -158,12 +150,6 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 							<option value="opinion"><?php _e('News-Related','ngcp'); ?></option>
 							<option value="creative"><?php _e('Fiction','ngcp'); ?></option>		
 						</select>
-						<select name="ngcp-cat-all" id="ngcp-cat-all">
-							<option value=""><?php _e('Category','ngcp'); ?></option>
-							<?php foreach ($categories as $cat_id => $cat_name): ?>
-								<option value="<?php echo $cat_id; ?>"><?php _e($cat_name,'ngcp'); ?></option>
-							<?php endforeach; ?>
-						</select>
 					</th>
 				</tr>
 			</thead>
@@ -182,7 +168,6 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 					<input type="hidden" name="ngcp_fe[is_synced_hidden][<?php the_id(); ?>]" value="<?php echo $is_synced; ?>">
 					<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[type_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_type'][0]; ?>">
-					<input type="hidden" name="ngcp_fe[category_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_category'][0]; ?>">
 					
 					<td>
 						<a href="<?php the_permalink(); ?>" class="ngcp-the-title"><?php the_title(); ?></a>
@@ -207,11 +192,6 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 							<option value="opinion" <?php selected($post_meta['ngcp_type'][0], 'opinion'); ?>><?php _e('News-Related','ngcp'); ?></option>
 							<option value="creative" <?php selected($post_meta['ngcp_type'][0], 'creative'); ?>><?php _e('Fiction','ngcp'); ?></option>		
 						</select>
-						<select class="ngcp-select-cat <?php if(!$has_type || $post_meta['ngcp_type'][0]!="creative") { echo "hide-if-js"; } ?>" name="ngcp_fe[category][<?php the_id(); ?>]">
-							<?php foreach ($categories as $cat_id => $cat_name): ?>
-								<option value="<?php echo $cat_id; ?>" <?php selected($post_meta['ngcp_category'][0], $cat_id); ?>><?php _e($cat_name,'ngcp'); ?></option>
-							<?php endforeach; ?>
-						</select>
 					</td>
 				</tr>
 				<?php endwhile; ?>
@@ -230,13 +210,6 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 					$('#ngcp-help-text').slideDown('fast');
 					$(this).hide();
 				});
-				$('.ngcp-select-type').change(function () {
-					if ("creative" == this.value) {
-						$(this).siblings('.ngcp-select-cat').show();
-					} else {
-						$(this).siblings('.ngcp-select-cat').hide();
-					}
-				});
 				$('#ngcp-sync-all').change(function () {
 					if (this.checked) {
 						$('.ngcp-sync').prop("checked", true);
@@ -246,13 +219,7 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 				});
 				$('#ngcp-type-all').change(function () {
 					if ("" != this.value) {
-						$('.ngcp-select-type').val(this.value).trigger('change');
-						
-					}
-				});
-				$('#ngcp-cat-all').change(function () {
-					if ("" != this.value) {
-						$('.ngcp-select-cat').val(this.value);
+						$('.ngcp-select-type').val(this.value);
 					}
 				});
 			});
