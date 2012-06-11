@@ -135,6 +135,11 @@ class NGCP_Post {
 				
 				ngcp_debug("image tag found in post: $image_url");
 				
+				// wordpress resizes images and gives them names like image-150x150.jpg
+				$image_ori_url = preg_replace('/\-[0-9]+x[0-9]+/', '', $image_url);
+				
+				ngcp_debug("original image: $image_ori_url");
+				
 				// find the image in the gallery
 				// hint: there can be images in the gallery which are not in in the post content
 				//       also the post can contain images which are not
@@ -148,7 +153,8 @@ class NGCP_Post {
 				$attachments = get_posts($args);
 				if (0 < count($attachments)) {
 					foreach($attachments as $attachment) {
-						if(wp_get_attachment_url($attachment->ID) == $image_url) {
+					    $att_url = wp_get_attachment_url($attachment->ID);
+						if (($att_url == $image_url) || ($att_url == $image_ori_url)) {
 							ngcp_debug('image found in post gallery');
 							$image = get_attached_file($attachment->ID);
 						}
