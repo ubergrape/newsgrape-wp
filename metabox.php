@@ -87,6 +87,7 @@ function ngcp_inner_meta_box($post) {
 	<div class="misc-pub-section" id="ng-sync-option">
 		<div class="ngcp-setting">
             <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync!=0); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?></label>
+            <input type="hidden" name="ngcp_sync_hidden" id="ngcp_sync_hidden" value="<?php echo $ngcp_sync; ?>" />
 		</div>
     </div>
  
@@ -134,8 +135,10 @@ function ngcp_inner_meta_box($post) {
 		<a href="#" id="ngcp_more" class="hide-if-no-js">+ <?php _e('More Settings', 'ngcp'); ?></a>
 		<a href="#" id="ngcp_less" class="hidden">- <?php _e('Less Settings', 'ngcp'); ?></a>
         <div id="ngcp_more_inner" class="ngcp-setting hide-if-js">
-            <label><input type="checkbox" name="ngcp_comments" id="ngcp_comments" <?php checked($ngcp_comments, '1'); ?>>  <?php _e('Allow Comments', 'ngcp'); ?></label><br />
+            <label><input type="checkbox" name="ngcp_comments" id="ngcp_comments" <?php checked($ngcp_comments, '1'); ?>>  <?php _e('Allow Comments', 'ngcp'); ?></label>
+            <input type="hidden" name="ngcp_comments_hidden" id="ngcp_comments_hidden" value="<?php echo $ngcp_comments; ?>"><br />
             <label><input type="checkbox" name="ngcp_promotional" id="ngcp_promotional" <?php checked($ngcp_promotional, '1'); ?>>  <?php _e('This is a Promotional Article', 'ngcp'); ?></label>
+            <input type="hidden" name="ngcp_promotional_hidden" id="ngcp_promotional_hidden" value="<?php echo   $ngcp_promotional; ?>">
             <p class="description">
             	<a href="#TB_inline?height=100&width=150&inlineId=ngcp-promotional-info&modal=true" class="thickbox">What is a promotional article?</a>
             </p>

@@ -86,31 +86,39 @@ class NGCP_Core_Controller {
 		
 
 		$meta_keys = array(
-			'ngcp_language',
-			'ngcp_license',
 			'ngcp_comments',
-			'ngcp_type',
 			'ngcp_sync',
-			'ngcp_category',
-			'ngcp_description',
 			'ngcp_promotional',
 		);
-		
-		$language = false;
-		
+
 		foreach ($meta_keys as $meta_key) {
-			if (isset($_POST[$meta_key])) {
-				$meta_value = $_POST[$meta_key];
-				if ('on' == $meta_value) { $meta_value = 1; }
-				if ('off' == $meta_value) { $meta_value = 0; }
-				if ('ngcp_language' == $meta_key) { $language = $meta_value; }
-			} else {
-			    $meta_value = 0;
+		    if (isset($_POST[$meta_key.'_hidden'])) {
+			    if (isset($_POST[$meta_key])) {
+				    $meta_value = $_POST[$meta_key];
+				    if ('on' == $meta_value) { $meta_value = 1; }
+				    if ('off' == $meta_value) { $meta_value = 0; }
+			    } else {
+			        $meta_value = 0;
+			    }
+			    update_post_meta($post_ID, $meta_key, $meta_value);
 			}
-			update_post_meta($post_ID, $meta_key, $meta_value);
 		}
 		
-		if($language) {
+		$meta_keys = array(
+			'ngcp_language',
+			'ngcp_license',
+			'ngcp_type',
+			'ngcp_description',
+		);
+		
+		foreach ($meta_keys as $meta_key) {
+		    if (isset($_POST[$meta_key])) {
+		        update_post_meta($post_ID, $meta_key, $_POST[$meta_key]);
+		    }
+		}
+		
+		// Save selected language to options
+		if(isset($_POST['ngcp_language']) && $language = $_POST['ngcp_language']) {
 			$options = ngcp_get_options();
 			if ($options['language'] != $language) {
 				$options['language'] = $language;
