@@ -122,7 +122,7 @@ class NGCP_Post {
 		$image = false;
 		
 		// Check for post image
-		if(null!=get_post_thumbnail_id($this->wp_id)){
+		if(current_theme_supports('post-thumbnails') && null!=get_post_thumbnail_id($this->wp_id)){
 			$image = get_attached_file(get_post_thumbnail_id($this->wp_id));
 			ngcp_debug('post image found');
 		}
