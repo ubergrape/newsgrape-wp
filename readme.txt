@@ -2,8 +2,8 @@
 Contributors: Newsgrape.com, sk7
 Tags: newsgrape, newsgrape.com, ng, sync, crosspost
 Requires at least: 3.2
-Tested up to: 3.3.2
-Stable tag: 3.0.2.1
+Tested up to: 3.4
+Stable tag: trunk
 
 Syncs your Wordpress articles to Newsgrape.com
 
