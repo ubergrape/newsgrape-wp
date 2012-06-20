@@ -181,12 +181,13 @@ class NGCP_Post {
 		// If the post was manually set to not be synced,
 		// or nothing was set and the default is not to sync,
 		// or it's private and the default is not to sync private posts, give up now
+		// also publish posts with a publish date in the future. newsgrape will handle this
 		
 		if (
 			0 == $this->options['sync'] ||
 			0 == get_post_meta($this->wp_id, 'ngcp_sync', true) ||
 			//('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no') ||
-			('publish' != $this->post_status)
+			('publish' != $this->post_status && 'future' != $this->post_status)
 		) {
 			return False;
 		}
