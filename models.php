@@ -14,7 +14,8 @@ class NGCP_Post {
 	public $wp_type;
 	public $slug = "";
 	public $url = "";
-	public $status ="";
+	public $status = "";
+	public $pub_date = 0;
 	public $title = "";
 	public $title_plain = "";
 	public $content = "";
@@ -50,6 +51,7 @@ class NGCP_Post {
 		$this->slug			= $wp_post->post_name;
 		$this->url			= get_permalink($wp_post_id);
 		$this->post_status 	= $wp_post->post_status;
+		$this->pub_date 	= get_post_time('U', True, $wp_post);
 		$this->title		= get_the_title($wp_post_id);
 		$this->title_plain	= strip_tags(@$this->title);
 		$this->content		= $the_content;
@@ -100,6 +102,7 @@ class NGCP_Post {
 		$data = array (
 			'title'				=> $this->title,
 			'pub_status'		=> 3, // 0=Unpublished, 3=Published
+			'pub_date'			=> $this->pub_date,
 			'description'		=> $this->description,
 			'language'			=> $this->language,
 			'text'				=> $this->content,
