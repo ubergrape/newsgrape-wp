@@ -64,9 +64,26 @@ class NGCP_Post {
 		if('' == $this->language || 0 == $this->language) {
 			$this->language = $this->options['language'];
 		}
-				
-		if('' == $this->description) {
-			$this->description = $wp_post->post_excerpt;
+		
+		/* description hirarchy:
+		 * 1) ngcp_description (-> normal content)
+		 * 2) manual excerpt (-> normal content)
+		 * 3) teaser (-> content without teaser)
+		 */
+		if('' == $this->description.trim()) {
+			$content = $this->content;
+			
+			if ( '' != $wp_post->post_excerpt) {
+				ngcp_debug('post has manual excerpt');
+				$this->description = $wp_post->post_excerpt;
+			} else if ( preg_match('/<!--more(.*?)?-->/', $content, $matches) ) {
+				ngcp_debug('post has teaser (more tag)');
+				$content = explode($matches[0], $content, 2);
+				$this->description = $content[0];
+				$this->content = $content[1];
+	        }
+		} else {
+			ngcp_debug('post has newsgrape description');
 		}
 	}
 	
@@ -117,7 +134,6 @@ class NGCP_Post {
 		if($image = $this->find_a_post_image()){
 			$data['image'] = base64_encode_image($image); //TODO thumbnail size?
 		}
-		
 		return http_build_query($data);
 	}
 	
