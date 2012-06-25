@@ -147,11 +147,9 @@ function ngcp_print_notices() {
 					$class = 'error';
 					break;
 				case 'create' :
-					$msg .= sprintf(__('Could not sync. Error: %s', 'ngcp'), 'options-general.php?page=ngcpoptions.php', $error );
-					$class = 'error';
-					break;
 				case 'update' :
-					$msg .= sprintf(__('Could not sync the updated entry. Error: %s', 'ngcp'), $error );
+				case 'delete' :
+					$msg .= sprintf(__('%s', 'ngcp'), $error );
 					$class = 'error';
 					break;
 				default:

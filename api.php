@@ -74,7 +74,7 @@ class NGCP_API {
 				$this->error($function_name, __($response_decoded['message'], 'ngcp'));
 				return False;
 			} else {
-				$this->error(__FUNCTION__,__('The Newsgrape server sent an unexpected answer. Is your Newsgrape Sync plugin up to date? <a href="update-core.php">Update Plugins</a> ', 'ngcp'));
+				$this->error($function_name,__('The Newsgrape server sent an unexpected answer. Is your Newsgrape Sync plugin up to date? <a href="update-core.php">Update Plugins</a> ', 'ngcp'));
 				ngcp_debug("Array keys ($array_key1 $array_key2 message) not found in JSON response : " . substr($response['body'],0,500));
 				return False;
 			}
@@ -324,7 +324,7 @@ class NGCP_API {
 	function get_error_header($function_name) {
 		$error_headers = array(
 			'fetch_new_key' => __('Could not login to Newsgrape. ', 'ngcp'),
-			'create' => __('Could not create an article. ', 'ngcp'),
+			'create' => __('Could not create article. ', 'ngcp'),
 			'update' => __('Could not update article. ', 'ngcp'),
 			'delete' => __('Could not delete article. ', 'ngcp'),
 		);
