@@ -11,7 +11,7 @@ class NGCP_API {
 		} 
 		
 		/* Client info for newsgrape's statistics */
-		$this->client = 'Wordpress/'.get_bloginfo('version').' NGWPSync/1.0';
+		$this->client = 'Wordpress/'.get_bloginfo('version').' NGWPSync/'.NGCP_VERSION;
 		
 		/* Unique Blog ID. Should be the same after domain change or plugin uninstall:
 		 * This option will not be deleted when uninstalling the plugin*/

@@ -1,11 +1,14 @@
 <?php
 /*
 Plugin Name: Newsgrape Sync
-Version: 1.2.0
+Version: 1.2.1
 Description: The Plugin automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
 Author: Newsgrape.com, Stefan Kröner
 Author URI: http://www.newsgrape.com/
 */
+
+/* Again, the version. used in api requests in the user agent string */
+define('NGCP_VERSION','1.2.1');
 
 /* NGCP_DEBUG true enables:
  * - Various Debug messages in logfile
