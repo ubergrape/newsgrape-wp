@@ -133,10 +133,20 @@ class NGCP_Post {
 		// Check for post image
 		if($image = $this->find_a_post_image()){
 			$data['image'] = base64_encode_image($image); //TODO thumbnail size?
+			$data['text'] = $this->content; // find_a_post_image can modify content
 		}
+		
 		return http_build_query($data);
 	}
 	
+	
+	/* finds a post image:
+	 * 1) post-thumbnail
+	 * 2) first image in post
+	 *    if the post starts with an image, the image is removed from the content
+	 * 
+	 * attention: modifies $this->content
+	 */
 	function find_a_post_image() {
 		$image = false;
 		
@@ -146,42 +156,38 @@ class NGCP_Post {
 			ngcp_debug('post image found');
 		}
 		
-		// use first image in post if only one image
+		// if we have no post image check for images inside content
 		if(!$image) {
-			$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $this->wp_post->post_content, $matches, PREG_SET_ORDER);
-			if(1==count($matches) && 2==count($matches[0])) { // only one image in post
+			
+			// strip html except img
+			$stripped_content = trim(str_replace('&nbsp;','',strip_tags($this->wp_post->post_content,'<img>')));
+			
+			// find image urls
+			$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $stripped_content, $matches, PREG_SET_ORDER);
+			
+			// do we have at least one image in post?
+			if(count($matches) > 0 && 2==count($matches[0])) { 
+				
+				// first image
 				$image_url = $matches[0][1];
+				$image_tag = $matches[0][0];
 				
 				ngcp_debug("image tag found in post: $image_url");
 				
 				// wordpress resizes images and gives them names like image-150x150.jpg
 				$image_ori_url = preg_replace('/\-[0-9]+x[0-9]+/', '', $image_url);
-				
 				ngcp_debug("original image: $image_ori_url");
 				
-				// find the image in the gallery
-				// hint: there can be images in the gallery which are not in in the post content
-				//       also the post can contain images which are not
-				$args = array(
-					'post_type' => 'attachment',
-					'post_mime_type' => 'image',
-					'numberposts' => null,
-					'post_status' => null,
-					'post_parent' => $this->wp_id
-				);
-				$attachments = get_posts($args);
-				if (0 < count($attachments)) {
-					foreach($attachments as $attachment) {
-					    $att_url = wp_get_attachment_url($attachment->ID);
-						if (($att_url == $image_url) || ($att_url == $image_ori_url)) {
-							ngcp_debug('image found in post gallery');
-							$image = get_attached_file($attachment->ID);
-						}
-					}
-				}
+				$image = $this->get_image_path_from_url($image_ori_url);
 				
-				if(!$image) {
-					ngcp_debug('image not found in gallery, ignoring');
+				if($image) {
+					// does the post start with the image? then remove image
+					if(0==strpos($stripped_content, $image_tag)) {
+						ngcp_debug('post starts with image, removing image from content');
+						$this->content = str_replace($image_tag, '', $this->content);
+					}					
+				} else {
+					ngcp_debug('image not found mediathek, ignoring');
 				}
 			}
 		}
@@ -191,6 +197,31 @@ class NGCP_Post {
 		}
         
 		return $image;
+	}
+	
+	function get_image_path_from_url($image_ori_url) {
+		// find the image in the mediathek
+		// hint: there can be images in the gallery which are not in in the post content
+		//       also the post can contain images which are not
+	
+		$args = array(
+			'post_type' => 'attachment',
+			'post_mime_type' => 'image',
+			'numberposts' => null,
+			'post_status' => null,
+		);
+		$attachments = get_posts($args);
+		if (0 < count($attachments)) {
+			foreach($attachments as $attachment) {
+				$att_url = wp_get_attachment_url($attachment->ID);
+				if (($att_url == $image_url) || ($att_url == $image_ori_url)) {
+					ngcp_debug('image found in mediathek');
+					return get_attached_file($attachment->ID);
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	function should_be_synced() {
