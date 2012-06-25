@@ -70,7 +70,7 @@ class NGCP_Post {
 		 * 2) manual excerpt (-> normal content)
 		 * 3) teaser (-> content without teaser)
 		 */
-		if('' == $this->description.trim()) {
+		if('' == trim($this->description)) {
 			$content = $this->content;
 			
 			if ( '' != $wp_post->post_excerpt) {
