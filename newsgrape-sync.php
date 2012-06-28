@@ -34,6 +34,8 @@ define('NGCP_DEV', false);
 
 define('NGCP_MAXLENGTH_DESCRIPTION', 300);
 define('NGCP_MAXLENGTH_TITLE', 100);
+define('NGCP_MAXWIDTH_IMAGE', 432);
+define('NGCP_MAXHEIGHT_IMAGE', 800);
 
 
 $ngcp_dir = dirname(__FILE__);

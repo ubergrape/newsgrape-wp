@@ -136,7 +136,12 @@ class NGCP_Post {
 		
 		// Check for post image
 		if($image = $this->find_a_post_image()){
-			$data['image'] = base64_encode_image($image); //TODO thumbnail size?
+			$resized_image = image_resize($image, NGCP_MAXWIDTH_IMAGE, NGCP_MAXHEIGHT_IMAGE, false, 'newsgrape');
+			if (is_wp_error($resized_image)) {
+				$resized_image = $image;
+				// TODO: inform user about missing GD library etc.
+			}
+			$data['image'] = base64_encode_image($resized_image);
 			$data['text'] = $this->content; // find_a_post_image can modify content
 		}
 		
