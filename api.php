@@ -3,11 +3,11 @@
 class NGCP_API {
 	private $errors = array();
 	
-	function __construct($username=null, $api_key=null, $api_url='http://www.newsgrape.com/api/0.1/') {
+	function __construct($username=null, $api_key=null, $api_url='https://www.newsgrape.com/api/0.1/') {
 		$this->api_url = $api_url;
 		
 		if (NGCP_DEV) {
-			 $this->api_url = 'http://staging.newsgrape.com/api/0.1/';
+			 $this->api_url = 'https://staging.newsgrape.com/api/0.1/';
 		} 
 		
 		/* Client info for newsgrape's statistics */
@@ -53,6 +53,7 @@ class NGCP_API {
 			} elseif ($this->is_bad_request($response)) {
 				$this->error($function_name,__('The server rejected your request<br/>Possible reasons:<ul><li>The article hast been deleted on newsgrape but not on Wordpress</li><li>- Your Newsgrape Plugin is out of date - update it!</li><li>- The Newsgrape server has problems</li></ul>'));
 			} else {
+				// TODO: Catch SSL Certificate Error.
 				$this->error($function_name,__('The Newsgrape server sent an unexpected answer.<br/>This looks like your hoster is using a proxy server which blocks requests to newsgrape.com. Please contact your hoster.<br/><br/><a href="#" onclick="jQuery(\'#setting-error-ngcp pre\').show()">Show first 2000 characters of response</a>', 'ngcp').'<pre style="display:none">'.esc_html(substr($response['body'],0,2000)).'</pre>');
 			}
 			return False;
