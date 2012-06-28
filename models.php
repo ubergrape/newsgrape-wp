@@ -85,6 +85,10 @@ class NGCP_Post {
 		} else {
 			ngcp_debug('post has newsgrape description');
 		}
+		
+		// Trim Title and description
+		$this->description = substr($this->description, 0, NGCP_MAXLENGTH_DESCRIPTION);
+		$this->title = substr($this->title, 0, NGCP_MAXLENGTH_TITLE);
 	}
 	
 	function import_tags($wp_post_id) {

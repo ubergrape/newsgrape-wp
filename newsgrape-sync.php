@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Newsgrape Sync
-Version: 1.2.1
+Version: 1.2.2
 Description: The Plugin automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
 Author: Newsgrape.com, Stefan Kröner
 Author URI: http://www.newsgrape.com/
 */
 
 /* Again, the version. used in api requests in the user agent string */
-define('NGCP_VERSION','1.2.1');
+define('NGCP_VERSION','1.2.2');
 
 /* NGCP_DEBUG true enables:
  * - Various Debug messages in logfile
@@ -29,6 +29,12 @@ define('NGCP_DEV', false);
 
 /* Set this to the plugin dir name if you have symlink problems */
 //define('NGCP_PLUGIN_DIR','newsgrape-sync');
+
+
+
+define('NGCP_MAXLENGTH_DESCRIPTION', 300);
+define('NGCP_MAXLENGTH_TITLE', 100);
+
 
 $ngcp_dir = dirname(__FILE__);
 

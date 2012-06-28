@@ -20,7 +20,7 @@ function ngcp_inner_meta_box_description($post) {
 ?>
 	<div id="newsgrape_description_inner">
 	<label class="hide-if-no-js" style="<?php if ($ngcp_description!='') echo 'visibility:hidden'; ?>" id="ngcp_description-prompt-text" for="ngcp_description"><?php _e('Enter Newsgrape article intro here','ngcp'); ?></label>
-	<input type="text" name="ngcp_description" size="30" tabindex="2" value="<?php echo $ngcp_description; ?>" id="ngcp_description" autocomplete="off">
+	<input type="text" name="ngcp_description" size="30" maxlength="<?php echo NGCP_MAXLENGTH_DESCRIPTION ?>" tabindex="2" value="<?php echo $ngcp_description; ?>" id="ngcp_description" autocomplete="off">
 	</div>
 
 <?php
