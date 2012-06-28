@@ -235,10 +235,13 @@ function ngcp_debug($message) {
 	if(NGCP_DEBUG) {
 		if(NGCP_DEBUG_FILE) {
 			$path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'debug.log';
-			$fp = fopen($path ,"a");
-			if(false==$fp) die("Debug file $path not writable!");
-			fwrite($fp, $message."\n");
-			fclose($fp);
+			if (is_writable($path)) {
+				$fp = fopen($path ,"a");
+				fwrite($fp, $message."\n");
+				fclose($fp);
+			} else {
+				error_log("Debug logfile not writable!");
+			}
 		} else {
 			error_log($message);
 		}
