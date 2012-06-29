@@ -266,12 +266,19 @@ class NGCP_API {
 	}
 	
 	function get_comment_count() {
-		// THIS IS A DUMMY. not implemented on ng api yet
-		//$response = $this->get_get('comment_count/');
-		return array(12 => 1,// id => comment_count
-					 13 => 892,
-					 16 => 132,
-					 18 => 0);
+		$url = 'thread/';
+		if($last_access = get_option('ngcp_lastcommentsync')) {
+			$url .= '?last_access='.$last_access;
+		}
+		$response = $this->_get($url);
+		$output = array();
+		if ($response) {
+			foreach ($response['objects'] as $post) {
+				$output[$post['external_post_id']] = $post['comment_count'];
+			}
+			update_option('ngcp_lastcommentsync', current_time('timestamp',1), '', 'yes');
+		}
+		return $output;
 	}
 	
 	function _get($url='languages/') {

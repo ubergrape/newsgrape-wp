@@ -32,6 +32,7 @@ define('NGCP_DEV', false);
 
 
 
+/* General Settings. No need to edit this */
 define('NGCP_MAXLENGTH_DESCRIPTION', 300);
 define('NGCP_MAXLENGTH_TITLE', 100);
 define('NGCP_MAXWIDTH_IMAGE', 432);
@@ -48,13 +49,19 @@ $ngcp_dir = dirname(__FILE__);
 @require_once "$ngcp_dir/ngcp-options-fast-edit.php";
 @require_once "$ngcp_dir/ngcp-help.php";
 
-/* Set default options */
-function ngcp_set_defaults() {
+/* Activation, set default options */
+function ngcp_activation() {
 	$options = ngcp_get_options();
 	add_option( 'ngcp', $options, '', 'no' );
 	wp_schedule_event( current_time( 'timestamp' ), 'hourly', 'sync_newsgrape_comment_count');
 }
-register_activation_hook(__FILE__, 'ngcp_set_defaults');
+register_activation_hook(__FILE__, 'ngcp_activation');
+
+/* Deactivation */
+function ngcp_deactivation() {
+	wp_clear_scheduled_hook('sync_newsgrape_comment_count');
+}
+register_deactivation_hook(__FILE__, 'ngcp_deactivation');
 
 /* Register settings */
 function register_ngcp_settings() {
@@ -320,6 +327,7 @@ function ngcp_is_current_user_connected() {
 /* Schedule event to update comment count for all articles
  */
 function ngcp_sync_comment_count() {
+	ngcp_debug("syncing comment count!");
 	$api = new NGCP_API();
 	$comment_count = $api->get_comment_count();
 	
@@ -380,6 +388,11 @@ if(NGCP_DEBUG) {
 if(!get_option('ngcp_blog_id')) {
 	ngcp_debug("generate blog id");
 	update_option('ngcp_blog_id',ngcp_random(24));
+}
+
+// if no comment count has been synced yet maybe the schedular doesn't know about it?
+if(!get_option('ngcp_lastcommentsync')) {
+	wp_schedule_event( current_time( 'timestamp' ), 'hourly', 'sync_newsgrape_comment_count');
 }
 
 // Make Plugin Multilingual
