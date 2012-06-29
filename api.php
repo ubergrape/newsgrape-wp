@@ -42,11 +42,15 @@ class NGCP_API {
 			return $response_decoded;
 		}
 		
+		if (410 == $response['response']['code']) {
+			return $response_decoded;
+		}
+		
 		if (413 == $response['response']['code']) {
 				$this->error($function_name,__('The Article Image is too big for Newsgrape. Please use a smaller Image. If you have not set an article image in Wordpress, Newsgrape Sync uses the first image in your article.'));
 				return False;
 		}
-		
+			
 		if ($response_decoded == null) {
 			if($this->is_unauthorized($response)) {
 				$this->error($function_name,__('You are not authorized.<br/>Possible reasons:<ul><li>- Your API key has been invalidated. Reconnect with Newsgrape</li><li>- This article has been synced initially with another Newsgrape account</li></ul>'));
@@ -211,7 +215,7 @@ class NGCP_API {
 			return False;
 		}
 		
-		if (404 == $response['response']['code']) {
+		if (404 == $response['response']['code'] || 410 == $response['response']['code']) {
 			$this->error(__FUNCTION__,'Article not found on Newsgrape, this means it has been deleted before.');
 		} elseif (204 != $response['response']['code']) {
 			$this->error(__FUNCTION__,'Article could not be deleted.');
