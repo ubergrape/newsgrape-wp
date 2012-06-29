@@ -230,7 +230,7 @@ class NGCP_API {
 	}
 	
 	function get_languages() {
-		$response = $this->get_get('languages/?format=json');
+		$response = $this->_get('languages/?format=json');
 		$output = array();
 		if ($response) {
 			foreach ($response['objects'] as $lang) {
@@ -242,7 +242,7 @@ class NGCP_API {
 	}
 	
 	function get_licenses() {
-		$response = $this->get_get('licenses/?format=json');
+		$response = $this->_get('licenses/?format=json');
 		$output = array();
 		if($response) {
 			foreach ($response['objects'] as $license) {
@@ -254,7 +254,7 @@ class NGCP_API {
 	}
 	
 	function get_creative_categories() {
-		$response = $this->get_get('creative_categories/?format=json');
+		$response = $this->_get('creative_categories/?format=json');
 		$output = array();
 		if ($response) {
 			foreach ($response['objects'] as $cat) {
@@ -274,7 +274,7 @@ class NGCP_API {
 					 18 => 0);
 	}
 	
-	function get_get($url='languages/') {
+	function _get($url='languages/') {
 		$this->report(__FUNCTION__,"Get $url");
 		
 		$url = $this->api_url.$url;
