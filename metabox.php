@@ -8,10 +8,10 @@ function ngcp_add_meta_box() {
 	}
 	
     $label = __( 'newsgrape<em>|sync</em>', 'ngcp' );
-    add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', null, 'side', 'high');
+    add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', 'post', 'side', 'high');
     
     $label = __( 'Newsgrape Article Intro', 'ngcp' );
-    add_meta_box('newsgrape_description', $label, 'ngcp_inner_meta_box_description', null, 'normal', 'high');
+    add_meta_box('newsgrape_description', $label, 'ngcp_inner_meta_box_description', 'post', 'normal', 'high');
 }
 
 function ngcp_inner_meta_box_description($post) {
