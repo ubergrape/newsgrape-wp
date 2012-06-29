@@ -328,6 +328,16 @@ function ngcp_sync_comment_count() {
 	}
 }
 
+/* Change comment count
+ */
+function ngcp_get_comments_number($count) {
+	global $post;
+	
+	if (ngcp_can_replace_comments()) {
+		return (float) get_post_meta($post->ID, 'ngcp_comment_count', True);
+	}
+	return $count;
+}
 
 $class = 'NGCP_Core_Controller';
 
@@ -353,6 +363,7 @@ add_filter('comments_template', 'ngcp_comments');
 remove_action('wp_head', 'rel_canonical');
 add_action('wp_head', 'ngcp_rel_canonical');
 add_filter('the_content', 'ngcp_add_description_to_content', 30);
+add_filter('get_comments_number', 'ngcp_get_comments_number');
 add_action('sync_newsgrape_comment_count', 'ngcp_sync_comment_count');
 
 function my_activation() {
