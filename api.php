@@ -3,11 +3,11 @@
 class NGCP_API {
 	private $errors = array();
 	
-	function __construct($username=null, $api_key=null, $api_url='https://www.newsgrape.com/api/0.1/') {
+	function __construct($username=null, $api_key=null, $api_url='http://www.newsgrape.com/api/0.1/') {
 		$this->api_url = $api_url;
 		
 		if (NGCP_DEV) {
-			 $this->api_url = 'https://staging.newsgrape.com/api/0.1/';
+			 $this->api_url = 'http://staging.newsgrape.com/api/0.1/';
 		} 
 		
 		/* Client info for newsgrape's statistics */
