@@ -17,7 +17,7 @@ define('NGCP_VERSION','1.2.3');
  * - Display multiuser API keys on options page
  * - Raw dump of article meta in metabox
  */
-define('NGCP_DEBUG', false);
+define('NGCP_DEBUG', true);
 
 /* NGCP_DEBUG_FILE enables logging to "debug.log" in plugin folder
  * if this is set to false, debug messages go to the webservers error log
@@ -388,11 +388,6 @@ if(NGCP_DEBUG) {
 if(!get_option('ngcp_blog_id')) {
 	ngcp_debug("generate blog id");
 	update_option('ngcp_blog_id',ngcp_random(24));
-}
-
-// if no comment count has been synced yet maybe the schedular doesn't know about it?
-if(!get_option('ngcp_lastcommentsync')) {
-	wp_schedule_event( current_time( 'timestamp' ), 'hourly', 'sync_newsgrape_comment_count');
 }
 
 // Make Plugin Multilingual
