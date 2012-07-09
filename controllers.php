@@ -116,7 +116,12 @@ class NGCP_Core_Controller {
 		        update_post_meta($post_ID, $meta_key, $_POST[$meta_key]);
 		    }
 		}
-		
+
+        $is_test = 0;
+        if(isset($_POST['ngcp_is_test']) && intval($_POST['ngcp_is_test']) == 1) {
+            $is_test = 1;
+        }
+		update_post_meta($post_ID, 'ngcp_is_test', $is_test);
 		// Save selected language to options
 		if(isset($_POST['ngcp_language']) && $language = $_POST['ngcp_language']) {
 			$options = ngcp_get_options();

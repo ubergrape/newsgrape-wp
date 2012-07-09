@@ -59,6 +59,7 @@ class NGCP_Post {
 		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true);
 		//$this->tags			= $this->import_tags($wp_post_id);
 		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
+		$this->is_test	    = (get_post_meta($wp_post_id, 'ngcp_is_test', false));
 		$this->is_promotional = get_post_meta($wp_post_id, 'ngcp_promotional', true) || false;
 		
 		if('' == $this->language || 0 == $this->language) {
@@ -133,7 +134,12 @@ class NGCP_Post {
 			'is_creative'		=> $this->is_creative,
 			'is_promotional'	=> $this->is_promotional,
 		);
-		
+
+        // set pub_status to 5 (TEST) if article is a published test article
+        if($this->is_test && $data['pub_status'] == 3){
+          $data['pub_status'] = 5;
+        }
+
 		// Check for post image
 		if($image = $this->find_a_post_image()){
 			$resized_image = image_resize($image, NGCP_MAXWIDTH_IMAGE, NGCP_MAXHEIGHT_IMAGE, false, 'newsgrape');

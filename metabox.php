@@ -42,12 +42,13 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_promotional = (array_key_exists("ngcp_promotional",$post_meta)) ? $post_meta['ngcp_promotional'][0] : false;
 	$ngcp_language = (array_key_exists("ngcp_language",$post_meta)) ? $post_meta['ngcp_language'][0] : $options['language'];
 	$ngcp_license = (array_key_exists("ngcp_license",$post_meta)) ? $post_meta['ngcp_license'][0] : $options['license'];
-	$ngcp_comments = (array_key_exists("ngcp_comments",$post_meta)) ? $post_meta['ngcp_comments'][0] : $options['comments'];
 	$ngcp_id = (array_key_exists("ngcp_id",$post_meta)) ? $post_meta['ngcp_id'][0] : false;
+	$ngcp_comments = (array_key_exists("ngcp_comments",$post_meta)) ? $post_meta['ngcp_comments'][0] : $options['comments'];
 	$ngcp_category = (array_key_exists("ngcp_category",$post_meta)) ? $post_meta['ngcp_category'][0] : false;
 	$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
 	$is_synced = isset($post_meta['ngcp_id']) && $post_meta['ngcp_id'][0] != 0 && (!isset($post_meta['ngcp_deleted']) || False == $post_meta['ngcp_deleted']);
 	$has_been_deleted = array_key_exists("ngcp_deleted",$post_meta) && True == $post_meta['ngcp_deleted'][0];
+	$ngcp_is_test = (array_key_exists("ngcp_is_test",$post_meta)) ? $post_meta['ngcp_is_test'][0] : false;
 	
 	if (!array_key_exists("ngcp_sync",$post_meta)) {
 		if('published' != get_post_status($post->ID) && 'auto-draft' != get_post_status($post->ID) && !$ngcp_id) {
@@ -88,8 +89,12 @@ function ngcp_inner_meta_box($post) {
 		<div class="ngcp-setting">
             <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync!=0); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?></label>
             <input type="hidden" name="ngcp_sync_hidden" id="ngcp_sync_hidden" value="<?php echo $ngcp_sync; ?>" />
+            <?php if(NGCP_DEBUG): ?>
+              <br />
+              <label><input type="checkbox" name="ngcp_is_test" value="1" id="ngcp_is_test" <?php checked($ngcp_is_test==1); ?>/><?php _e('Mark as test article', 'ngcp'); ?></label>
+            <?php endif; ?>
 		</div>
-    </div>
+   </div>
  
 	<div class="misc-pub-section"><label for="ngcp-language"><?php _e('Language:', 'ngcp'); ?></label>
 		<span id="ngcp-language-display" style="font-weight: bold;"><?php echo $languages[$ngcp_language] ?></span>
@@ -116,6 +121,7 @@ function ngcp_inner_meta_box($post) {
 			<option value='opinion' <?php selected($ngcp_type, 'opinion'); ?>><?php _e('News-Related', 'ngcp'); ?></option>
 			<option value='creative' <?php selected($ngcp_type, 'creative'); ?>><?php _e('Fiction', 'ngcp'); ?></option>
 		</select>
+
 
 		<p class="description">
 			<a id="ngcp-help" href="#" class="hide-if-no-js"><?php _e('What is "News-Related", what is "Fiction"?', 'ngcp'); ?></a>
