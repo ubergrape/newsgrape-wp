@@ -13,6 +13,8 @@ Newsgrape Sync automatically syncs WordPress articles to your Newsgrape account.
 
 This plugin also integrates the Newsgrape comment system inside your WordPress posts.
 
+The plugin is developed on [Github] (https://github.com/newsgrape/newsgrape-wp/).
+
 = Features =
 
 Article Editing:
