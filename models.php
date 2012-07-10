@@ -59,7 +59,7 @@ class NGCP_Post {
 		$this->language		= get_post_meta($wp_post_id, 'ngcp_language', true);
 		//$this->tags			= $this->import_tags($wp_post_id);
 		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
-		$this->is_test	    = (get_post_meta($wp_post_id, 'ngcp_is_test', false));
+		$this->is_test	    = (get_post_meta($wp_post_id, 'ngcp_is_test', true));
 		$this->is_promotional = get_post_meta($wp_post_id, 'ngcp_promotional', true) || false;
 		
 		if('' == $this->language || 0 == $this->language) {
@@ -136,7 +136,7 @@ class NGCP_Post {
 		);
 
         // set pub_status to 5 (TEST) if article is a published test article
-        if($this->is_test && $data['pub_status'] == 3){
+        if(intval($this->is_test) == 1 && $data['pub_status'] == 3){
           $data['pub_status'] = 5;
         }
 
