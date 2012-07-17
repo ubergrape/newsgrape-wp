@@ -50,3 +50,12 @@ Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plug
 1. Activate the plugin through the "Plugins" menu in WordPress Admin
 1. Click "Newsgrape" in the WordPress Admin menu and configure your settings.
 
+
+== Changelog ==
+
+= 1.2.4 =
+* use Newsgrape description as excerpt if provided
+
+
+= 1.2.3 =
+* sync comment counts from Newsgrape.com

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Newsgrape Sync
-Version: 1.2.3
+Version: 1.2.4
 Description: The Plugin automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
 Author: Newsgrape.com, Stefan Kröner
 Author URI: http://www.newsgrape.com/
@@ -345,6 +345,19 @@ function ngcp_get_comments_number($count) {
 		return (float) get_post_meta($post->ID, 'ngcp_comment_count', True);
 	}
 	return $count;
+} 
+
+function ngcp_get_the_excerpt($excerpt){
+	global $id, $post;
+	
+	$description = get_post_meta($id, 'ngcp_description', true);
+    ngcp_debug('descritipon '.$description);
+	if('' != $description) {
+        $excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
+		return $description.$excerpt_more;
+	}
+	return $excerpt;
+
 }
 
 $class = 'NGCP_Core_Controller';
@@ -373,6 +386,7 @@ add_action('wp_head', 'ngcp_rel_canonical');
 add_filter('the_content', 'ngcp_add_description_to_content', 30);
 add_filter('get_comments_number', 'ngcp_get_comments_number');
 add_action('sync_newsgrape_comment_count', 'ngcp_sync_comment_count');
+add_filter('get_the_excerpt', 'ngcp_get_the_excerpt');
 
 // Inform user that he needs to enter his newsgrape credentials
 add_action('admin_notices', 'ngcp_print_login_notice');
