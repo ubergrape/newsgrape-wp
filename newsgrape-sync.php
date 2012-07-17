@@ -17,7 +17,7 @@ define('NGCP_VERSION','1.2.3');
  * - Display multiuser API keys on options page
  * - Raw dump of article meta in metabox
  */
-define('NGCP_DEBUG', true);
+define('NGCP_DEBUG', false);
 
 /* NGCP_DEBUG_FILE enables logging to "debug.log" in plugin folder
  * if this is set to false, debug messages go to the webservers error log
