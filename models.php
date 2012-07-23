@@ -308,7 +308,8 @@ class NGCP_Post {
 	    return ("" == $this->id || null == $this->id || 0 == $this->id);
 	}
 
-    function smartTruncate($string, $limit, $break=" ", $pad="...") { 
+     function smartTruncate($string, $limit, $break=" ", $pad="...") { 
+      // Original PHP code by Chirp Internet: www.chirp.com.au
       // return with no change if string is shorter than $limit 
       if(strlen($string) <= $limit) return $string; 
       $string = substr($string, 0, $limit); 
