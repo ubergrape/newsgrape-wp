@@ -88,7 +88,6 @@ class NGCP_Post {
 		}
 		
 		// Trim Title and description
-		$this->description = substr($this->description, 0, NGCP_MAXLENGTH_DESCRIPTION);
 		$this->title = substr($this->title, 0, NGCP_MAXLENGTH_TITLE);
 	}
 	
@@ -120,14 +119,25 @@ class NGCP_Post {
 	function urlencoded() {
 		// example:
 		// title=this+is+a+title&pub_status=3&description=this+is+a+description&language=en&text=this+is+the+body+text
-		
+		$description = $this->description;
+        $overflow = '';
+        $desc_len = strlen($description);
+        if($desc_len > NGCP_MAXLENGTH_DESCRIPTION){
+            // truncate description at sentence break and add the stripped string 
+            // to the article text
+		    $description = $this->smartTruncate($description, NGCP_MAXLENGTH_DESCRIPTION, '.', '');
+            $overflow = str_replace($description, '', $this->description);
+            $overflow = $overflow.'<br />';
+        }
+
+
 		$data = array (
 			'title'				=> $this->title,
 			'pub_status'		=> 3, // 0=Unpublished, 3=Published
 			'pub_date'			=> $this->pub_date,
-			'description'		=> $this->description,
+			'description'		=> $description,
 			'language'			=> $this->language,
-			'text'				=> $this->content,
+			'text'				=> $overflow.$this->content,
 			//'tags'				=> json_encode($this->tags),
 			'external_post_id'	=> $this->wp_id, // has to be unique in combination with the X-EXTERNAL-ID header
 			'external_post_url'	=> get_permalink($this->wp_id),
@@ -297,6 +307,17 @@ class NGCP_Post {
 	function was_never_synced() {
 	    return ("" == $this->id || null == $this->id || 0 == $this->id);
 	}
+
+    function smartTruncate($string, $limit, $break=" ", $pad="...") { 
+      // return with no change if string is shorter than $limit 
+      if(strlen($string) <= $limit) return $string; 
+      $string = substr($string, 0, $limit); 
+      if(false !== ($breakpoint = strrpos($string, $break))){
+        $string = substr($string, 0, $breakpoint); 
+        $string = $string.'.';
+      }
+      return $string . $pad;
+    }
 }
 
 ?>
