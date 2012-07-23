@@ -27,6 +27,13 @@ function ngcp_validate_fe_options($input) {
 			$updated_articles[] = $post_id;
 		}
 	}
+	foreach ($input['promotional_hidden'] as $post_id => $old_value) {
+		if ($input['promotional'][$post_id] != $old_value) {
+			update_post_meta($post_id, 'ngcp_promotional', $input['promotional'][$post_id]);
+			ngcp_debug(sprintf('promotional %d changed from "%s" to "%s"', $post_id, $input['promotional_hidden'][$post_id], $input['promotional'][$post_id]));
+			$updated_articles[] = $post_id;
+		}
+    }
 	
 	$updated_articles = array_unique($updated_articles);
 	
@@ -150,6 +157,12 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 							<option value="opinion"><?php _e('News-Related','ngcp'); ?></option>
 							<option value="creative"><?php _e('Fiction','ngcp'); ?></option>		
 						</select>
+						<th class="promotional">
+						<label>
+							<input name="ngcp-promotional-all" id="ngcp-promotional-all" type="checkbox" value="1" />
+							<?php _e('Mark all as promotional', 'ngcp'); ?>
+						</label>
+					</th>
 					</th>
 				</tr>
 			</thead>
@@ -162,12 +175,14 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 					$post_meta = get_post_custom($post->ID);
 					$has_type = array_key_exists('ngcp_type', $post_meta) && !empty($post_meta['ngcp_type']);
 					$is_synced = array_key_exists('ngcp_id', $post_meta) && $post_meta['ngcp_id'][0] != 0 && (!array_key_exists('ngcp_deleted', $post_meta) || False == $post_meta['ngcp_deleted']);
+					$is_promotional = False == $post_meta['ngcp_promotional'];
 				?>
 				
 				<tr class="<?php if($is_synced) echo 'ngcp-synced'; ?> <?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
 					<input type="hidden" name="ngcp_fe[is_synced_hidden][<?php the_id(); ?>]" value="<?php echo $is_synced; ?>">
 					<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[type_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_type'][0]; ?>">
+					<input type="hidden" name="ngcp_fe[promotional_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_promotional'][0]; ?>">
 					
 					<td>
 						<a href="<?php the_permalink(); ?>" class="ngcp-the-title"><?php the_title(); ?></a>
@@ -193,6 +208,21 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 							<option value="creative" <?php selected($post_meta['ngcp_type'][0], 'creative'); ?>><?php _e('Fiction','ngcp'); ?></option>		
 						</select>
 					</td>
+					<td>
+						<label>
+							<input class="ngcp-promotional" name="ngcp_fe[promotional][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_promotional'][0]!=0 && $post_meta['ngcp_promotional'][0]!=''); ?> />
+							<?php _e('Mark as promotional article', 'ngcp'); ?>
+						</label>
+						<br />
+						<span class="ngcp-promotional-state <?php if($is_promotional) echo 'ngcp-promotional'; ?>">
+							<?php if($is_promotional) {
+								_e('promotional', 'ngcp');
+							} else {
+								_e('', 'ngcp');
+							} ?>
+						</span>
+					</td>
+	
 				</tr>
 				<?php endwhile; ?>
 			</tbody>
@@ -222,6 +252,14 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 						$('.ngcp-select-type').val(this.value);
 					}
 				});
+				$('#ngcp-promotional-all').change(function () {
+					if (this.checked) {
+						$('.ngcp-promotional').prop("checked", true);
+					} else {
+						$('.ngcp-promotional').prop("checked", false);
+					}
+				});
+	
 			});
 		});
 	</script>
