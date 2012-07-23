@@ -19,6 +19,9 @@ class NGCP_API {
 		
 		/* Blog Name */
 		$this->external_name = get_bloginfo('name');
+        if($this->external_name == ''){
+          $this->external_name = 'Wordpress';
+        }
 		
 		if (null==$username) {
 			$options = ngcp_get_options();
