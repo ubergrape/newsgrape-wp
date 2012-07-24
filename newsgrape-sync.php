@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Newsgrape Sync
-Version: 1.2.4
+Version: 1.3
 Description: The Plugin automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
 Author: Newsgrape.com, Stefan Kröner
 Author URI: http://www.newsgrape.com/

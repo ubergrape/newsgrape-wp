@@ -53,6 +53,10 @@ Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plug
 
 == Changelog ==
 
+= 1.3 =
+* better handling of the <!--more--> tag
+* added mark as promotional to fast edit articles
+
 = 1.2.4 =
 * use Newsgrape description as excerpt if provided
 
