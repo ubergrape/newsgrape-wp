@@ -156,13 +156,6 @@ function ngcp_inner_meta_box($post) {
 			
             <label><input type="checkbox" name="ngcp_adult_only" id="ngcp_adult_only" <?php checked($ngcp_adult_only, '1'); ?>>  <?php _e('This is adult only content', 'ngcp'); ?></label>
             <input type="hidden" name="ngcp_adult_only_hidden" id="ngcp_adult_only_hidden" value="<?php echo   $ngcp_adult_only; ?>">
-            <p class="description">
-            	<a href="#TB_inline?height=100&width=150&inlineId=ngcp-adult_only-info&modal=true" class="thickbox">What is adult content?</a>
-            </p>
-            <div id="ngcp-adult_only-info" class="hide-if-js">
-				<p><?php _e('Adult content is content for adults','ngcp'); ?></p>
-				<p style="text-align:center"><a href="#"onclick="tb_remove()" />close</a></p>
-			</div>
 
 			<div> 
 				<label for="ngcp-license-display"><?php _e('License:', 'ngcp'); ?></label>
