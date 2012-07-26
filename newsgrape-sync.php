@@ -16,6 +16,7 @@ define('NGCP_VERSION','1.4');
  * - Buttons to delete options and blog id on options page
  * - Display multiuser API keys on options page
  * - Raw dump of article meta in metabox
+ * - mark articles as test articles
  */
 define('NGCP_DEBUG', false);
 
