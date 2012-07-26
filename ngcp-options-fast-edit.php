@@ -7,46 +7,27 @@ function ngcp_validate_fe_options($input) {
 	$api = new NGCP_API();
 	
 	$options = ngcp_get_options();
-	
-	
-	
+
 	$updated_articles = array();
 	
+	// sometimes these input fields are not set. until why find out why do this check:
 	if(!isset($input['sync_hidden']) || !isset($input['type_hidden']) || !isset($input['is_synced_hidden']) || !isset($input['promotional_hidden']) || !isset($input['adult_only_hidden'])) {
 	    add_settings_error( 'ngcp_fe', 'ngcp_fe', __('Newsgrape Fast editing failed'), 'error' );
 	    unset($input);
 	    return $input;
 	}
 	
-	foreach ($input['sync_hidden'] as $post_id => $old_value) {
-		if ($input['sync'][$post_id] != $old_value) {
-			update_post_meta($post_id, 'ngcp_sync', $input['sync'][$post_id]);
-			ngcp_debug(sprintf('sync %d changed from "%s" to "%s"', $post_id, $input['sync_hidden'][$post_id], $input['sync'][$post_id]));
-			$updated_articles[] = $post_id;
-		}
-	}
+	$fields = array( 'sync', 'type', 'promotional', 'adult_only');
 	
-	foreach ($input['type_hidden'] as $post_id => $old_value) {
-		if ($input['type'][$post_id] != $old_value) {
-			update_post_meta($post_id, 'ngcp_type', $input['type'][$post_id]);
-			ngcp_debug(sprintf('type %d changed from "%s" to "%s"', $post_id, $input['type_hidden'][$post_id], $input['type'][$post_id]));
-			$updated_articles[] = $post_id;
+	foreach ($fields as $field) {
+		foreach ($input[$field.'_hidden'] as $post_id => $old_value) {
+			if ($input[$field][$post_id] != $old_value) {
+				update_post_meta($post_id, 'ngcp_'.$field, $input[$field][$post_id]);
+				ngcp_debug(sprintf('%s (id %d) changed from "%s" to "%s"', $field, $post_id, $input[$field.'_hidden'][$post_id], $input[$field][$post_id]));
+				$updated_articles[] = $post_id;
+			}
 		}
 	}
-	foreach ($input['promotional_hidden'] as $post_id => $old_value) {
-		if ($input['promotional'][$post_id] != $old_value) {
-			update_post_meta($post_id, 'ngcp_promotional', $input['promotional'][$post_id]);
-			ngcp_debug(sprintf('promotional %d changed from "%s" to "%s"', $post_id, $input['promotional_hidden'][$post_id], $input['promotional'][$post_id]));
-			$updated_articles[] = $post_id;
-		}
-    }
-	foreach ($input['adult_only_hidden'] as $post_id => $old_value) {
-		if ($input['adult_only'][$post_id] != $old_value) {
-			update_post_meta($post_id, 'ngcp_adult_only', $input['adult_only'][$post_id]);
-			ngcp_debug(sprintf('adult_only %d changed from "%s" to "%s"', $post_id, $input['adult_only_hidden'][$post_id], $input['adult_only'][$post_id]));
-			$updated_articles[] = $post_id;
-		}
-    }
 	
 	$updated_articles = array_unique($updated_articles);
 	
