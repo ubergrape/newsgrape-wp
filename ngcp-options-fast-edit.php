@@ -12,6 +12,12 @@ function ngcp_validate_fe_options($input) {
 	
 	$updated_articles = array();
 	
+	if(!isset($input['sync_hidden']) || !isset($input['type_hidden']) || !isset($input['is_synced_hidden']) || !isset($input['promotional_hidden']) || !isset($input['adult_only_hidden'])) {
+	    add_settings_error( 'ngcp_fe', 'ngcp_fe', __('Newsgrape Fast editing failed'), 'error' );
+	    unset($input);
+	    return $input;
+	}
+	
 	foreach ($input['sync_hidden'] as $post_id => $old_value) {
 		if ($input['sync'][$post_id] != $old_value) {
 			update_post_meta($post_id, 'ngcp_sync', $input['sync'][$post_id]);
