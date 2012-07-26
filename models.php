@@ -24,6 +24,7 @@ class NGCP_Post {
 	public $tags = array();
 	public $is_creative = False;
 	public $is_promotional = False;
+	public $adult_only = False;
 	public $options = array();
 	
 	function __construct($wp_post_id = NULL) {
@@ -61,6 +62,7 @@ class NGCP_Post {
 		$this->is_creative	= ('creative' == get_post_meta($wp_post_id, 'ngcp_type', true));
 		$this->is_test	    = (get_post_meta($wp_post_id, 'ngcp_is_test', true));
 		$this->is_promotional = get_post_meta($wp_post_id, 'ngcp_promotional', true) || false;
+		$this->adult_only = get_post_meta($wp_post_id, 'ngcp_adult_only', true) || false;
 		
 		if('' == $this->language || 0 == $this->language) {
 			$this->language = $this->options['language'];
@@ -143,6 +145,7 @@ class NGCP_Post {
 			'external_post_url'	=> get_permalink($this->wp_id),
 			'is_creative'		=> $this->is_creative,
 			'is_promotional'	=> $this->is_promotional,
+			'adult_only'	=> $this->adult_only,
 		);
 
         // set pub_status to 5 (TEST) if article is a published test article

@@ -49,6 +49,7 @@ function ngcp_inner_meta_box($post) {
 	$is_synced = isset($post_meta['ngcp_id']) && $post_meta['ngcp_id'][0] != 0 && (!isset($post_meta['ngcp_deleted']) || False == $post_meta['ngcp_deleted']);
 	$has_been_deleted = array_key_exists("ngcp_deleted",$post_meta) && True == $post_meta['ngcp_deleted'][0];
 	$ngcp_is_test = (array_key_exists("ngcp_is_test",$post_meta)) ? $post_meta['ngcp_is_test'][0] : false;
+	$ngcp_adult_only = (array_key_exists("ngcp_adult_only",$post_meta)) ? $post_meta['ngcp_adult_only'][0] : false;
 	
 	if (!array_key_exists("ngcp_sync",$post_meta)) {
 		if('published' != get_post_status($post->ID) && 'auto-draft' != get_post_status($post->ID) && !$ngcp_id) {
@@ -150,6 +151,13 @@ function ngcp_inner_meta_box($post) {
             </p>
             <div id="ngcp-promotional-info"><p><?php _e('Promotional articles have to be marked on Newsgrape, or users risk account suspendings.','ngcp'); ?><p><p style="text-align:center"><a href="#"onclick="tb_remove()" />close</a></p></div>
 			
+            <label><input type="checkbox" name="ngcp_adult_only" id="ngcp_adult_only" <?php checked($ngcp_adult_only, '1'); ?>>  <?php _e('This is adult_only content', 'ngcp'); ?></label>
+            <input type="hidden" name="ngcp_adult_only_hidden" id="ngcp_adult_only_hidden" value="<?php echo   $ngcp_adult_only; ?>">
+            <p class="description">
+            	<a href="#TB_inline?height=100&width=150&inlineId=ngcp-adult_only-info&modal=true" class="thickbox">What is adult content?</a>
+            </p>
+            <div id="ngcp-adult_only-info"><p><?php _e('Adult content is content for adults','ngcp'); ?><p><p style="text-align:center"><a href="#"onclick="tb_remove()" />close</a></p></div>
+
 			<div class="">
 				<label for="ngcp-license-display"><?php _e('License:', 'ngcp'); ?></label>
 				<span id="ngcp-license-display" style="font-weight: bold;"><?php echo $licenses[$ngcp_license] ?></span>

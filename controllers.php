@@ -89,6 +89,7 @@ class NGCP_Core_Controller {
 			'ngcp_comments',
 			'ngcp_sync',
 			'ngcp_promotional',
+			'ngcp_adult_only',
 		);
 
 		foreach ($meta_keys as $meta_key) {

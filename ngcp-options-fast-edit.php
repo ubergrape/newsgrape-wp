@@ -34,10 +34,10 @@ function ngcp_validate_fe_options($input) {
 			$updated_articles[] = $post_id;
 		}
     }
-	foreach ($input['adult_hidden'] as $post_id => $old_value) {
-		if ($input['adult'][$post_id] != $old_value) {
-			update_post_meta($post_id, 'ngcp_adult', $input['adult'][$post_id]);
-			ngcp_debug(sprintf('promotional %d changed from "%s" to "%s"', $post_id, $input['adult_hidden'][$post_id], $input['adult'][$post_id]));
+	foreach ($input['adult_only_hidden'] as $post_id => $old_value) {
+		if ($input['adult_only'][$post_id] != $old_value) {
+			update_post_meta($post_id, 'ngcp_adult_only', $input['adult_only'][$post_id]);
+			ngcp_debug(sprintf('adult_only %d changed from "%s" to "%s"', $post_id, $input['adult_only_hidden'][$post_id], $input['adult_only'][$post_id]));
 			$updated_articles[] = $post_id;
 		}
     }
@@ -171,7 +171,7 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 							<?php _e('Mark all as promotional', 'ngcp'); ?>
 						</label>
 					</th>
-					<th class="adult">
+					<th class="adult_only">
 						<label>
 							<input name="ngcp-adult-all" id="ngcp-adult-all" type="checkbox" value="1" />
 							<?php _e('Mark all as adult content', 'ngcp'); ?>
@@ -196,7 +196,7 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 					<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[type_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_type'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[promotional_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_promotional'][0]; ?>">
-					<input type="hidden" name="ngcp_fe[adult_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_adult'][0]; ?>">
+					<input type="hidden" name="ngcp_fe[adult_only_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_adult_only'][0]; ?>">
 					
 					<td>
 						<a href="<?php the_permalink(); ?>" class="ngcp-the-title"><?php the_title(); ?></a>
@@ -238,12 +238,12 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 					</td>
 	    			<td>
 						<label>
-							<input class="ngcp-adult" name="ngcp_fe[adult][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_adult'][0]!=0 && $post_meta['ngcp_adult'][0]!=''); ?> />
+							<input class="ngcp-adult" name="ngcp_fe[adult_only][<?php the_id(); ?>]" type="checkbox" value="1" <?php checked($post_meta['ngcp_adult_only'][0]!=0 && $post_meta['ngcp_adult_only'][0]!=''); ?> />
 							<?php _e('Mark as adult content', 'ngcp'); ?>
 						</label>
 						<br />
-						<span class="ngcp-adult-state <?php if($is_promotional) echo 'ngcp-adult'; ?>">
-							<?php if($is_promotional) {
+						<span class="ngcp-adult-state <?php if($adult_only) echo 'ngcp-adult'; ?>">
+							<?php if($adult_only) {
 								_e('adult content', 'ngcp');
 							} else {
 								_e('', 'ngcp');
