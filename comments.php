@@ -28,3 +28,6 @@ if (NGCP_DEV) {
 		s.parentNode.insertBefore(ng, s);
 	}(document, 'script'));
 </script>
+<noscript>
+<p>This site is using <a href="http://www.newsgrape.com/">Newsgrape</a>'s comment system which can't be loaded because Javascript is turned off.</p><p>Please activate Javascript to see the comments</p>
+</noscript>
