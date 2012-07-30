@@ -392,7 +392,15 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 						<br />
 						<span class="description">
 						<?php
-						_e('Automatically adds &lt;link rel=&quot;canonical&quot; ...&gt; to every synced post if you select "to my blog"', 'ngcp');
+						$prcheckurl = 'http://www.pagerankchecker.info/'.str_replace('https://','',str_replace('http://','',get_bloginfo('wpurl')));
+						printf(__('This feature allows you to instantly increase
+						your exposure on Google: If your blog has a Pagerank of
+						0-3, redirecting the search engines to Newsgrape will
+						rank your articles higher in the search engine result
+						pages. Newsgrape is optimized for search engines and
+						currently holds a pagerank of 4. <a href="%s">Check your
+						Pagerank</a>. This option changes &lt;link
+						rel=&quot;canonical&quot; ...&gt; for every synced post', 'ngcp'), $prcheckurl);
 						?>
 						</span>
 						</td>
@@ -407,7 +415,7 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 						<br />
 						<span class="description">
 						<?php
-						_e('Per default, only articles are synced. Activate this option to be able to sync pages as well.', 'ngcp');
+						_e('Only posts will be synced by default. Activate this option to be able to sync pages as well.', 'ngcp');
 						?>
 						</span>
 						</td>

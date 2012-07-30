@@ -10,7 +10,7 @@ function ngcp_validate_fe_options($input) {
 
 	$updated_articles = array();
 	
-	// sometimes these input fields are not set. until why find out why do this check:
+	// sometimes these input fields are not set. until we find out why, do this check:
 	if(!isset($input['sync_hidden']) || !isset($input['type_hidden']) || !isset($input['is_synced_hidden']) || !isset($input['promotional_hidden']) || !isset($input['adult_only_hidden'])) {
 	    add_settings_error( 'ngcp_fe', 'ngcp_fe', __('Newsgrape Fast editing failed'), 'error' );
 	    unset($input);
@@ -119,7 +119,7 @@ function deletion_check(form) {
 		//settings_errors('ngcp_fe');
 		$options = ngcp_get_options();
 		$categories = $options['categories'];
-		$posts = query_posts('posts_per_page=-1');
+		$posts = query_posts('posts_per_page=-1'); /* Alters Main Loop */
 		?>
 		
 		<h2><?php _e('Newsgrape Sync Fast Edit Articles', 'ngcp'); ?></h2>
