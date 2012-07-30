@@ -7,11 +7,17 @@ function ngcp_add_meta_box() {
 		return;
 	}
 	
+	/* show metabox for posts and pages? */
+	$syncable = 'post';
+	if ($options['sync_pages'] == 1) {
+		$syncable = null;
+	}
+		
     $label = __( 'newsgrape<em>|sync</em>', 'ngcp' );
-    add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', 'post', 'side', 'high');
+    add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', $syncable, 'side', 'high');
     
     $label = __( 'Newsgrape Article Intro', 'ngcp' );
-    add_meta_box('newsgrape_description', $label, 'ngcp_inner_meta_box_description', 'post', 'normal', 'high');
+    add_meta_box('newsgrape_description', $label, 'ngcp_inner_meta_box_description', $syncable, 'normal', 'high');
 }
 
 function ngcp_inner_meta_box_description($post) {

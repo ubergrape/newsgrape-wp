@@ -23,6 +23,7 @@ function ngcp_get_options() {
 			'categories'		=> array(),
 			'ng_category'		=> array(),
 			'license'			=> '1',
+			'sync_pages'		=> 0,
 	);
 	
 	$options = get_option('ngcp');
@@ -96,6 +97,10 @@ function ngcp_validate_options($input) {
 		
 		if (!isset($input['canonical'])) {
 			$input['canonical'] = '0';
+		}
+		
+		if (!isset($input['sync_pages'])) {
+			$input['sync_pages'] = '0';
 		}
 		
 		// canonical option has been changed?
@@ -388,6 +393,21 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 						<span class="description">
 						<?php
 						_e('Automatically adds &lt;link rel=&quot;canonical&quot; ...&gt; to every synced post if you select "to my blog"', 'ngcp');
+						?>
+						</span>
+						</td>
+					</tr>
+					<tr valign="top">
+						<th scope="row"><?php _e('Sync Pages', 'ngcp'); ?></th>
+						<td>
+						<label>
+							<input name="ngcp[sync_pages]" type="checkbox" value="1" <?php checked($options['sync_pages'], 1); ?>/>
+							<?php _e('Sync Pages with Newsgrape', 'ngcp'); ?>
+						</label>
+						<br />
+						<span class="description">
+						<?php
+						_e('Per default, only articles are synced. Activate this option to be able to sync pages as well.', 'ngcp');
 						?>
 						</span>
 						</td>
