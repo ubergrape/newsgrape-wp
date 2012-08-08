@@ -270,3 +270,92 @@ tr#scary-buttons { display: none; }
 	font-weight: normal;
 	font-size: 10px;
 }
+/*
+.ngcp-black-overlay{
+	display: none;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	z-index:1001;
+	-moz-opacity: 0.8;
+	opacity:.80;
+	filter: alpha(opacity=80);
+}
+ 
+.ngcp-white-content {
+	display: none;
+	position: absolute;
+	top: 25%;
+	left: 25%;
+	width: 50%;
+	height: 50%;
+	padding: 16px;
+	border: 16px solid orange;
+	background-color: white;
+	z-index:1002;
+	overflow: auto;
+}
+*/
+
+#ngcp-overlay {
+   position: fixed;
+   z-index:199;
+   top: 0px;
+   left: 0px;
+   height:100%;
+   width:100%;
+
+}
+
+* html #ngcp-overlay { /* ie6 hack */
+   position: absolute;
+   height: expression(document.body.scrollHeight > document.body.offsetHeight ? document.body.scrollHeight : document.body.offsetHeight + 'px');
+}
+
+.ngcp-overlay-bg {
+   background-color:#000;
+   -ms-filter: "Alpha(Opacity=75)";
+   filter:alpha(opacity=75);
+   -moz-opacity: 0.75;
+   opacity: 0.75;
+}
+
+#ngcp-lightbox {
+   position:fixed;
+   top:50%;
+   left:50%;
+   margin-left:-100px;
+   margin-top:-100px;
+   padding: 50px;
+   z-index:200;
+   width:200px;
+   background-color:#fff;
+   text-align:center;
+   border-radius: 13px;
+}
+* html #ngcp-lightbox { /* ie6 hack */
+   position: absolute;
+   margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = document.documentElement && document.documentElement.scrollTop || document.body.scrollTop) + 'px');
+}
+
+.ngcp-box-header {
+	background: url(<?php echo ngcp_plugin_dir_url(); ?>ng.png) center no-repeat #333;
+	height: 41px;
+	margin-left: -50px;
+	margin-right: -50px;
+	margin-top: -20px;
+	margin-bottom: 25px;
+}
+
+#ngcp-lightbox button {
+	display: block;
+	margin-left: 70px;
+	margin-top: 25px;
+}
+
+#ngcp-sync-status {
+	display: block;
+}

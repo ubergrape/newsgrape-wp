@@ -78,6 +78,25 @@ function ngcp_validate_fe_options($input) {
 	return $input;
 }
 
+add_action('wp_ajax_ngcp_sync', 'ngcp_ajax_sync');
+
+function ngcp_ajax_sync() {
+	$id = $_POST['id'];
+	ngcp_debug("AJAX request - sync $id");
+
+	$fields = array( 'sync', 'type', 'promotional', 'adult_only');
+	
+	foreach ($fields as $field) {
+		if (isset($_POST[$field])) {
+			update_post_meta($id, 'ngcp_'.$field, $_POST[$field]);
+			ngcp_debug('ngcp_'.$field.' = '.$_POST[$field]);
+			NGCP_Core_Controller::edit($id);
+		}
+	}
+	
+	die();
+}
+
 // ---- Options Page -----
 
 function ngcp_add_fe_page() {
@@ -92,6 +111,9 @@ function ngcp_display_fast_edit() {
 <? include_once 'options-head.php';  ?>
 
 <script>
+var post_ids = Array();
+var names = {};
+
 function deletion_check(form) {
 	delete_count = 0;
 	
@@ -113,7 +135,7 @@ function deletion_check(form) {
 </script>
 
 <div class="wrap">
-	<form method="post" id="ngcp_fe" name ="ngcp_fe" action="options.php" onsubmit="return deletion_check(this)">
+	<form method="post" id="ngcp_fe" name ="ngcp_fe" action="options.php">
 		<?php 
 		settings_fields('ngcp_fe');
 		//settings_errors('ngcp_fe');
@@ -177,6 +199,8 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 					$is_synced = array_key_exists('ngcp_id', $post_meta) && $post_meta['ngcp_id'][0] != 0 && (!array_key_exists('ngcp_deleted', $post_meta) || False == $post_meta['ngcp_deleted']);
 					$is_promotional = False == $post_meta['ngcp_promotional'];
 				?>
+				
+				<script>post_ids.push(<?php the_id(); ?>); names["<?php the_id(); ?>"] = "<?php the_title(); ?>";</script>
 				
 				<tr class="<?php if($is_synced) echo 'ngcp-synced'; ?> <?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
 					<input type="hidden" name="ngcp_fe[is_synced_hidden][<?php the_id(); ?>]" value="<?php echo $is_synced; ?>">
@@ -243,12 +267,75 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 		</table>
 		
 		<p class="submit">
-			<input type="submit" name="ngcp_fe[save]" value="<?php esc_attr_e('Save Changes','ngcp'); ?>" class="button-primary" />
+			<input type="submit" id="ngcp_fe_save" name="ngcp_fe[save]" value="<?php esc_attr_e('Save Changes','ngcp'); ?>" class="button-primary" />
 		</p>
 		
 	<script type="text/javascript">
 		jQuery(document).ready(function($){
 			$(function () {
+				$('#ngcp_fe_save').click(function(event) {
+					event.preventDefault();
+					
+					if (!deletion_check(ngcp_fe))
+						return;
+						
+					var values = {};
+					var sync = Array();
+					$.each($('#ngcp_fe').serializeArray(), function(i, field) {
+						values[field.name] = field.value;
+					});
+
+					for (var i = 0; i <post_ids.length; i++) {
+						id = post_ids[i];
+						should_be_synced = (values['ngcp_fe[sync]['+id+']']!=undefined&&values['ngcp_fe[sync]['+id+']']!="") != (values['ngcp_fe[sync_hidden]['+id+']']!="")
+										|| values['ngcp_fe[type]['+id+']'] != values['ngcp_fe[type_hidden]['+id+']']
+										|| (values['ngcp_fe[adult_only]['+id+']']!=undefined&&values['ngcp_fe[adult_only]['+id+']']!="") != (values['ngcp_fe[adult_only_hidden]['+id+']']!="")
+										|| (values['ngcp_fe[promotional]['+id+']']!=undefined&&values['ngcp_fe[promotional]['+id+']']!="") != (values['ngcp_fe[promotional_hidden]['+id+']']!="")
+						if(should_be_synced) {
+							sync.push(id);
+						}
+					};
+					
+					if (sync.length == 0) {
+						alert("Nothing changed");
+					} else {
+						p = $('#ngcp-sync-progress')[0];
+						p.max = sync.length;
+						$('#ngcp-sync-goal').html(sync.length);
+						
+						ngcp_overlay('display');
+						
+						for (var i = 0; i <sync.length; i++) {
+							id = sync[i];
+
+							var data = {
+								action: 'ngcp_sync',
+								id: id,
+								sync: values['ngcp_fe[sync]['+id+']'] || 0,
+								type: values['ngcp_fe[type]['+id+']'],
+								promotional: values['ngcp_fe[promotional]['+id+']'] || 0,
+								adult_only: values['ngcp_fe[adult_only]['+id+']'] || 0
+							};
+
+							// since wp 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+							$.post(ajaxurl, data, function(response) {
+								//$('#ngcp-sync-status').html("Synced Article " + names[id]);
+								p.value++;
+								$('#ngcp-sync-current')[0].innerHTML = p.value;
+								if (p.value==p.max) {
+									$('.ngcp-sync-button').html("<?php _e('Close', 'ngcp'); ?>");
+									$('.ngcp-sync-button').attr("onclick","javascript:location.reload(true);");
+									$('#ngcp-sync-status').html("<?php _e('Finished syncing!', 'ngcp'); ?>");
+								}
+							});
+						}
+					
+
+					}
+					
+					
+
+				});
 				$('#ngcp-help').click(function(event) {
 					event.preventDefault();
 					$('#ngcp-help-text').slideDown('fast');
@@ -282,9 +369,41 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 				});
 	
 			});
+
+			
+			
 		});
+		
+		function ngcp_overlay(mode) {
+				if(mode == 'display') {
+					if(document.getElementById("ngcp-overlay") === null) {
+						div = document.createElement("div");
+						div.setAttribute('id', 'ngcp-overlay');
+						div.setAttribute('className', 'ngcp-overlay-bg');
+						div.setAttribute('class', 'ngcp-overlay-bg');
+						document.getElementsByTagName("body")[0].appendChild(div);
+
+						jQuery('#ngcp-lightbox').show();
+					}
+				} else {
+					jQuery('#ngcp-lightbox').hide();
+					document.getElementsByTagName("body")[0].removeChild(document.getElementById("ngcp-overlay"));
+				}
+			}
+		
 	</script>
 </div>
+
+
+<div id="ngcp-lightbox" style="display:none">
+	<div class="ngcp-box-header"></div>
+	<span id="ngcp-sync-status"><?php _e('Syncing articles','ngcp'); ?></span>
+	<label><?php _e('Progress', 'ngcp'); ?>: <span id="ngcp-sync-current">0</span> <?php _e('of', 'ngcp'); ?> <span id="ngcp-sync-goal">0</span>
+		<progress id="ngcp-sync-progress" value="0" max="100"></progress>
+	</label>
+	<button class="ngcp-sync-button" onclick="ngcp_overlay('none')"><?php _e('Cancel', 'ngcp'); ?></button>
+</div>
+
 		
 <?php
 }
