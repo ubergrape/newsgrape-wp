@@ -321,6 +321,8 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 						
 						ngcp_overlay('display');
 						
+						var has_errors = false;
+						
 						for (var i = 0; i <sync.length; i++) {
 							id = sync[i];
 
@@ -339,6 +341,11 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 								$('#ngcp-sync-current')[0].innerHTML = p.value;
 
 								if (!response.success) {
+									if(!has_errors){
+										$('#ngcp-lightbox .errors').show().animate({height:'200px'});
+										$('#ngcp-lightbox').animate({marginTop:'-200px'});
+									}
+									has_errors = true;
 									jQuery('#ngcp-lightbox .errors').append("<li><b>" + response.title + "</b>: " + response.message + "</li>");
 								}
 								if (p.value==p.max) {
