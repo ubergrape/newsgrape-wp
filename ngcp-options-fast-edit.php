@@ -1,7 +1,9 @@
 <?php
 
+// deprecated.
+// should be used by the submt button if javascript is deactivated
 // Validation/sanitization. Add errors to $msg[].
-function ngcp_validate_fe_options($input) {
+/*function ngcp_validate_fe_options($input) {
 	$msg = array();
 	$msgtype = 'error';
 	$api = new NGCP_API();
@@ -76,7 +78,7 @@ function ngcp_validate_fe_options($input) {
 	update_option('ngcp',$options);
 	
 	return $input;
-}
+}*/
 
 add_action('wp_ajax_ngcp_sync', 'ngcp_ajax_sync');
 
@@ -90,11 +92,24 @@ function ngcp_ajax_sync() {
 		if (isset($_POST[$field])) {
 			update_post_meta($id, 'ngcp_'.$field, $_POST[$field]);
 			ngcp_debug('ngcp_'.$field.' = '.$_POST[$field]);
-			NGCP_Core_Controller::edit($id);
 		}
 	}
 	
-	die();
+	$success = NGCP_Core_Controller::edit($id);
+	
+	global $ngcp_error;
+	
+	// response output
+    header( "Content-Type: application/json" );
+    $response = json_encode( array(
+		'success' => ($ngcp_error===null),
+		'title' => get_the_title($id),
+		'id' => $id,
+		'message' => $ngcp_error) );
+    echo $response;
+	
+	//Important
+	exit;
 }
 
 // ---- Options Page -----
@@ -110,7 +125,7 @@ function ngcp_display_fast_edit() {
 
 <? include_once 'options-head.php';  ?>
 
-<script>
+<script type="text/javascript">
 var post_ids = Array();
 var names = {};
 
@@ -200,11 +215,11 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 					$is_promotional = False == $post_meta['ngcp_promotional'];
 				?>
 				
-				<script>post_ids.push(<?php the_id(); ?>); names["<?php the_id(); ?>"] = "<?php the_title(); ?>";</script>
+				<script type="text/javascript">post_ids.push(<?php the_id(); ?>); names["<?php the_id(); ?>"] = "<?php the_title(); ?>";</script>
 				
 				<tr class="<?php if($is_synced) echo 'ngcp-synced'; ?> <?php if ($has_type) { echo 'ngcp-has-type'; } else { echo 'ngcp-has-no-type'; } ?>">
 					<input type="hidden" name="ngcp_fe[is_synced_hidden][<?php the_id(); ?>]" value="<?php echo $is_synced; ?>">
-					<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]; ?>">
+					<input type="hidden" name="ngcp_fe[sync_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_sync'][0]||0; ?>">
 					<input type="hidden" name="ngcp_fe[type_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_type'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[promotional_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_promotional'][0]; ?>">
 					<input type="hidden" name="ngcp_fe[adult_only_hidden][<?php the_id(); ?>]" value="<?php echo $post_meta['ngcp_adult_only'][0]; ?>">
@@ -287,10 +302,11 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 
 					for (var i = 0; i <post_ids.length; i++) {
 						id = post_ids[i];
-						should_be_synced = (values['ngcp_fe[sync]['+id+']']!=undefined&&values['ngcp_fe[sync]['+id+']']!="") != (values['ngcp_fe[sync_hidden]['+id+']']!="")
-										|| values['ngcp_fe[type]['+id+']'] != values['ngcp_fe[type_hidden]['+id+']']
-										|| (values['ngcp_fe[adult_only]['+id+']']!=undefined&&values['ngcp_fe[adult_only]['+id+']']!="") != (values['ngcp_fe[adult_only_hidden]['+id+']']!="")
-										|| (values['ngcp_fe[promotional]['+id+']']!=undefined&&values['ngcp_fe[promotional]['+id+']']!="") != (values['ngcp_fe[promotional_hidden]['+id+']']!="")
+						should_be_synced = (values['ngcp_fe[sync]['+id+']']||0) != (values['ngcp_fe[sync_hidden]['+id+']']||0)
+										|| (values['ngcp_fe[type]['+id+']'] != values['ngcp_fe[type_hidden]['+id+']'])
+										|| (values['ngcp_fe[adult_only]['+id+']']||0) != (values['ngcp_fe[adult_only_hidden]['+id+']']||0)
+										|| (values['ngcp_fe[promotional]['+id+']']||0) != (values['ngcp_fe[promotional_hidden]['+id+']']||0);
+
 						if(should_be_synced) {
 							sync.push(id);
 						}
@@ -319,15 +335,18 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 
 							// since wp 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 							$.post(ajaxurl, data, function(response) {
-								//$('#ngcp-sync-status').html("Synced Article " + names[id]);
 								p.value++;
 								$('#ngcp-sync-current')[0].innerHTML = p.value;
+
+								if (!response.success) {
+									jQuery('#ngcp-lightbox .errors').append("<li><b>" + response.title + "</b>: " + response.message + "</li>");
+								}
 								if (p.value==p.max) {
 									$('.ngcp-sync-button').html("<?php _e('Close', 'ngcp'); ?>");
 									$('.ngcp-sync-button').attr("onclick","javascript:location.reload(true);");
 									$('#ngcp-sync-status').html("<?php _e('Finished syncing!', 'ngcp'); ?>");
 								}
-							});
+							}, 'json');
 						}
 					
 
@@ -401,6 +420,7 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 	<label><?php _e('Progress', 'ngcp'); ?>: <span id="ngcp-sync-current">0</span> <?php _e('of', 'ngcp'); ?> <span id="ngcp-sync-goal">0</span>
 		<progress id="ngcp-sync-progress" value="0" max="100"></progress>
 	</label>
+	<ul class="errors"></ul>
 	<button class="ngcp-sync-button" onclick="ngcp_overlay('none')"><?php _e('Cancel', 'ngcp'); ?></button>
 </div>
 

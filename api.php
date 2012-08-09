@@ -66,6 +66,11 @@ class NGCP_API {
 			return False;
 		}
 		
+		if ($this->is_bad_request($response)) {
+			$this->error($function_name,$response_decoded['message']);
+			return False;
+		}
+		
 		if (500 == $response['response']['code']) {
 			ngcp_debug('error 500: '.$response['body']);
 			if(array_key_exists('error_message',$response_decoded)) {
