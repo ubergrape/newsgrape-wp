@@ -38,7 +38,7 @@ class NGCP_API {
 			$this->error($function_name, __('Request failed: ').$response->get_error_message());
 			return False;
 		}
-		
+				
 		$response_decoded = json_decode($response['body'],true);
 		
 		if (204 == $response['response']['code']) {
@@ -66,11 +66,6 @@ class NGCP_API {
 			return False;
 		}
 		
-		if ($this->is_bad_request($response)) {
-			$this->error($function_name,$response_decoded['message']);
-			return False;
-		}
-		
 		if (500 == $response['response']['code']) {
 			ngcp_debug('error 500: '.$response['body']);
 			if(array_key_exists('error_message',$response_decoded)) {
@@ -78,6 +73,16 @@ class NGCP_API {
 			}
 			return False;
 		}
+		
+		/*
+		if (400 == $response['response']['code']) {
+			ngcp_debug('error 400: '.$response['body']);
+			if(array_key_exists('message',$response_decoded)) {
+				$this->error($function_name,__($response_decoded['message']));
+			}
+			return False;
+		}
+		*/
 		
 		if ( (null == $array_key1 || !array_key_exists($array_key1, $response_decoded))
 			&& (null == $array_key2 || !array_key_exists($array_key1, $response_decoded))
@@ -197,6 +202,13 @@ class NGCP_API {
 			return False;
 		}
 		
+		if (400 == $response['response']['code'] && array_key_exists($response_decoded,'message')) {
+			if(strpos($response['body'],'Article with id') && strpos($response['body'],'does not exist')) {
+				ngcp_debug('WARNING: deleting ngcp id because article doesn\'t exist on NG');
+				delete_post_meta($post->wp_id, 'ngcp_id');
+			}
+		}
+		
 		update_post_meta($post->wp_id, 'ngcp_synced', time());
 		delete_post_meta($post->wp_id, 'ngcp_deleted');
 		
@@ -225,6 +237,11 @@ class NGCP_API {
 		
 		if (404 == $response['response']['code'] || 410 == $response['response']['code']) {
 			$this->error(__FUNCTION__,'Article not found on Newsgrape, this means it has been deleted before.');
+			ngcp_debug('WARNING: deleting ngcp id because article doesn\'t exist on NG');
+			delete_post_meta($post->wp_id, 'ngcp_id');
+		} elseif (400 == $response['response']['code'] && array_key_exists($response_decoded,'message')) {
+			$this->error(__FUNCTION__,$response_decoded['message']);
+			// dont return false. this means it has been deleted before most of the time
 		} elseif (204 != $response['response']['code']) {
 			$this->error(__FUNCTION__,'Article could not be deleted.');
 			return False;

@@ -302,7 +302,8 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 
 					for (var i = 0; i <post_ids.length; i++) {
 						id = post_ids[i];
-						should_be_synced = (values['ngcp_fe[sync]['+id+']']||0) != (values['ngcp_fe[sync_hidden]['+id+']']||0)
+						// compare sync to is_synced_hidden --> articles will be synced if not synced yet but checked
+						should_be_synced = (values['ngcp_fe[sync]['+id+']']||0) != (values['ngcp_fe[is_synced_hidden]['+id+']']||0)
 										|| (values['ngcp_fe[type]['+id+']'] != values['ngcp_fe[type_hidden]['+id+']'])
 										|| (values['ngcp_fe[adult_only]['+id+']']||0) != (values['ngcp_fe[adult_only_hidden]['+id+']']||0)
 										|| (values['ngcp_fe[promotional]['+id+']']||0) != (values['ngcp_fe[promotional_hidden]['+id+']']||0);
@@ -351,7 +352,11 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 								if (p.value==p.max) {
 									$('.ngcp-sync-button').html("<?php _e('Close', 'ngcp'); ?>");
 									$('.ngcp-sync-button').attr("onclick","javascript:location.reload(true);");
-									$('#ngcp-sync-status').html("<?php _e('Finished syncing!', 'ngcp'); ?>");
+									if(has_errors) {
+											
+										$('#ngcp-sync-status').html("<?php _e('Finished syncing!', 'ngcp'); ?>");
+									} else { 
+									}
 								}
 							}, 'json');
 						}
