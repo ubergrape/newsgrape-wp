@@ -218,7 +218,7 @@ function ngcp_rel_canonical() {
 	rel_canonical();
 }
 
-/* Newsgrape comment sysem */
+/* Newsgrape comment system */
 function ngcp_comments($file) {
 	/*if ( !( is_singular() && ( have_comments() || 'open' == $post->comment_status ) ) ) {
         return;
