@@ -180,6 +180,12 @@ function ngcp_add_menu() {
 	ngcp_add_help_page();
 }
 
+/* Register settings */
+function register_ngcp_settings() {
+	register_setting( 'ngcp', 'ngcp', 'ngcp_validate_options');
+	register_setting( 'ngcp_fe', 'ngcp_fe', 'ngcp_validate_fe_options');
+}
+
 // Add link to options page from plugin list
 add_action('plugin_action_links_' . plugin_basename(__FILE__), 'ngcp_plugin_actions');
 function ngcp_plugin_actions($links) {

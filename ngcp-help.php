@@ -1,29 +1,19 @@
 <?php
 // ---- Help Page -----
 
-function ngcp_add_help_page() {
-	$pg = add_submenu_page('newsgrape', __('Help &amp; Support','ngcp'), __('Help &amp; Support','ngcp'), 'manage_options', basename(__FILE__), 'ngcp_display_help');
-	add_action("admin_head-$pg", 'ngcp_help_css');
+function ngcp_help_init() {
+	wp_register_style('ngcp_help', ngcp_plugin_dir_url().'css/help.css');
 }
 
-function ngcp_help_css() { ?>
-	<style media='all' type='text/css'>
-	div#gsfn_search_widget img { border: none; }
-	div#gsfn_search_widget { font-size: 12px;  background: #ebebe4; padding: 10px; border-radius: 8px; margin-top: 10px;}
-	div#gsfn_search_widget a.widget_title { color: #000; display: block; margin-bottom: 10px; }
-	div#gsfn_search_widget .powered_by { margin-top: 8px; padding-top: 8px; border-top: 1px solid #DDD; } 
-	div#gsfn_search_widget .powered_by a { color: #333; font-size: 90%; }      
-	div#gsfn_search_widget form { margin-bottom: 8px; }
-	div#gsfn_search_widget form label { margin-bottom: 5px; display: block; }
-	div#gsfn_search_widget form #gsfn_search_query { width: 60%; }
-	div#gsfn_search_widget div.gsfn_content { }
-	div#gsfn_search_widget div.gsfn_content li { text-align:left; margin-bottom:6px; }
-	div#gsfn_search_widget div.gsfn_content a.gsfn_link { line-height: 1; }
-	div#gsfn_search_widget div.gsfn_content span.time { font-size: 90%; padding-left: 3px; }
-	div#gsfn_search_widget div.gsfn_content p.gsfn_summary { margin-top: 2px }
-	</style>
-<?php }
+function ngcp_add_help_page() {
+	$pg = add_submenu_page('newsgrape', __('Help &amp; Support','ngcp'), __('Help &amp; Support','ngcp'), 'manage_options', basename(__FILE__), 'ngcp_display_help');
+	wp_enqueue_style('ngcp_help');
+	add_action('admin_print_styles', 'ngcp_help_styles' );
+}
 
+function ngcp_help_styles() {
+	wp_enqueue_style('ngcp_help');
+}
 
 function ngcp_display_help() { ?>
 	<p><?php _e('Any questions? Send an e-mail to ') ?><a href="#" onclick="javascript:location.href = 'mailto:office@newsgrape.com'">support[at]newsgrape[dot]com</a><?php _e(' - we\'re here to help!') ?></p>

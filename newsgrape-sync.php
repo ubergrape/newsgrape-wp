@@ -64,12 +64,6 @@ function ngcp_deactivation() {
 }
 register_deactivation_hook(__FILE__, 'ngcp_deactivation');
 
-/* Register settings */
-function register_ngcp_settings() {
-	register_setting( 'ngcp', 'ngcp', 'ngcp_validate_options');
-	register_setting( 'ngcp_fe', 'ngcp_fe', 'ngcp_validate_fe_options');
-}
-
 /* When uninstalled, remove option */
 function ngcp_remove_options() {
 	delete_option('ngcp');
@@ -363,6 +357,7 @@ function ngcp_get_the_excerpt($excerpt){
 
 $class = 'NGCP_Core_Controller';
 
+add_action('admin_init', 'ngcp_help_init' );
 add_action('admin_menu', 'ngcp_add_menu'); // Add menu to admin
 add_action('add_meta_boxes', 'ngcp_add_meta_box'); //Add meta box
 add_action('admin_head-post-new.php', 'ngcp_css');
