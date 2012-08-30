@@ -2,27 +2,27 @@
 
 class NGCP_API {
 	private $errors = array();
-	
+
 	function __construct($username=null, $api_key=null, $api_url='http://www.newsgrape.com/api/0.1/') {
 		$this->api_url = $api_url;
-		
+
 		if (NGCP_DEV) {
 			 $this->api_url = 'http://staging.newsgrape.com/api/0.1/';
-		} 
-		
+		}
+
 		/* Client info for newsgrape's statistics */
 		$this->client = 'Wordpress/'.get_bloginfo('version').' NGWPSync/'.NGCP_VERSION;
-		
+
 		/* Unique Blog ID. Should be the same after domain change or plugin uninstall:
 		 * This option will not be deleted when uninstalling the plugin*/
 		$this->external_id = get_option('ngcp_blog_id');
-		
+
 		/* Blog Name */
 		$this->external_name = get_bloginfo('name');
         if($this->external_name == ''){
           $this->external_name = 'Wordpress';
         }
-		
+
 		if (null==$username) {
 			$options = ngcp_get_options();
 			$this->username = $options['username'];
@@ -32,28 +32,28 @@ class NGCP_API {
 			$this->api_key = $api_key;
 		}
 	}
-		
+
 	function decode_json_response($response, $function_name, $array_key1=null, $array_key2=null) {
 		if (is_wp_error($response)) {
 			$this->error($function_name, __('Request failed: ').$response->get_error_message());
 			return False;
 		}
-				
+
 		$response_decoded = json_decode($response['body'],true);
-		
+
 		if (204 == $response['response']['code']) {
 			return $response_decoded;
 		}
-		
+
 		if (410 == $response['response']['code']) {
 			return $response_decoded;
 		}
-		
+
 		if (413 == $response['response']['code']) {
 				$this->error($function_name,__('The Article Image is too big for Newsgrape. Please use a smaller Image. If you have not set an article image in Wordpress, Newsgrape Sync uses the first image in your article.'));
 				return False;
 		}
-			
+
 		if ($response_decoded == null) {
 			if($this->is_unauthorized($response)) {
 				$this->error($function_name,__('You are not authorized.<br/>Possible reasons:<ul><li>- Your API key has been invalidated. Reconnect with Newsgrape</li><li>- This article has been synced initially with another Newsgrape account</li></ul>'));
@@ -65,7 +65,7 @@ class NGCP_API {
 			}
 			return False;
 		}
-		
+
 		if (500 == $response['response']['code']) {
 			ngcp_debug('error 500: '.$response['body']);
 			if(array_key_exists('error_message',$response_decoded)) {
@@ -73,7 +73,7 @@ class NGCP_API {
 			}
 			return False;
 		}
-		
+
 		if (400 == $response['response']['code']) {
 			ngcp_debug('error 400: '.$response['body']);
 			if(array_key_exists('message',$response_decoded)) {
@@ -81,11 +81,11 @@ class NGCP_API {
 			}
 			return False;
 		}
-		
+
 		if ( (null == $array_key1 || !array_key_exists($array_key1, $response_decoded))
 			&& (null == $array_key2 || !array_key_exists($array_key1, $response_decoded))
 			&& ($array_key1 != $array_key2) 	){
-				
+
 			if ($this->is_unauthorized($response) && array_key_exists('message',$response_decoded)) {
 				$this->error($function_name, __($response_decoded['message'], 'ngcp'));
 				return False;
@@ -95,103 +95,103 @@ class NGCP_API {
 				return False;
 			}
 		}
-		
+
 		return $response_decoded;
 	}
 
 	function fetch_new_key($username, $password) {
 		$this->report(__FUNCTION__);
-		
+
 		$url = $this->api_url . "key/";
 		$args = array(
 			'body' => array( 'username' => $username, 'password' => $password )
 		);
-		
+
 		$response = wp_remote_post($url,$args);
-		
+
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__,'key');
 
 		// The response can be empty but should not be False
 		if (False === $response_decoded) {
 			return False;
 		}
-		
+
 		$key = $response_decoded['key'];
-		
+
 		$this->report(__FUNCTION__,'fetched key: '.$key);
-		
+
 		return $key;
 	}
-	
+
 	function change_site_settings($canonical_link=1) {
 		$this->report(__FUNCTION__);
-		
+
 		$url = $this->api_url . "sites/";
 		$args = array(
 			'headers' => $this->get_headers(),
 			'body' => array( 'canonical_link' => $canonical_link )
 		);
-		
+
 		$response = wp_remote_post($url,$args);
-		
+
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
-				
+
 		$this->report(__FUNCTION__,'settings changed');
-		
+
 		return ("canonical_link setting updated" == $response_decoded);
 	}
-	
+
 	function create($post) {
 		$this->report(__FUNCTION__,$post);
-			
+
 		$url = $this->api_url.'articles/';
-		
+
 		$args = array(
 			'headers' => $this->get_headers(),
 			'body' => $post->urlencoded()
 		);
-		
+
 		$response = wp_remote_post($url,$args);
 		$this->report(__FUNCTION__,"POST ".$url." [".$args["body"]."]");
-		
+
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__,'id','display_url');
 
 		if (False === $response_decoded) {
 			return False;
 		}
-		
+
 		update_post_meta($post->wp_id, 'ngcp_id', $response_decoded['id']);
 		update_post_meta($post->wp_id, 'ngcp_display_url', $response_decoded['display_url']);
 		update_post_meta($post->wp_id, 'ngcp_synced', time());
 		delete_post_meta($post->wp_id, 'ngcp_deleted');
-		
+
 		$this->report(__FUNCTION__,'done');
-		
+
 		return True;
 	}
-	
+
 	function get($post) {
 		$url = $this->api_url.'articles/';
-		
+
 		$args = array(
 			'headers' => $this->get_headers(),
 			'body' => $post_urlencoded
 		);
-		
+
 		$response = wp_remote_post($url,$args);
 	}
-	
+
 	function update($post) {
 		$this->report(__FUNCTION__,$post);
-		
+
 		$url = $this->api_url.'articles/'.$post->id.'/';
-		
+
 		$args = array(
 			'method' => 'PUT',
 			'headers' => $this->get_headers(),
 			'body' => $post->urlencoded()
 		);
-		
+
 		$response = wp_remote_post($url,$args);
 
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
@@ -199,40 +199,40 @@ class NGCP_API {
 		if (False === $response_decoded) {
 			return False;
 		}
-		
+
 		if (400 == $response['response']['code'] && array_key_exists($response_decoded,'message')) {
 			if(strpos($response['body'],'Article with id') && strpos($response['body'],'does not exist')) {
 				ngcp_debug('WARNING: deleting ngcp id because article doesn\'t exist on NG');
 				delete_post_meta($post->wp_id, 'ngcp_id');
 			}
 		}
-		
+
 		update_post_meta($post->wp_id, 'ngcp_synced', time());
 		delete_post_meta($post->wp_id, 'ngcp_deleted');
-		
+
 		$this->report(__FUNCTION__,'done');
-		
+
 		return True;
 	}
-	
+
 	function delete($post) {
 		$this->report(__FUNCTION__,$post);
-		
+
 		$url = $this->api_url.'articles/'.$post->id.'/';
-		
+
 		$args = array(
 			'method' => 'DELETE',
 			'headers' => $this->get_headers(),
 		);
-		
+
 		$response = wp_remote_post($url,$args);
-		
+
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
 
 		if (False === $response_decoded) {
 			return False;
 		}
-		
+
 		if (404 == $response['response']['code'] || 410 == $response['response']['code']) {
 			$this->error(__FUNCTION__,'Article not found on Newsgrape, this means it has been deleted before.');
 			ngcp_debug('WARNING: deleting ngcp id because article doesn\'t exist on NG');
@@ -244,14 +244,14 @@ class NGCP_API {
 			$this->error(__FUNCTION__,'Article could not be deleted.');
 			return False;
 		}
-		
+
 		update_post_meta($post->wp_id, 'ngcp_deleted', True);
-		
+
 		$this->report(__FUNCTION__,'done');
-		
+
 		return True;
 	}
-	
+
 	function get_languages() {
 		$response = $this->_get('languages/?format=json');
 		$output = array();
@@ -263,7 +263,7 @@ class NGCP_API {
 		$this->report(__FUNCTION__,var_export($output, true));
 		return $output;
 	}
-	
+
 	function get_licenses() {
 		$response = $this->_get('licenses/?format=json');
 		$output = array();
@@ -275,7 +275,7 @@ class NGCP_API {
 		$this->report(__FUNCTION__,var_export($output, true));
 		return $output;
 	}
-	
+
 	function get_creative_categories() {
 		$response = $this->_get('creative_categories/?format=json');
 		$output = array();
@@ -287,7 +287,7 @@ class NGCP_API {
 		$this->report(__FUNCTION__,var_export($output, true));
 		return $output;
 	}
-	
+
 	function get_comment_count() {
 		$url = 'thread/';
 		if($last_access = get_option('ngcp_lastcommentsync')) {
@@ -303,59 +303,59 @@ class NGCP_API {
 		}
 		return $output;
 	}
-	
+
 	function _get($url='languages/') {
 		$this->report(__FUNCTION__,"Get $url");
-		
+
 		$url = $this->api_url.$url;
-		
+
 		$args = array(
 			'headers' => $this->get_headers(),
 		);
-		
+
 		$response = wp_remote_get($url,$args);
-		
+
 		if (is_wp_error($response)) {
 			$this->error(__FUNCTION__,'Something went wrong fetching '.$url.': '.$response->get_error_message());
 			return False;
 		}
-		
+
 		$response_decoded = $this->decode_json_response($response,__FUNCTION__);
 
 		if (!$response_decoded) {
 			return False;
 		}
-		
+
 		$this->report(__FUNCTION__,'done');
-		
+
 		return $response_decoded;
 	}
 
 	private function get_headers() {
 		$headers = array(
-			'X-NEWSGRAPE-USER' => $this->username, 
+			'X-NEWSGRAPE-USER' => $this->username,
 			'X-NEWSGRAPE-KEY' => $this->api_key,
 			'X-CLIENT' => $this->client,
 			'X-EXTERNAL-ID' => $this->external_id,
 			'X-BASE-URL' => home_url(),
 			'X-EXTERNAL-NAME' => $this->external_name,
 		);
-		
+
 		return $headers;
 	}
-	
+
 	private function is_unauthorized($response) {
 		return $response['response']['code'] == '401' ;
 	}
-	
+
 	private function is_bad_request($response) {
 		return $response['response']['code'] == '400' ;
 	}
-	
+
 	private function report($function_name, $message="start") {
 		ngcp_debug("NGCP API ($function_name): $message");
 	}
-	
+
 	function get_error_header($function_name) {
 		$error_headers = array(
 			'fetch_new_key' => __('Could not login to Newsgrape. ', 'ngcp'),
@@ -363,18 +363,18 @@ class NGCP_API {
 			'update' => __('Could not update article. ', 'ngcp'),
 			'delete' => __('Could not delete article. ', 'ngcp'),
 		);
-		
+
 		if (array_key_exists($function_name, $error_headers)) {
 			return $error_headers[$function_name];
 		}
-		
+
 		return '';
 	}
 
 	private function error($function_name, $message="", $id=null) {
 		global $ngcp_error;
 		$ngcp_error = $message;
-		
+
 		if($id) {
 			$this->errors[$id] = $this->get_error_header($function_name) . __($message, 'ngcp');
 		} else {
@@ -387,7 +387,7 @@ class NGCP_API {
 	function has_errors() {
 		return (0 != sizeof($this->errors));
 	}
-	
+
 	function handle_errors() {
 		if($this->has_errors()) {
 			update_option('ngcp_error_notice', $this->errors);

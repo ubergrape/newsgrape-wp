@@ -26,25 +26,25 @@ class NGCP_Post {
 	public $is_promotional = False;
 	public $adult_only = False;
 	public $options = array();
-	
+
 	function __construct($wp_post_id = NULL) {
 		$this->options = ngcp_get_options();
 		if (NULL != $wp_post_id) {
 			$this->import_wp_object($wp_post_id);
 		}
 	}
-	
+
 	function __toString() {
 		return $this->title." (".$this->url.")";
 	}
-			
+
 	function import_wp_object($wp_post_id) {
 		$wp_post = &get_post($wp_post_id);
-		
+
 		$the_content = $wp_post->post_content;
 		$the_content = apply_filters('the_content', $the_content);
 		$the_content = str_replace(']]>', ']]&gt;', $the_content);
-		
+
 		$this->wp_post		= $wp_post;
 		$this->wp_id		= $wp_post_id;
 		$this->id			= get_post_meta($wp_post_id, 'ngcp_id', true);
@@ -63,11 +63,11 @@ class NGCP_Post {
 		$this->is_test	    = (get_post_meta($wp_post_id, 'ngcp_is_test', true));
 		$this->is_promotional = get_post_meta($wp_post_id, 'ngcp_promotional', true) || false;
 		$this->adult_only = get_post_meta($wp_post_id, 'ngcp_adult_only', true) || false;
-		
+
 		if('' == $this->language || 0 == $this->language) {
 			$this->language = $this->options['language'];
 		}
-		
+
 		/* description hirarchy:
 		 * 1) ngcp_description (-> normal content)
 		 * 2) manual excerpt (-> normal content)
@@ -75,7 +75,7 @@ class NGCP_Post {
 		 */
 		if('' == trim($this->description)) {
 			$content = $this->content;
-			
+
 			if ( '' != $wp_post->post_excerpt) {
 				ngcp_debug('post has manual excerpt');
 				$this->description = $wp_post->post_excerpt;
@@ -88,18 +88,18 @@ class NGCP_Post {
 		} else {
 			ngcp_debug('post has newsgrape description');
 		}
-		
+
 		// Trim Title and description
 		$this->title = substr($this->title, 0, NGCP_MAXLENGTH_TITLE);
 	}
-	
+
 	function import_tags($wp_post_id) {
 		$tags = array();
-		
+
 		$options = ngcp_get_options();
-		
+
 		$tag = $this->options['tag'];
-		
+
 		if (1 == $tag || 3 == $tag) {
 			$post_categories = wp_get_post_categories($wp_post_id);
 			foreach($post_categories as $c){
@@ -114,10 +114,10 @@ class NGCP_Post {
 				$tags[] = $tags->name;
 			}
 		}
-		
+
 		return $tags;
 	}
-	
+
 	function urlencoded() {
 		// example:
 		// title=this+is+a+title&pub_status=3&description=this+is+a+description&language=en&text=this+is+the+body+text
@@ -125,7 +125,7 @@ class NGCP_Post {
         $overflow = '';
         $desc_len = strlen($description);
         if($desc_len > NGCP_MAXLENGTH_DESCRIPTION){
-            // truncate description at sentence break and add the stripped string 
+            // truncate description at sentence break and add the stripped string
             // to the article text
 		    $description = $this->smartTruncate($description, NGCP_MAXLENGTH_DESCRIPTION, '.', '');
             $overflow = str_replace($description, '', $this->description);
@@ -163,75 +163,75 @@ class NGCP_Post {
 			$data['image'] = base64_encode_image($resized_image);
 			$data['text'] = $this->content; // find_a_post_image can modify content
 		}
-		
+
 		return http_build_query($data);
 	}
-	
-	
+
+
 	/* finds a post image:
 	 * 1) post-thumbnail
 	 * 2) first image in post
 	 *    if the post starts with an image, the image is removed from the content
-	 * 
+	 *
 	 * attention: modifies $this->content
 	 */
 	function find_a_post_image() {
 		$image = false;
-		
+
 		// Check for post image
 		if(current_theme_supports('post-thumbnails') && null!=get_post_thumbnail_id($this->wp_id)){
 			$image = get_attached_file(get_post_thumbnail_id($this->wp_id));
 			ngcp_debug('post image found');
 		}
-		
+
 		// if we have no post image check for images inside content
 		if(!$image) {
-			
+
 			// strip html except img
 			$stripped_content = trim(str_replace('&nbsp;','',strip_tags($this->wp_post->post_content,'<img>')));
-			
+
 			// find image urls
 			$output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $stripped_content, $matches, PREG_SET_ORDER);
-			
+
 			// do we have at least one image in post?
-			if(count($matches) > 0 && 2==count($matches[0])) { 
-				
+			if(count($matches) > 0 && 2==count($matches[0])) {
+
 				// first image
 				$image_url = $matches[0][1];
 				$image_tag = $matches[0][0];
-				
+
 				ngcp_debug("image tag found in post: $image_url");
-				
+
 				// wordpress resizes images and gives them names like image-150x150.jpg
 				$image_ori_url = preg_replace('/\-[0-9]+x[0-9]+/', '', $image_url);
 				ngcp_debug("original image: $image_ori_url");
-				
+
 				$image = $this->get_image_path_from_url($image_ori_url);
-				
+
 				if($image) {
 					// does the post start with the image? then remove image
 					if(0==strpos($stripped_content, $image_tag)) {
 						ngcp_debug('post starts with image, removing image from content');
 						$this->content = str_replace($image_tag, '', $this->content);
-					}					
+					}
 				} else {
 					ngcp_debug('image not found mediathek, ignoring');
 				}
 			}
 		}
-        
+
         if(!$image) {
 			ngcp_debug('no usable image found in post');
 		}
-        
+
 		return $image;
 	}
-	
+
 	function get_image_path_from_url($image_ori_url) {
 		// find the image in the mediathek
 		// hint: there can be images in the gallery which are not in in the post content
 		//       also the post can contain images which are not
-	
+
 		$args = array(
 			'post_type' => 'attachment',
 			'post_mime_type' => 'image',
@@ -248,16 +248,16 @@ class NGCP_Post {
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	function should_be_synced() {
 		// If the post was manually set to not be synced,
 		// or nothing was set and the default is not to sync,
 		// or it's private and the default is not to sync private posts, give up now
 		// also publish posts with a publish date in the future. newsgrape will handle this
-		
+
 		if (
 			0 == $this->options['sync'] ||
 			0 == get_post_meta($this->wp_id, 'ngcp_sync', true) ||
@@ -266,27 +266,27 @@ class NGCP_Post {
 		) {
 			return False;
 		}
-		
+
 		return True;
 	}
-	
+
 	function should_be_deleted_because_private(){
 		// If ...
 		// - It's changed to private, and we've chosen not to sync private entries
 		// - It now isn't published or private (trash, pending, draft, etc.)
 		// - It was synced but now it's set to not sync
-		
+
 		if (
-			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no') || 
-			('publish' != $this->post_status && 'private' != $this->post_status) || 
+			('private' == $this->post_status && $this->options['privacy_private'] == 'ngcp_no') ||
+			('publish' != $this->post_status && 'private' != $this->post_status) ||
 			0 == get_post_meta($this->wp_id, 'ngcp_sync', true)
 		) {
 			return True;
 		}
-		
+
 		return False;
 	}
-	
+
 	function should_be_deleted_because_category_changed() {
 		// If the post shows up in the forbidden category list and it has been
 		// synced before (so the forbidden category list must have changed),
@@ -301,23 +301,23 @@ class NGCP_Post {
 
 		return False;
 	}
-	
+
 	function was_synced() {
 		return !$this->was_never_synced();
-		
+
 	}
-	
+
 	function was_never_synced() {
 	    return ("" == $this->id || null == $this->id || 0 == $this->id);
 	}
 
-     function smartTruncate($string, $limit, $break=" ", $pad="...") { 
+     function smartTruncate($string, $limit, $break=" ", $pad="...") {
       // Original PHP code by Chirp Internet: www.chirp.com.au
-      // return with no change if string is shorter than $limit 
-      if(strlen($string) <= $limit) return $string; 
-      $string = substr($string, 0, $limit); 
+      // return with no change if string is shorter than $limit
+      if(strlen($string) <= $limit) return $string;
+      $string = substr($string, 0, $limit);
       if(false !== ($breakpoint = strrpos($string, $break))){
-        $string = substr($string, 0, $breakpoint); 
+        $string = substr($string, 0, $breakpoint);
         $string = $string.'.';
       }
       return $string . $pad;
