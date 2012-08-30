@@ -1,7 +1,7 @@
 <?php
 
 function base64_encode_image ($filename=string,$filetype=string) {
-    if ($filename) {
+    if ($filename &&  file_exists($filename)) {
         $imgbinary = fread(fopen($filename, "r"), filesize($filename));
         return base64_encode($imgbinary);
     }
