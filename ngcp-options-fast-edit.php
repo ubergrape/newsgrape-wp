@@ -13,7 +13,8 @@ function ngcp_load_custom_wp_admin_scripts() {
 		'unpublish_multiple' => __( 'Do you really want to unpublish {count} articles? They will be deleted on Newsgrape.','ngcp'),
 		'unpublish_single' => __('Do you really want to unpublish {count} article? It will be deleted on Newsgrape.','ngcp'),
 		'close' => __('Close','ngcp'),
-		'finished' => __('Finished syncing!','ngcp')
+		'finished_succes' => __('Finished syncing!','ngcp'),
+		'finished_failed' => __('Some errors occured.','ngcp')
 	) );
 }
 

@@ -84,12 +84,12 @@ jQuery(document).ready(function($){
 							jQuery('#ngcp-lightbox .errors').append("<li><b>" + response.title + "</b>: " + response.message + "</li>");
 						}
 						if (p.value==p.max) {
-							$('.ngcp-sync-button').html("<?php _e('Close', 'ngcp'); ?>");
+							$('.ngcp-sync-button').html(objectL10n.close);
 							$('.ngcp-sync-button').attr("onclick","javascript:location.reload(true);");
 							if(has_errors) {
-
-								$('#ngcp-sync-status').html("<?php _e('Finished syncing!', 'ngcp'); ?>");
+								$('#ngcp-sync-status').html(objectL10n.finished_failed);
 							} else {
+								$('#ngcp-sync-status').html(objectL10n.finished_success);
 							}
 						}
 					}, 'json');
