@@ -53,6 +53,11 @@ Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plug
 
 == Changelog ==
 
+= 1.4 =
+* improved multisync ("fast edit articles")
+* added "adult only" option to articles
+* new: sync pages (optional)
+
 = 1.3 =
 * better handling of the <!--more--> tag
 * added mark as promotional to fast edit articles
@@ -60,6 +65,17 @@ Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plug
 = 1.2.4 =
 * use Newsgrape description as excerpt if provided
 
-
 = 1.2.3 =
 * sync comment counts from Newsgrape.com
+
+== Upgrade Notice ==
+
+= 1.4 =
+Improved "Fast Edit Articles", various enhancements and bug fixes
+
+
+== Screenshots ==
+
+1. The Newsgrape options page
+2. Fast Edit Articles - Sync all your articles at once
+3. A post which was synced to newsgrape
