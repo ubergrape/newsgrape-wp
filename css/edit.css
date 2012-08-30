@@ -21,7 +21,7 @@
 	background: #fcfcfa ;
 }
 #newsgrape h3 {
-	background: url("<?php echo ngcp_plugin_dir_url(); ?>menu_icon_inverted.png") 5px 6px no-repeat #efefef;
+	background: url("<?php echo ngcp_plugin_dir_url(); ?>img/menu_icon_inverted.png") 5px 6px no-repeat #efefef;
 	font-family: Arial, Helvetica, sans-serif;
 	color: #444;
 	text-shadow: none;

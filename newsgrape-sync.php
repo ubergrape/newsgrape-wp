@@ -80,15 +80,15 @@ register_uninstall_hook( __FILE__, 'ngcp_remove_options' );
 /* Metabox Style */
 function ngcp_css() { ?>
 	<style type="text/css">
-	    <?php include('ngcp.css');?>
+	    <?php include('css/edit.css');?>
 	</style>
-<?php 
+<?php
 }
 
 /* Admin options page style */
 function ngcp_settings_css() { ?>
 	<style type="text/css">
-		<?php include('ngcp-settings.css');?>
+		<?php include('css/settings.css');?>
 	</style>
 <?php
 }
@@ -96,7 +96,7 @@ function ngcp_settings_css() { ?>
 /* Adds optional description/intro text to the post content */
 function ngcp_add_description_to_content($content) {
 	global $id, $post;
-	
+
 	$description = get_post_meta($id, 'ngcp_description', true);
 
 	if('' != $description) {
@@ -112,32 +112,32 @@ function ngcp_add_description_to_content($content) {
  */
 function ngcp_can_replace_comments() {
 	global $id, $post;
-	
+
 	$options = ngcp_get_options();
-	
+
 	if(is_feed()){
 		ngcp_report(__FUNCTION__,"is feed");
 		return false;
 	}
-	
+
     if('draft' == $post->post_status){
 		ngcp_report(__FUNCTION__,"draft");
 		return false;
 	}
-	
+
 	$allow_comments_global = $options['comments'];
 	$allow_comments_for_this_post = get_post_meta($id, 'ngcp_comments', true);
-	
+
 	if(0 == $allow_comments_global){
 		ngcp_report(__FUNCTION__,"global");
 		return false;
 	}
-	
+
 	if(0 == $allow_comments_for_this_post){
 		ngcp_report(__FUNCTION__,"post");
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -149,7 +149,7 @@ function ngcp_report($function_name, $message) {
 
 function ngcp_error_notice() {
 	$errors = get_option('ngcp_error_notice');
-	if (!empty($errors)) { 
+	if (!empty($errors)) {
     	add_action('admin_notices', 'ngcp_print_notices');
 	}
 }
@@ -179,7 +179,7 @@ function ngcp_print_notices() {
 		}
 	}
 	if ($class == 'updated') // still good?
-		$msg = sprintf(__("Synced to Newsgrape.", 'ngcp')); 
+		$msg = sprintf(__("Synced to Newsgrape.", 'ngcp'));
 	echo "<div class='$class'><p><strong>Newsgrape:</strong> $msg</p></div>";
 	update_option('ngcp_error_notice', ''); // turn off the message
 }
@@ -197,12 +197,12 @@ function ngcp_print_login_notice() {
  */
 function ngcp_rel_canonical() {
 	global $posts;
-	
+
 	if ( is_single() || is_page() ) {
 		$id = $posts[0]->ID;
 		$options = ngcp_get_options();
 		$ngcp_display_url = get_post_meta($id, 'ngcp_display_url',true);
-		
+
 		if (NGCP_DEBUG) {
 			echo "\n<!-- Newsgrape Sync Debug Information";
 			echo "\nGlobal Sync: ".$options['sync'];
@@ -220,7 +220,7 @@ function ngcp_rel_canonical() {
 				return;
 		}
 	}
-	
+
 	rel_canonical();
 }
 
@@ -233,7 +233,7 @@ function ngcp_comments($file) {
     if ( !ngcp_can_replace_comments() ) {
         return $file;
     }
-    
+
 	$file = dirname( __FILE__ ) . '/comments.php';
     return $file;
 }
@@ -262,30 +262,30 @@ function ngcp_debug($message) {
  * characters, numbers, "." and "-".
  * This is used to generate the unique blog id
  */
-function ngcp_random($len) { 
-    if (@is_readable('/dev/urandom')) { 
-        $f=fopen('/dev/urandom', 'r'); 
-        $urandom=fread($f, $len); 
-        fclose($f); 
-    } 
+function ngcp_random($len) {
+    if (@is_readable('/dev/urandom')) {
+        $f=fopen('/dev/urandom', 'r');
+        $urandom=fread($f, $len);
+        fclose($f);
+    }
 
-    $return=''; 
-    for ($i=0;$i<$len;++$i) { 
-        if (!isset($urandom)) { 
-            if ($i%2==0) mt_srand(time()%2147 * 1000000 + (double)microtime() * 1000000); 
-            $rand=48+mt_rand()%64; 
-        } else $rand=48+ord($urandom[$i])%64; 
+    $return='';
+    for ($i=0;$i<$len;++$i) {
+        if (!isset($urandom)) {
+            if ($i%2==0) mt_srand(time()%2147 * 1000000 + (double)microtime() * 1000000);
+            $rand=48+mt_rand()%64;
+        } else $rand=48+ord($urandom[$i])%64;
 
-        if ($rand>57) 
-            $rand+=7; 
-        if ($rand>90) 
-            $rand+=6; 
+        if ($rand>57)
+            $rand+=7;
+        if ($rand>90)
+            $rand+=6;
 
-        if ($rand==123) $rand=45; 
-        if ($rand==124) $rand=46; 
-        $return.=chr($rand); 
-    } 
-    return $return; 
+        if ($rand==123) $rand=45;
+        if ($rand==124) $rand=46;
+        $return.=chr($rand);
+    }
+    return $return;
 }
 
 /* Returns the url for the plugin directory (with trailing slash)
@@ -317,11 +317,11 @@ function ngcp_log_http($data = '', $log_type = '', $extra = '') {
  */
 function ngcp_is_current_user_connected() {
 	$options = ngcp_get_options();
-	
+
 	if (isset($options['api_key']) && '' != $options['api_key']) {
 		return True;
 	}
-	
+
 	return False;
 }
 
@@ -331,7 +331,7 @@ function ngcp_sync_comment_count() {
 	ngcp_debug("syncing comment count!");
 	$api = new NGCP_API();
 	$comment_count = $api->get_comment_count();
-	
+
 	foreach ($comment_count as $id => $count) {
 		update_post_meta($id, 'ngcp_comment_count', $count);
 	}
@@ -341,16 +341,16 @@ function ngcp_sync_comment_count() {
  */
 function ngcp_get_comments_number($count) {
 	global $post;
-	
+
 	if (ngcp_can_replace_comments()) {
 		return (float) get_post_meta($post->ID, 'ngcp_comment_count', True);
 	}
 	return $count;
-} 
+}
 
 function ngcp_get_the_excerpt($excerpt){
 	global $id, $post;
-	
+
 	$description = get_post_meta($id, 'ngcp_description', true);
     ngcp_debug('descritipon '.$description);
 	if('' != $description) {

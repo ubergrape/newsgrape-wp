@@ -6,16 +6,16 @@ function ngcp_add_meta_box() {
 	if (!ngcp_is_current_user_connected()) {
 		return;
 	}
-	
+
 	/* show metabox for posts and pages? */
 	$syncable = 'post';
 	if ($options['sync_pages'] == 1) {
 		$syncable = null;
 	}
-		
+
     $label = __( 'newsgrape<em>|sync</em>', 'ngcp' );
     add_meta_box('newsgrape', $label, 'ngcp_inner_meta_box', $syncable, 'side', 'high');
-    
+
     $label = __( 'Newsgrape Article Intro', 'ngcp' );
     add_meta_box('newsgrape_description', $label, 'ngcp_inner_meta_box_description', $syncable, 'normal', 'high');
 }
@@ -30,21 +30,21 @@ function ngcp_inner_meta_box_description($post) {
 	</div>
 
 <?php
-	
+
 }
 
 function ngcp_inner_meta_box($post) {
 	global $post;
 	$options = ngcp_get_options();
-	
+
 	$categories = $options['categories'];
-	
+
 	$languages = $options['languages'];
 	$licenses = $options['licenses'];
-	
+
 	$cats = wp_get_post_categories($post->ID);
 	$post_meta = get_post_custom($post->ID);
-	
+
 	$ngcp_promotional = (array_key_exists("ngcp_promotional",$post_meta)) ? $post_meta['ngcp_promotional'][0] : false;
 	$ngcp_language = (array_key_exists("ngcp_language",$post_meta)) ? $post_meta['ngcp_language'][0] : $options['language'];
 	$ngcp_license = (array_key_exists("ngcp_license",$post_meta)) ? $post_meta['ngcp_license'][0] : $options['license'];
@@ -56,7 +56,7 @@ function ngcp_inner_meta_box($post) {
 	$has_been_deleted = array_key_exists("ngcp_deleted",$post_meta) && True == $post_meta['ngcp_deleted'][0];
 	$ngcp_is_test = (array_key_exists("ngcp_is_test",$post_meta)) ? $post_meta['ngcp_is_test'][0] : false;
 	$ngcp_adult_only = (array_key_exists("ngcp_adult_only",$post_meta)) ? $post_meta['ngcp_adult_only'][0] : false;
-	
+
 	if (!array_key_exists("ngcp_sync",$post_meta)) {
 		if('published' != get_post_status($post->ID) && 'auto-draft' != get_post_status($post->ID) && !$ngcp_id) {
 			$ngcp_sync = 0;
@@ -66,7 +66,7 @@ function ngcp_inner_meta_box($post) {
 	} else {
 			$ngcp_sync = $post_meta['ngcp_sync'][0];
 	}
-	
+
 	if (!array_key_exists("ngcp_type",$post_meta)) {
 		if (sizeof($cats) >= 1) {
 			$ngcp_type = $options['type']["category-".$cats[0]];
@@ -76,12 +76,12 @@ function ngcp_inner_meta_box($post) {
 	} else {
 			$ngcp_type = $post_meta['ngcp_type'][0];
 	}
-	
+
 ?>
 
 	<?php wp_nonce_field( 'ngcp_metabox', 'ngcp_nonce' ); ?>
-	
-    <div class="misc-pub-section ngcp-info <?php if($is_synced) { echo "synced"; } ?>">    	
+
+    <div class="misc-pub-section ngcp-info <?php if($is_synced) { echo "synced"; } ?>">
 		<?php if($is_synced): ?>
 		    <p><strong class="on-newsgrape">Synced with Newsgrape! </strong><a href="<?php echo $ngcp_display_url?>"><?php echo substr($ngcp_display_url,7); ?></a></p>
 		    <?php if(NGCP_DEBUG) { echo "<p>NG ID: $ngcp_id</p>"; }?>
@@ -91,7 +91,7 @@ function ngcp_inner_meta_box($post) {
 			<em><?php _e('Not synced yet.', 'ngcp');?></em>
 		<?php endif; ?>
 	</div>
-	
+
 	<div class="misc-pub-section" id="ng-sync-option">
 		<div class="ngcp-setting">
             <label><input type="checkbox" name="ngcp_sync" id="ngcp_sync" <?php checked($ngcp_sync!=0); ?>/><?php _e('Sync with Newsgrape', 'ngcp'); ?></label>
@@ -102,7 +102,7 @@ function ngcp_inner_meta_box($post) {
             <?php endif; ?>
 		</div>
    </div>
- 
+
 	<div class="misc-pub-section"><label for="ngcp-language"><?php _e('Language:', 'ngcp'); ?></label>
 		<span id="ngcp-language-display" style="font-weight: bold;"><?php echo $languages[$ngcp_language] ?></span>
 		<a href="#ngcp_language" class="edit-ngcp-language hide-if-no-js"><?php _e('Edit') ?></a>
@@ -120,7 +120,7 @@ function ngcp_inner_meta_box($post) {
 		<a href="#ngcp_language" class="cancel-ngcp-language hide-if-no-js"><?php _e('Cancel'); ?></a>
 		</div>
 	</div>
-	
+
 
     <div class="misc-pub-section" id="ng-type-select"><label for="ngcp-type"><?php _e('Type:', 'ngcp'); ?></label>
 		<select name='ngcp_type' id='ngcp_type'>
@@ -142,8 +142,8 @@ function ngcp_inner_meta_box($post) {
 			<p><a id="ngcp-help-read" href="#" class="hide-if-no-js"><?php _e('Read and understood', 'ngcp'); ?></a></p>
 		</div>
 	</div>
-	
-	
+
+
     <div class="misc-pub-section  misc-pub-section-last" id="ng-more-sync-options">
 		<a href="#" id="ngcp_more" class="hide-if-no-js">+ <?php _e('More Settings', 'ngcp'); ?></a>
 		<a href="#" id="ngcp_less" class="hidden">- <?php _e('Less Settings', 'ngcp'); ?></a>
@@ -159,11 +159,11 @@ function ngcp_inner_meta_box($post) {
 				<p><?php _e('Promotional articles have to be marked on Newsgrape, or users risk account suspendings.','ngcp'); ?></p>
 				<p style="text-align:center"><a href="#"onclick="tb_remove()" />close</a></p>
 			</div>
-			
+
             <label><input type="checkbox" name="ngcp_adult_only" id="ngcp_adult_only" <?php checked($ngcp_adult_only, '1'); ?>>  <?php _e('This is adult only content', 'ngcp'); ?></label>
             <input type="hidden" name="ngcp_adult_only_hidden" id="ngcp_adult_only_hidden" value="<?php echo   $ngcp_adult_only; ?>">
 
-			<div> 
+			<div>
 				<label for="ngcp-license-display"><?php _e('License:', 'ngcp'); ?></label>
 				<span id="ngcp-license-display" style="font-weight: bold;"><?php echo $licenses[$ngcp_license] ?></span>
 				<a href="#ngcp_license" class="edit-ngcp-license hide-if-no-js"><?php _e('Edit') ?></a>
@@ -258,7 +258,7 @@ function ngcp_inner_meta_box($post) {
 				$(this).hide();
 			});
 		});
-		
+
 	});
 	</script>
 
@@ -268,7 +268,7 @@ function ngcp_inner_meta_box($post) {
 		print_r( $post_meta );
 		echo "ngcp_sync: $ngcp_sync";
 		echo "</pre>";
-		
+
 	}
 	?>
 	<?php
@@ -280,7 +280,7 @@ function ngcp_metabox_js($hook) {
         return;
     }
 
-    wp_enqueue_script('ngcp_metabox', ngcp_plugin_dir_url().'ngcp-metabox.js'); 
+    wp_enqueue_script('ngcp_metabox', ngcp_plugin_dir_url().'js/ngcp-metabox.js');
 }
 
 ?>

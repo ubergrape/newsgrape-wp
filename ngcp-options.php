@@ -25,7 +25,7 @@ function ngcp_get_options() {
 			'license'			=> '1',
 			'sync_pages'		=> 0,
 	);
-	
+
 	$options = get_option('ngcp');
 	if (!is_array($options)) $options = array();
 
@@ -36,10 +36,10 @@ function ngcp_get_options() {
 // Validation/sanitization. Add errors to $msg[].
 function ngcp_validate_options($input) {
 	global $ngcp_error;
-	
+
 	$msg = array();
 	$msgtype = 'error';
-	
+
 	// API key
 	if (isset($input['login']) && isset($input['password']) && !empty($input['password'])) {
 		$api = new NGCP_API();
@@ -52,17 +52,17 @@ function ngcp_validate_options($input) {
 			$msg[] .= __('Could not connect to Newsgrape: ', 'ngcp') . $ngcp_error;
 		}
 	}
-	
+
 	if (isset($input['delete_options'])) {
 		delete_option('ngcp');
 	}
-	
+
 	if (isset($input['delete_blog_id'])) {
 		delete_option('ngcp_blog_id');
 	}
 
 	$options = ngcp_get_options();
-	
+
 	// Do not lose settings
 	$fields = array('languages', 'licenses', 'categories', 'api_key', 'published_old');
 	foreach ($fields as $field) {
@@ -70,39 +70,39 @@ function ngcp_validate_options($input) {
 			$input[$field] = $options[$field];
 		}
 	}
-	
+
 	// Logout
 	if (isset($input['logout'])) {
 		$input['api_key'] = "";
-		
+
 		$msg[] .=  __('Disconnected from Newsgrape...', 'ngcp');
 		$msgtype = 'updated';
 	}
 
 	// If we're handling a submission, save the data
 	if (isset($input['update_ngcp_options']) || isset($input['sync_all']) || isset($input['delete_all'])) {
-		
+
 		// Uncheck boxes
 		if (!isset($input['sync'])) {
 			$input['sync'] = '0';
 		}
-		
+
 		if (!isset($input['comments'])) {
 			$input['comments'] = '0';
 		}
-		
+
 		if (!isset($input['excerpt'])) {
 			$input['excerpt'] = '0';
 		}
-		
+
 		if (!isset($input['canonical'])) {
 			$input['canonical'] = '0';
 		}
-		
+
 		if (!isset($input['sync_pages'])) {
 			$input['sync_pages'] = '0';
 		}
-		
+
 		// canonical option has been changed?
 		if ($input['canonical'] != $options['canonical']) {
 		    $api = new NGCP_API();
@@ -114,7 +114,7 @@ function ngcp_validate_options($input) {
 				$msg[] .= __('Could not sync settings to Newsgrape. ', 'ngcp') . $ngcp_error;
 			}
 		}
-		
+
 		if (isset($input['delete_all'])) {
 			// If we need to delete all, grab a list of all entries that have been synced
 			$beenposted = get_posts(array('meta_key' => 'ngcp_id', 'post_type' => 'any', 'post_status' => 'any', 'numberposts' => '-1'));
@@ -138,26 +138,26 @@ function ngcp_validate_options($input) {
 			$msg[] .= ngcp_post_all();
 			$msgtype = 'updated';
 		}
-		
+
 	} // if updated
-	
+
 	// Send custom updated message
 	if( isset($input['login']) || isset($input['logout']) || isset($input['delete_all']) || isset($input['sync_all']) ||
 		isset($input['update_ngcp_options']) || isset($input['delete_options']) || isset($input['delete_multiuser'])) {
 		$msg = implode('<br />', $msg);
-		
+
 		if (empty($msg)) {
 			$msg = __('Settings saved.', 'ngcp');
 			$msgtype = 'updated';
 		}
-		
+
 		add_settings_error( 'ngcp', 'ngcp', $msg, $msgtype );
 	}
-	
+
 	// do not save in options db
 	$do_not_saves = array('login', 'password', 'logout', 'delete_all', 'sync_all', 'update_ngcp_options', 'delete_options');
 	foreach($do_not_saves as $do_not_save) { unset($input[$do_not_save]); }
-	
+
 	return $input;
 }
 
@@ -170,7 +170,7 @@ function ngcp_add_menu() {
 		'manage_options',
 		'newsgrape',
 		'ngcp_display_options',
-		ngcp_plugin_dir_url().'menu_icon.png'
+		ngcp_plugin_dir_url().'img/menu_icon.png'
 	);
 	add_action("admin_head-$pg", 'ngcp_settings_css');
 	// register setting
@@ -201,24 +201,24 @@ function ngcp_display_options() {
 		$options = ngcp_get_options();
 		?>
 		<h1 style="display: none"><?php _e('Newsgrape Sync Options', 'ngcp'); ?></h1>
-		
-		<img id="ngcp_header_img" src="<?php echo ngcp_plugin_dir_url(); ?>header.png" />
-		
+
+		<img id="ngcp_header_img" src="<?php echo ngcp_plugin_dir_url(); ?>img/header.png" />
+
 		<?php if (!isset($options['api_key']) || '' == $options['api_key']): ?>
-		
+
 			<?php
 				/* Fill database with fresh values:
 				 * - Generate unique blog id;
 				 * - Fetch languages, licenses and creative categories via API
 				 */
-				
+
 				if(!get_option('ngcp_blog_id')) {
 					update_option('ngcp_blog_id',ngcp_random(24));
 				}
-				 
+
 				$api = new NGCP_API();
 				$update = False;
-				
+
 				if (empty($options['languages']) && ($languages = $api->get_languages())) {
 					$options['languages'] = $languages;
 					$update = True;
@@ -236,7 +236,7 @@ function ngcp_display_options() {
 					update_option('ngcp',$options);
 				}
 			?>
-		
+
 			<table class="form-table ui-tabs-panel ng-connect-box">
 			<h2><?php _e('Login to Newsgrape', 'ngcp'); ?></h2>
 				<tr valign="top">
@@ -246,7 +246,7 @@ function ngcp_display_options() {
 						<a href="http://www.newsgrape.com/register/" style="margin-left: 20px"><?php _e('Create Newsgrape Account', 'ngcp'); ?></a>
 						</td>
 				</tr>
-				
+
 				<tr valign="top">
 					<th scope="row"><?php _e('Newsgrape Password', 'ngcp'); ?></th>
 					<td><input name="ngcp[password]" type="password" id="password" size="40" />
@@ -258,13 +258,13 @@ function ngcp_display_options() {
 					</td>
 				<tr valign="top">
 					<td>
-						<input type="submit" name="ngcp[login]" id="ngcp-login" value="<?php esc_attr_e('Connect with Newsgrape', 'ngcp'); ?>" class="button-primary" /> 
+						<input type="submit" name="ngcp[login]" id="ngcp-login" value="<?php esc_attr_e('Connect with Newsgrape', 'ngcp'); ?>" class="button-primary" />
 					</td>
 				</tr>
 			</table>
-			
+
 		<?php else: ?>
-		
+
 			<table class="form-table ui-tabs-panel ng-connect-box ">
 				<tr valign="top">
 					<td>
@@ -280,11 +280,11 @@ function ngcp_display_options() {
 				</tr>
 				<tr valign="top">
 					<td>
-						
+
 					</td>
 				</tr>
 			</table>
-			
+
 			<?php if (0 == $options['published_old']): ?>
 				<div id="ngcp-fast-edit" class="ng-edit-box">
 					<div class="ng-connected-button">
@@ -294,7 +294,7 @@ function ngcp_display_options() {
 					<span class="description"><?php _e('See all your articles in a list, select which you want to sync and if they are Fiction or News-Related.'); ?></span>
 				</div>
 			<?php endif; ?>
-			
+
 			<fieldset class="options">
 				<legend><h3><?php _e('Main Options', 'ngcp'); ?></h3></legend>
 				<table class="form-table">
@@ -345,7 +345,7 @@ function ngcp_display_options() {
 					</tr>
 				</table>
 			</fieldset>
-			
+
 			<fieldset class="options">
 				<legend><h3><?php _e('Sync your Categories', 'ngcp'); ?></h3></legend>
 				<table class="form-table">
@@ -353,7 +353,7 @@ function ngcp_display_options() {
 						<th scope="row"><?php _e('Select which of your Categories should be posted to Newsgrape and which default type should be used', 'ngcp'); ?></th>
 						<td>
 							<ul id="category-children">
-								<li><label class="selectit"><input type="checkbox" class="checkall"> 
+								<li><label class="selectit"><input type="checkbox" class="checkall">
 									<em><?php _e("Check all", 'ngcp'); ?></em></label></li>
 								<?php
 								if (!is_array($options['skip_cats'])) $options['skip_cats'] = (array)$options['skip_cats'];
@@ -376,7 +376,7 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 					</tr>
 				</table>
 			</fieldset>
-	
+
 			<fieldset class="options" id="ngcp-advanced-options">
 				<legend><h3><?php _e('Advanced Options', 'ngcp'); ?></h3></legend>
 				<table class="form-table">
@@ -427,17 +427,17 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 				<input type="submit" name="ngcp[update_ngcp_options]" value="<?php esc_attr_e('Update Options'); ?>" class="button-primary" />
 			</p>
 		<?php endif; ?>
-		
+
 		<?php if(NGCP_DEBUG): ?>
 			<h3>Options Debug Output</h3>
 			<pre><?php print_r($options); ?></pre>
 			<pre>ngcp_blog_id: <?php print_r(get_option('ngcp_blog_id','No NGCP Blog ID')); ?></pre>
-			<input type="submit" name="ngcp[delete_options]" id="ngcp-delete-options" value="<?php esc_attr_e('Delete all options', 'ngcp'); ?>" class="button-primary" /> 
+			<input type="submit" name="ngcp[delete_options]" id="ngcp-delete-options" value="<?php esc_attr_e('Delete all options', 'ngcp'); ?>" class="button-primary" />
 			<span class="description">This forces the plugin to fetch a list of languages and licenses again</span><br/><br/>
-			<input type="submit" name="ngcp[delete_blog_id]" id="ngcp-delete-blog-id" value="<?php esc_attr_e('Delete blog id', 'ngcp'); ?>" class="button-primary" /> 
+			<input type="submit" name="ngcp[delete_blog_id]" id="ngcp-delete-blog-id" value="<?php esc_attr_e('Delete blog id', 'ngcp'); ?>" class="button-primary" />
 			<span class="description">A new unique blog id will be generated</span>
 		<?php endif; ?>
-		
+
 	</form>
 	<script type="text/javascript">
 	jQuery(document).ready(function($){
@@ -456,11 +456,11 @@ A „Fiction“-Article is any text that you just make up in your mind. When wri
 				$(this).hide();
 			});
 		});
-		
+
 	});
 	</script>
 </div>
-		
+
 <?php
 }
 
@@ -478,29 +478,29 @@ if (!function_exists('esc_textarea')) {
 class ngcp_Walker_Category_Checklist extends Walker {
      var $tree_type = 'category';
      var $db_fields = array ('parent' => 'parent', 'id' => 'term_id');
-     
+
  	function start_lvl(&$output, $depth, $args) {
          $indent = str_repeat("\t", $depth);
          $output .= "$indent<ul class='children'>\n";
      }
- 
+
  	function end_lvl(&$output, $depth, $args) {
          $indent = str_repeat("\t", $depth);
          $output .= "$indent</ul>\n";
      }
- 
+
  	function start_el(&$output, $category, $depth, $args) {
          extract($args);
          if ( empty($taxonomy) )
              $taxonomy = 'category';
- 
+
 		// This is the part we changed
          $name = 'ngcp['.$taxonomy.']';
- 
+
          $class = in_array( $category->term_id, $popular_cats ) ? ' class="popular-category"' : '';
          $output .= "\n<li id='{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->term_id . '" type="checkbox" name="'.$name.'[]" id="in-'.$taxonomy.'-' . $category->term_id . '"' . checked( in_array( $category->term_id, $selected_cats ), true, false ) . disabled( empty( $args['disabled'] ), false, false ) . ' /> ' . esc_html( apply_filters('the_category', $category->name )) . '</label>';
      }
- 
+
  	function end_el(&$output, $category, $depth, $args) {
 		$options = ngcp_get_options();
 		$output .= '<select name="ngcp[type][category-'.$category->term_id.']" class="ngcp-select-type">';

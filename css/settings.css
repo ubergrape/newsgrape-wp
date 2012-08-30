@@ -1,5 +1,5 @@
 #wpwrap {
-	background: url("<?php echo ngcp_plugin_dir_url(); ?>furley_bg.png");
+	background: url("<?php echo ngcp_plugin_dir_url(); ?>img/furley_bg.png");
 }
 #adminmenuback {
 	z-index: 1;
@@ -48,10 +48,10 @@
 	background-image: none;
 }
 #wpbody-content > .wrap .button-primary:hover, #wpbody-content > .wrap .button-secondary:hover, #wpbody-content > .wrap .button-quiet:hover {
-	color: 
+	color:
 	white !important;
-	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, 
-	#444), color-stop(100%, 
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%,
+	#444), color-stop(100%,
 	#333)) !important;
 	background-image: -webkit-linear-gradient(
 	#444,
@@ -68,12 +68,12 @@
 	background-image: linear-gradient(
 	#444,
 	#333) !important;
-	background-color: 
+	background-color:
 	#444 !important;
 }
 #wpbody-content > .wrap .button-secondary {
-	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, 
-	#3E97C5), color-stop(100%, 
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%,
+	#3E97C5), color-stop(100%,
 	#3689B3)) !important;
 	background-image: -webkit-linear-gradient(
 	#3E97C5,
@@ -90,12 +90,12 @@
 	background-image: linear-gradient(
 	#3E97C5,
 	#3689B3) !important;
-	background-color: 
-	#3689B3 !important;		
+	background-color:
+	#3689B3 !important;
 }
 #wpbody-content > .wrap .button-primary {
-	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, 
-	#E85245), color-stop(100%, 
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%,
+	#E85245), color-stop(100%,
 	#E53D2E)) !important;
 	background-image: -webkit-linear-gradient(
 	#E85245,
@@ -112,12 +112,12 @@
 	background-image: linear-gradient(
 	#E85245,
 	#E53D2E) !important;
-	background-color: 
+	background-color:
 	#E53D2E !important;
 }
 #wpbody-content > .wrap .button-quiet {
-	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, 
-	#BFBFBB), color-stop(100%, 
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%,
+	#BFBFBB), color-stop(100%,
 	#B2B2AE)) !important;
 	background-image: -webkit-linear-gradient(
 	#BFBFBB,
@@ -134,8 +134,8 @@
 	background-image: linear-gradient(
 	#BFBFBB,
 	#B2B2AE) !important;
-	background-color: 
-	#B2B2AE !important;		
+	background-color:
+	#B2B2AE !important;
 }
 input[type=submit].ng-button-link {
 	background: none !important;
@@ -150,7 +150,7 @@ input[type=submit].ng-button-link {
 }
 .ng-connect-box {
 	background-color: #ebebe7;
-	border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; 
+	border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px;
 	margin: 12px 0px;
 }
 .ng-small {
@@ -183,7 +183,7 @@ ul#category-children {
 	border: 1px solid #e0e0d7;
 	padding: 1em;
 	background: #fff;
-	border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; 
+	border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px;
 }
 #category-children li {
 	clear: both;
@@ -199,7 +199,7 @@ tr#scary-buttons { display: none; }
 	padding: 18px;
 	margin: 0 0 12px 0;
 	border: 1px solid #e0e0d7;
-	border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; 
+	border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px;
 }
 #ngcp-fast-edit {
 }
@@ -284,7 +284,7 @@ tr#scary-buttons { display: none; }
 	opacity:.80;
 	filter: alpha(opacity=80);
 }
- 
+
 .ngcp-white-content {
 	display: none;
 	position: absolute;
@@ -350,7 +350,7 @@ tr#scary-buttons { display: none; }
 }
 
 .ngcp-box-header {
-	background: url(<?php echo ngcp_plugin_dir_url(); ?>ng.png) center no-repeat #333;
+	background: url("<?php echo ngcp_plugin_dir_url(); ?>img/ng.png") center no-repeat #333;
 	height: 41px;
 	margin-left: -50px;
 	margin-right: -50px;
