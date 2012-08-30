@@ -236,7 +236,7 @@ tr#scary-buttons { display: none; }
 	background: #f8f8f8;
 }
 .ngcp-all-articles th.type {
-	min-width: 326px;
+	min-width: 135px;
 }
 .ngcp-sync-state {
 	color: #8f8f8f;
