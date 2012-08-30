@@ -74,7 +74,6 @@ class NGCP_API {
 			return False;
 		}
 		
-		/*
 		if (400 == $response['response']['code']) {
 			ngcp_debug('error 400: '.$response['body']);
 			if(array_key_exists('message',$response_decoded)) {
@@ -82,7 +81,6 @@ class NGCP_API {
 			}
 			return False;
 		}
-		*/
 		
 		if ( (null == $array_key1 || !array_key_exists($array_key1, $response_decoded))
 			&& (null == $array_key2 || !array_key_exists($array_key1, $response_decoded))
