@@ -79,7 +79,7 @@ function ngcp_inner_meta_box($post) {
 	$ngcp_is_test = (array_key_exists("ngcp_is_test",$post_meta)) ? $post_meta['ngcp_is_test'][0] : false;
 	$ngcp_adult_only = (array_key_exists("ngcp_adult_only",$post_meta)) ? $post_meta['ngcp_adult_only'][0] : false;
 	$ngcp_trending_percentage = (array_key_exists("ngcp_trending_percentage",$post_meta)) ? $post_meta['ngcp_trending_percentage'][0] : 0;
-	$ngcp_is_trending = (100 == $ngcp_trending_percentage);
+	$ngcp_is_trending = intval($ngcp_trending_percentage) >= 100;
 
 	if (!array_key_exists("ngcp_sync",$post_meta)) {
 		if('published' != get_post_status($post->ID) && 'auto-draft' != get_post_status($post->ID) && !$ngcp_id) {
