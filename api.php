@@ -304,6 +304,18 @@ class NGCP_API {
 		return $output;
 	}
 
+	function get_trending_percentage($post) {
+		$response = $this->_get('articles/'.$post->id.'/');
+
+		$trending_percentage = False;
+
+		if($response) {
+			$trending_percentage = ( $response['trending_points'] + $response['view_count'] ); // TODO: Change API
+		}
+
+		return $trending_percentage;
+	}
+
 	function _get($url='languages/') {
 		$this->report(__FUNCTION__,"Get $url");
 

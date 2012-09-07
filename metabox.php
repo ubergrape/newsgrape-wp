@@ -20,6 +20,28 @@ function ngcp_add_meta_box() {
     add_meta_box('newsgrape_description', $label, 'ngcp_inner_meta_box_description', $syncable, 'normal', 'high');
 }
 
+add_action('wp_ajax_ngcp_trending_percentage', 'ngcp_ajax_trending_percentage');
+
+ function ngcp_ajax_trending_percentage() {
+	$id = $_POST['id'];
+	ngcp_debug("AJAX request - update trending points for $id");
+
+	$trending_percentage = NGCP_Core_Controller::update_trending_percentage($id);
+
+	global $ngcp_error;
+
+	// response output
+    header( "Content-Type: application/json" );
+    $response = json_encode( array(
+		'success' => ($ngcp_error===null && $trending_percentage!==False),
+		'trending_percentage' => $trending_percentage,
+		'error' => $ngcp_error) );
+    echo $response;
+
+	//Important
+	exit;
+}
+
 function ngcp_inner_meta_box_description($post) {
 	global $post;
 	$ngcp_description = get_post_meta($post->ID, 'ngcp_description', true);
@@ -56,6 +78,8 @@ function ngcp_inner_meta_box($post) {
 	$has_been_deleted = array_key_exists("ngcp_deleted",$post_meta) && True == $post_meta['ngcp_deleted'][0];
 	$ngcp_is_test = (array_key_exists("ngcp_is_test",$post_meta)) ? $post_meta['ngcp_is_test'][0] : false;
 	$ngcp_adult_only = (array_key_exists("ngcp_adult_only",$post_meta)) ? $post_meta['ngcp_adult_only'][0] : false;
+	$ngcp_trending_percentage = (array_key_exists("ngcp_trending_percentage",$post_meta)) ? $post_meta['ngcp_trending_percentage'][0] : 0;
+	$ngcp_is_trending = (100 == $ngcp_trending_percentage);
 
 	if (!array_key_exists("ngcp_sync",$post_meta)) {
 		if('published' != get_post_status($post->ID) && 'auto-draft' != get_post_status($post->ID) && !$ngcp_id) {
@@ -83,6 +107,14 @@ function ngcp_inner_meta_box($post) {
 
     <div class="misc-pub-section ngcp-info <?php if($is_synced) { echo "synced"; } ?>">
 		<?php if($is_synced): ?>
+			<?php if($ngcp_is_trending): ?>
+				<a href="<?php echo $ngcp_display_url?>" class="ngcp-trending" data-original-title="">trending</a>
+	        <?php else: ?>
+				<div class="ngcp-trendingbar" data-original-title="percentage until trending">
+	              score
+	                <div class="bar" style="width: <?php echo $ngcp_trending_percentage ?>%;"></div>
+	            </div>
+	    	<?php endif; ?>
 		    <p><strong class="on-newsgrape">Synced with Newsgrape! </strong><a href="<?php echo $ngcp_display_url?>"><?php echo substr($ngcp_display_url,7); ?></a></p>
 		    <?php if(NGCP_DEBUG) { echo "<p>NG ID: $ngcp_id</p>"; }?>
 		<?php elseif($has_been_deleted): ?>
@@ -280,7 +312,10 @@ function ngcp_metabox_js($hook) {
         return;
     }
 
+    global $post;
+
     wp_enqueue_script('ngcp_metabox', ngcp_plugin_dir_url().'js/ngcp-metabox.js');
+    wp_localize_script('ngcp_metabox', 'ngcp_ajax', array( 'id' => $post->ID ) );
 }
 
 ?>

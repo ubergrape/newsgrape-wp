@@ -110,4 +110,20 @@ jQuery(function(){
 		$('#newsgrape_description_inner input')[0].tabIndex = 101; // newsgrape description
 		$('#postdivrich textarea')[0].tabIndex = 102; // main text
 	}
+
+
+	/* Update trending points. do this async because we don't want to slow loading times of the wordpress admin.
+	We don't need to do this via wp-cron because trending points are only interesting when editing an article */
+	if(adminpage=='post-php') {
+		var data = {
+			action: 'ngcp_trending_percentage',
+			id: ngcp_ajax.id
+		};
+
+		$.post(ajaxurl, data, function(response) {
+			if (response.success) {
+				$('#newsgrape .ngcp-trendingbar .bar').css('width', response.trending_percentage + '%');
+			}
+		}, 'json');
+	}
 });

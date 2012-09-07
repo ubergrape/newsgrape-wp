@@ -148,6 +148,33 @@ class NGCP_Core_Controller {
 		return True;
 	}
 
+	static function update_trending_percentage($post_ID) {
+		ngcp_debug('controller: update trending_percentage for '. $post_ID);
+
+		if (!NGCP_Core_Controller::check_nonce() || !NGCP_Core_Controller::has_api_key()) {
+			return 0;
+		}
+
+		$post = new NGCP_Post($post_ID);
+
+		if (!$post->was_synced()) {
+			ngcp_debug("controller: update_trending_percentage -> stop (was never synced before)");
+			return False;
+		}
+
+		$api = new NGCP_API();
+
+		$trending_percentage = $api->get_trending_percentage($post);
+
+		ngcp_debug('trending_percentage: '.$trending_percentage);
+
+		if($trending_percentage!==False) {
+			update_post_meta($post_ID, 'ngcp_trending_percentage', $trending_percentage);
+		}
+
+		return $trending_percentage;
+	}
+
 	static function check_nonce() {
 		/*if (!isset($_POST['ngcp_nonce']) || False==wp_verify_nonce($_POST['ngcp_nonce'], "ngcp_metabox")) {
 			update_option('ngcp_error_notice', array("wrong_nonce" => "Wrong NONCE"));
