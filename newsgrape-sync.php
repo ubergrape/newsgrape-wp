@@ -25,8 +25,9 @@ define('NGCP_DEBUG', false);
  */
 define('NGCP_DEBUG_FILE', true);
 
-/* NGCP_DEV enables the staging server for API and comments system*/
+/* NGCP_DEV enables the development server for API and comments system*/
 define('NGCP_DEV', false);
+define('NGCP_DEV_SERVER', 'http://staging.newsgrape.com');
 
 /* Set this to the plugin dir name if you have symlink problems */
 //define('NGCP_PLUGIN_DIR','newsgrape-sync');

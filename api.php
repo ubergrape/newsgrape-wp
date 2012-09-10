@@ -7,7 +7,7 @@ class NGCP_API {
 		$this->api_url = $api_url;
 
 		if (NGCP_DEV) {
-			 $this->api_url = 'http://staging.newsgrape.com/api/0.1/';
+			 $this->api_url = NGCP_DEV_SERVER;
 		}
 
 		/* Client info for newsgrape's statistics */

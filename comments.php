@@ -6,7 +6,7 @@ $ngcp_id = get_post_meta($id, 'ngcp_id', true);
 $ngcp_provider = "http://www.newsgrape.com";
 
 if (NGCP_DEV) {
-	$ngcp_provider = "http://staging.newsgrape.com";
+	$ngcp_provider = NGCP_DEV_SERVER;
 }
 
 ?>
