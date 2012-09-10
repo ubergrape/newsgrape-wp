@@ -123,6 +123,13 @@ jQuery(function(){
 		$.post(ajaxurl, data, function(response) {
 			if (response.success) {
 				$('#newsgrape .ngcp-trendingbar .bar').css('width', response.trending_percentage + '%');
+				if (response.trending_percentage >= 100) {
+					$('.ngcp-trendingbar').addClass('ngcp-hide');
+					$('.ngcp-trending').removeClass('ngcp-hide');
+				} else  {
+					$('.ngcp-trendingbar').removeClass('ngcp-hide');
+					$('.ngcp-trending').addClass('ngcp-hide');
+				}
 			}
 		}, 'json');
 	}

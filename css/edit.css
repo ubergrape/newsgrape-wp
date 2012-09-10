@@ -161,3 +161,6 @@ div#side-info-column div.ngcp-radio-column ul { margin: 1em; }
 	cursor: text;
 	vertical-align: middle;
 }
+#newsgrape .ngcp-hide {
+	display:none;
+}
