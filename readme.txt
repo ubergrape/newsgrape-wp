@@ -57,6 +57,7 @@ Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plug
 * improved multisync ("fast edit articles")
 * added "adult only" option to articles
 * new: sync pages (optional)
+* fixed bug that prevented adding images
 
 = 1.3 =
 * better handling of the <!--more--> tag
