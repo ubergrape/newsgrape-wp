@@ -53,6 +53,9 @@ Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plug
 
 == Changelog ==
 
+= 1.5 =
+* sync trending points, shown in admin
+
 = 1.4 =
 * improved multisync ("fast edit articles")
 * added "adult only" option to articles
