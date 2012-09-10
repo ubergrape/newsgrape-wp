@@ -310,7 +310,7 @@ class NGCP_API {
 		$trending_percentage = False;
 
 		if($response) {
-			$trending_percentage = ( $response['trending_points'] + $response['view_count'] ); // TODO: Change API
+			$trending_percentage = ( $response['trending_percentage'] );
 		}
 
 		return $trending_percentage;
