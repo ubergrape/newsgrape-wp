@@ -107,12 +107,12 @@ function ngcp_inner_meta_box($post) {
 
     <div class="misc-pub-section ngcp-info <?php if($is_synced) { echo "synced"; } ?>">
 		<?php if($is_synced): ?>
-			<a href="<?php echo $ngcp_display_url?>" class="ngcp-trending <?php if(!$ngcp_is_trending) echo 'ngcp-hide'; ?>" data-original-title="">trending</a>
-			<div class="ngcp-trendingbar <?php if($ngcp_is_trending) echo'ngcp-hide';?>" data-original-title="percentage until trending">
+			<a href="<?php echo $ngcp_display_url?>" class="ngcp-trending <?php if(!$ngcp_is_trending) echo 'ngcp-hide'; ?>" target="_blank">trending</a>
+			<a href="http://www.newsgrape.com/a/BL3WPU-FQR4axv9svnRWrQ/introducing-the-trending-bar/" target="_blank"><div class="ngcp-trendingbar <?php if($ngcp_is_trending) echo'ngcp-hide';?>" data-original-title="percentage until trending">
               score
                 <div class="bar" style="width: <?php echo $ngcp_trending_percentage ?>%;"></div>
-            </div>
-		    <p><strong class="on-newsgrape">Synced with Newsgrape! </strong><a href="<?php echo $ngcp_display_url?>"><?php echo substr($ngcp_display_url,7); ?></a></p>
+            </div></a>
+		    <p><strong class="on-newsgrape">Synced with Newsgrape! </strong><a href="<?php echo $ngcp_display_url?>" target="_blank"><?php echo substr($ngcp_display_url,7); ?></a></p>
 		    <?php if(NGCP_DEBUG) { echo "<p>NG ID: $ngcp_id</p>"; }?>
 		<?php elseif($has_been_deleted): ?>
 		    <em><?php _e('Not synced anymore. (has been deleted)', 'ngcp');?></em>
