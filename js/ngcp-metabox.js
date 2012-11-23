@@ -122,15 +122,27 @@ jQuery(function(){
 
 		$.post(ajaxurl, data, function(response) {
 			if (response.success) {
+				/* Update both trending bars (metabox and admin notice) */	
 				$('#newsgrape .ngcp-trendingbar .bar').css('width', response.trending_percentage + '%');
+				$('#newsgrape-message .bar').css('width', response.trending_percentage + '%');
+				$('#newsgrape-message .info .points').html(response.trending_percentage);
 				if (response.trending_percentage >= 100) {
-					$('.ngcp-trendingbar').addClass('ngcp-hide');
-					$('.ngcp-trending').removeClass('ngcp-hide');
+					$('#newsgrape .ngcp-trendingbar').addClass('ngcp-hide');
+					$('#newsgrape .ngcp-trending').removeClass('ngcp-hide');
+					$('#newsgrape-message').addClass('ngcp-hide');
 				} else  {
-					$('.ngcp-trendingbar').removeClass('ngcp-hide');
-					$('.ngcp-trending').addClass('ngcp-hide');
+					$('#newsgrape .ngcp-trendingbar').removeClass('ngcp-hide');
+					$('#newsgrape .ngcp-trending').addClass('ngcp-hide');
+					$('#newsgrape-message').removeClass('ngcp-hide');
 				}
 			}
 		}, 'json');
 	}
+
+	/* clicking close in trending notice, closes via javascript */
+	$('#newsgrape-message .close').click(function(event) {
+		event.preventDefault();
+		$('#newsgrape-message').remove()
+		$.get($(this).attr('href'));
+	})
 });

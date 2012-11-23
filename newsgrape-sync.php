@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Newsgrape Sync
-Version: 1.5
+Version: 1.5.1
 Description: The Plugin automatically syncs wordpress articles to your newsgrape account. Editing or deleting a post will be replicated as well.
 Author: Newsgrape.com, Stefan Kröner
 Author URI: http://www.newsgrape.com/
 */
 
 /* Again, the version. used in api requests in the user agent string */
-define('NGCP_VERSION','1.5');
+define('NGCP_VERSION','1.5.1');
 
 /* NGCP_DEBUG true enables:
  * - Various Debug messages in logfile
@@ -41,6 +41,7 @@ define('NGCP_MAXWIDTH_IMAGE', 432);
 define('NGCP_MAXHEIGHT_IMAGE', 800);
 
 
+
 $ngcp_dir = dirname(__FILE__);
 
 @require_once "$ngcp_dir/api.php";
@@ -69,6 +70,8 @@ register_deactivation_hook(__FILE__, 'ngcp_deactivation');
 function ngcp_remove_options() {
 	delete_option('ngcp');
 	delete_option('ngcp_error_notice');
+	delete_option('ngcp_lastcommentsync');
+	delete_option('trending_notice_ignore');
 }
 register_uninstall_hook( __FILE__, 'ngcp_remove_options' );
 
@@ -356,13 +359,65 @@ function ngcp_get_the_excerpt($excerpt){
 
 }
 
+function ngcp_trending_notice(){ 
+	global $post;
+
+	$options = ngcp_get_options();
+
+	if ($post
+		&& 'post' == get_post_type($post->ID)
+		&& ngcp_is_current_user_connected()
+		&& current_user_can('edit_posts')
+		&& !get_option('ngcp_trending_notice_ignore')) {
+
+		$options = ngcp_get_options();
+		$post_meta = get_post_custom($post->ID);
+
+		if (0 == $options['tending_notice_ignorre']
+			&& array_key_exists("ngcp_synced",$post_meta)) {
+
+			$ngcp_trending_percentage = (array_key_exists("ngcp_trending_percentage",$post_meta)) ? $post_meta['ngcp_trending_percentage'][0] : 0;
+			$ngcp_is_trending = intval($ngcp_trending_percentage) >= 100;
+			$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
+
+			?>
+			<div id="newsgrape-message" class="message updated <?php if($ngcp_is_trending) echo 'ngcp-hide' ?>">
+				<a class="close" href="?trending_notice_ignore=1">&times;</a>
+		        <p style="margin-bottom: 8px;">Get this article featured under "best" by sharing it with your social environment! <a href="<?php echo $ngcp_display_url; ?>" target="_blank">Promote on Newsgrape</a></p>
+		        <div>
+		            <div class="info" style="margin: 0 0 0 10px">
+		            	<span class="points"><?php echo $ngcp_trending_percentage ?></span>/100 for
+		            	<a href="http://www.newsgrape.com/a/BL3WPU-FQR4axv9svnRWrQ/introducing-the-trending-bar/" class="ngcp-trending" target="_blank">trending</a>
+		            </div>
+		            <div class="progress active trendingbar">
+		                <div class="bar" style="width: <?php echo $ngcp_trending_percentage ?>%;"></div>
+		            </div>
+		            
+		        </div>
+		    </div> <?php
+
+		}
+	}
+}
+
+function ngcp_trending_notice_ignore() {
+	if (current_user_can('edit_posts')
+		&& isset($_GET['trending_notice_ignore'])
+		&& '1' == $_GET['trending_notice_ignore'] ) {
+
+		update_option('ngcp_trending_notice_ignore', true);
+	}
+}
+
 $class = 'NGCP_Core_Controller';
 
-add_action('admin_init', 'ngcp_help_init' );
+add_action('admin_init', 'ngcp_help_init');
+add_action('admin_init', 'ngcp_trending_notice_ignore');
 add_action('admin_menu', 'ngcp_add_menu'); // Add menu to admin
 add_action('add_meta_boxes', 'ngcp_add_meta_box'); //Add meta box
 add_action('admin_head-post-new.php', 'ngcp_css');
 add_action('admin_head-post.php', 'ngcp_css');
+add_action('admin_notices', 'ngcp_trending_notice');
 add_action('admin_enqueue_scripts', 'ngcp_metabox_js');
 add_action('publish_post', array($class,'post'));
 add_action('publish_future_post', array($class,'post'));
@@ -389,11 +444,11 @@ add_filter('get_the_excerpt', 'ngcp_get_the_excerpt');
 add_action('admin_notices', 'ngcp_print_login_notice');
 
 // enable http logging
-if(NGCP_DEBUG) {
+/*if(NGCP_DEBUG) {
 	add_filter('pre_http_request', 'ngcp_log_http', 10, 3);
 	add_filter('http_request_args', 'ngcp_log_http', 10, 2 );
 	add_action('http_api_debug', 'ngcp_log_http', 10, 3);
-}
+}*/
 
 // make sure that there is a blog id. we need it for the comment system.
 if(!get_option('ngcp_blog_id')) {

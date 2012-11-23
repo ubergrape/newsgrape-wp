@@ -1,3 +1,89 @@
+#newsgrape-message {
+	background-image: url(http://wordpress.dev/wordpress/wp-content/plugins/newsgrape-sync/img/hiRobot.png);
+	background-color: #DDF4FF;
+	background-repeat: no-repeat;
+	background-position: left bottom;
+	padding: 9px 9px 9px 55px;
+	min-height: 28px;
+	color: #333;
+	border: 1px solid #1678AA;
+}
+
+#newsgrape-message .info {
+	float: right;
+}
+
+#newsgrape-message .progress {
+	overflow: hidden;
+	height: 16px;
+	margin-bottom: 8px;
+	background-color: #F7F7F7;
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, whiteSmoke), color-stop(100%, #F9F9F9));
+	background-image: -webkit-linear-gradient(whiteSmoke,#F9F9F9);
+	background-image: -moz-linear-gradient(whiteSmoke,#F9F9F9);
+	background-image: -o-linear-gradient(whiteSmoke,#F9F9F9);
+	background-image: linear-gradient(whiteSmoke,#F9F9F9);
+	background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f5f5f5', endColorstr='#f9f9f9', GradientType=0);
+	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	-moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-ms-border-radius: 4px;
+	-o-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#newsgrape-message .progress .bar {
+	width: 0%;
+	height: 18px;
+	color: white;
+	font-size: 12px;
+	text-align: center;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	background-color: #149BDF;
+	-webkit-background-size: 40px 40px;
+	-moz-background-size: 40px 40px;
+	-o-background-size: 40px 40px;
+	background-size: 40px 40px;
+	background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#149bdf', endColorstr='#0480be', GradientType=0);
+	-webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+	-moz-box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15);
+	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transition: width 0.6s ease;
+	-moz-transition: width 0.6s ease;
+	-o-transition: width 0.6s ease;
+	transition: width 0.6s ease;
+}
+
+#newsgrape-message .progress.active .bar {
+	-webkit-animation: progress-bar-stripes 2s linear infinite;
+	-moz-animation: progress-bar-stripes 2s linear infinite;
+	animation: progress-bar-stripes 2s linear infinite;
+}
+
+#newsgrape-message .progress.trendingbar .bar {
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #F7D181), color-stop(100%, #B97E00));
+	background-image: -webkit-linear-gradient(#F7D181,#B97E00);
+	background-image: -moz-linear-gradient(#F7D181,#B97E00);
+	background-image: -o-linear-gradient(#F7D181,#B97E00);
+	background-image: linear-gradient(#F7D181,#B97E00);
+}
+
+#newsgrape-message .ngcp-trending {
+	float: none;
+}
+
+#newsgrape-message .close {
+	float: right;
+}
+
+
 #post-body-content #newsgrape {
 }
 #post-body-content #newsgrape .inside {
@@ -21,7 +107,7 @@
 	background: #fcfcfa ;
 }
 #newsgrape h3 {
-	background: url("<?php echo ngcp_plugin_dir_url(); ?>img/menu_icon_inverted.png") 5px 6px no-repeat #efefef;
+	background: url(../wp-content/plugins/newsgrape-sync/img/menu_icon_inverted.png) 5px 6px no-repeat #efefef;
 	font-family: Arial, Helvetica, sans-serif;
 	color: #444;
 	text-shadow: none;
@@ -42,7 +128,7 @@
 	color: #444;
 	border-top: 1px solid #fff;
 }
-#newsgrape .ngcp-trending {
+.ngcp-trending {
 	text-decoration: none;
 	float: right;
 	border: 1px solid #BBB;
@@ -58,7 +144,7 @@
 	border-radius: 3px;
 	color: #999;
 }
-#newsgrape .ngcp-trendingbar {
+.ngcp-trendingbar {
 	float: right;
 	border: 1px solid #BBB;
 	background: #FDF4E1;
@@ -74,7 +160,7 @@
 	-o-border-radius: 4px;
 	border-radius: 4px;
 }
-#newsgrape .ngcp-trendingbar .bar {
+.ngcp-trendingbar .bar {
 	height: 18px;
 	box-shadow: none;
 	background: #F7D181;
@@ -161,6 +247,6 @@ div#side-info-column div.ngcp-radio-column ul { margin: 1em; }
 	cursor: text;
 	vertical-align: middle;
 }
-#newsgrape .ngcp-hide {
+.ngcp-hide {
 	display:none;
 }

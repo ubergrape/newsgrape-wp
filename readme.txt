@@ -53,8 +53,11 @@ Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plug
 
 == Changelog ==
 
+= 1.5.1 =
+* show trending points notice
+
 = 1.5 =
-* sync trending points, shown in admin
+* sync trending points, show in admin
 
 = 1.4 =
 * improved multisync ("fast edit articles")
