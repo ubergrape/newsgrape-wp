@@ -381,7 +381,7 @@ function ngcp_trending_notice(){
 			$ngcp_display_url = (array_key_exists("ngcp_display_url",$post_meta)) ? $post_meta['ngcp_display_url'][0] : false;
 
 			?>
-			<div id="newsgrape-message" class="message updated <?php if($ngcp_is_trending) echo 'ngcp-hide' ?>">
+			<div id="newsgrape-message" class="message updated <?php if($ngcp_is_trending) echo 'ngcp-hide' ?>" style="background-image: url(<?php echo ngcp_plugin_dir_url() . "img/hiRobot.png" ?>)">
 				<a class="close" href="?trending_notice_ignore=1">&times;</a>
 		        <p style="margin-bottom: 8px;">Get this article featured under "best" by sharing it with your social environment! <a href="<?php echo $ngcp_display_url; ?>" target="_blank">Promote on Newsgrape</a></p>
 		        <div>
