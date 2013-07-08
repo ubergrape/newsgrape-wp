@@ -5,15 +5,35 @@ Requires at least: 3.2
 Tested up to: 3.4.2
 Stable tag: trunk
 
-Syncs your Wordpress articles to Newsgrape.com
 
 == Description ==
+
+= NEWSGRAPE.COM HAS BEEN SHUT DOWN =
+
+**Please do not install Newsgrape Sync, Newsgrape.com has been discontinued.**
+
+**See [Newsgrape.com](http://www.newsgrape.com/) for more information.**
+
+------------------------
+
+
+
+
+
+
+
+
+
+
+This is the old description:
+
+Syncs your Wordpress articles to Newsgrape.com
 
 Newsgrape Sync automatically syncs WordPress articles to your Newsgrape account. Editing or deleting a post will be replicated as well. You can also crosspost all of your existing posts to Newsgrape.
 
 This plugin also integrates the Newsgrape comment system inside your WordPress posts.
 
-The plugin is developed on [Github] (https://github.com/newsgrape/newsgrape-wp/).
+The plugin is developed on [Github](https://github.com/newsgrape/newsgrape-wp/).
 
 = Features =
 
@@ -46,12 +66,15 @@ Thanks to creators of [LiveJournal CrossPoster](http://wordpress.org/extend/plug
 
 == Installation ==
 
-1. Upload the "newsgrape-sync" directory to your "/wp-content/plugins/" directory
-1. Activate the plugin through the "Plugins" menu in WordPress Admin
-1. Click "Newsgrape" in the WordPress Admin menu and configure your settings.
+Please do not install, Newsgrape.com and Newsgrape Sync have been discontinued.
+
+See [Newsgrape.com](http://www.newsgrape.com/) for more information.
 
 
 == Changelog ==
+
+= 1.6 =
+* NEWSGRAPE.COM AND NEWSGRAPE SYNC DISCONTINUED
 
 = 1.5.1 =
 * show trending points notice
